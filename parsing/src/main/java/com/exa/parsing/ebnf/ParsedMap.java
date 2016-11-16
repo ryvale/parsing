@@ -12,7 +12,7 @@ public class ParsedMap extends ParsedObject<Map<String, ParsedObject<?>>> {
 	public ParsedMap() { this(new HashMap<String, ParsedObject<?>>()); }
 
 	@Override
-	public ParsedMap asMap() { return this;	}
+	public ParsedMap asParsedMap() { return this;	}
 	
 	public void setValue(String f, ParsedObject<?> v) {
 		value.put(f, v);

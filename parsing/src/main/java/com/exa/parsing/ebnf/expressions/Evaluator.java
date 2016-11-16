@@ -12,7 +12,7 @@ import com.exa.parsing.PEWord;
 import com.exa.parsing.ParsingEntity;
 import com.exa.parsing.ebnf.CompiledRule;
 import com.exa.parsing.ebnf.Field;
-import com.exa.parsing.ebnf.FieldComputer;
+import com.exa.parsing.ebnf.ParsedObject;
 import com.exa.parsing.ebnf.RuleParser;
 import com.exa.parsing.ebnf.RuleScript;
 import com.exa.utils.ManagedException;
@@ -42,7 +42,7 @@ public class Evaluator extends StackEvaluator<Item<?>> {
 	
 	protected OpPropertySetter<String> opAssign;
 	protected OpPropertySetter<String> opConcat;
-	protected OpPropertySetter<List<String>> opStringArray;
+	protected OpPropertySetter<List<ParsedObject<?>>> opArray;
 	
 	public Evaluator(RuleParser ruleParser) {
 		super(new SubExpressionFactory());
@@ -56,11 +56,11 @@ public class Evaluator extends StackEvaluator<Item<?>> {
 		
 		opAssign = new OpPropertySetter<>(ruleParser, fieldManager, "=", 2, FieldFunction.assigner);
 		opConcat = new OpPropertySetter<>(ruleParser, fieldManager, "$=", 2, FieldFunction.concatener);
-		opStringArray = new OpStringArrayPropertySetter(ruleParser, fieldManager, "[]=", 2, FieldFunction.concatener);
+		opArray = new OpArrayPropertySetter(ruleParser, fieldManager, "[]=", 2);
 		
 		oprtMan.add(new OSUnique<>(opAssign));
 		oprtMan.add(new OSUnique<>(opConcat));
-		oprtMan.add(new OSUnique<>(opStringArray));
+		oprtMan.add(new OSUnique<>(opArray));
 		
 		managers.add(oprtMan);
 	}
@@ -139,5 +139,7 @@ public class Evaluator extends StackEvaluator<Item<?>> {
 		
 		return res;
 	}
+
+	public Map<String, Field<?>> getFields() { return fieldManager.getFields(); }
 	
 }

@@ -12,4 +12,5 @@ public class ParsedString extends ParsedObject<String> {
 	@Override
 	public String toString() { return value; }
 	
+	
 }

@@ -6,6 +6,7 @@ import com.exa.lexing.WordIterator;
 import com.exa.parsing.ExpMan;
 import com.exa.parsing.Parser;
 import com.exa.parsing.ParsingEntity;
+import com.exa.parsing.ebnf.expressions.FieldComputer;
 import com.exa.utils.ManagedException;
 
 public class OutputParser1 extends Parser<ParsedMap> {

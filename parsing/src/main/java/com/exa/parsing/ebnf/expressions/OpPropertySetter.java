@@ -1,11 +1,14 @@
 package com.exa.parsing.ebnf.expressions;
 
+import java.util.Map;
+
 import com.exa.expression.ComputedItem;
 import com.exa.expression.StackEvaluator;
 import com.exa.expression.XPressionException;
 import com.exa.parsing.PEWord;
 import com.exa.parsing.ParsingEntity;
 import com.exa.parsing.ebnf.CompiledRule;
+import com.exa.parsing.ebnf.Field;
 import com.exa.parsing.ebnf.RuleParser;
 import com.exa.parsing.ebnf.RuleScript;
 import com.exa.parsing.ebnf.expressions.Evaluator.FieldMan;
@@ -73,7 +76,31 @@ public class OpPropertySetter<T> extends OperatorBase<T> {
 	
 	
 	public void addListenerForField(ParsingEntity pe, String fieldName, CompiledRule cr) {
-		function.addListenerForField(fieldMan, pe, fieldName, cr);
+		if(cr == null) { addListenerForField(pe, fieldName); return; }
+		
+		if(cr.getFieldComputers().size()>0) {
+			CompiledRule crf = cr.clone();
+			
+			Map<ParsingEntity, FieldComputer<?>> nfieldComputers = crf.getFieldComputers();
+			
+			for(ParsingEntity npe : nfieldComputers.keySet()) {
+				FieldComputer<?> fc = nfieldComputers.get(npe);
+				
+				fieldMan.map(npe, new ObjectFieldComputer<>(crf, fc));
+			}
+			Field<?> field = fieldMan.getField(fieldName);
+			if(field == null) fieldMan.add(new FDObject(fieldName, crf.getFields()));
+			return;
+		}
+		
+		addListenerForField(pe, fieldName);
+	}
+	
+	public void addListenerForField(ParsingEntity pe, String name) {
+		Field<T> field = function.getFrom(fieldMan.getField(name));
+		if(field == null) fieldMan.add(field = function.createField(name));
+		
+		fieldMan.map(pe, new FieldComputer<>(fieldMan.getFields(), name, function));
 	}
 
 	@Override

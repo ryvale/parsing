@@ -27,7 +27,7 @@ public class RuleExpMan extends ExpMan<CompiledRule> {
 	@Override
 	public CompiledRule compute() throws ManagedException {
 		eval.compute();
-		return new CompiledRule(eval.compute().asSpecificItem().asOperand().asOPParsingEntity().value(), eval.getRuleParser().getRuleConfig().charsToIgnore(), eval.getFieldsParsingMap());
+		return new CompiledRule(eval.compute().asOPParsingEntity().value(), eval.getRuleParser().getRuleConfig().charsToIgnore(), eval.getFields(), eval.getFieldsParsingMap());
 	}
 	
 	@Override

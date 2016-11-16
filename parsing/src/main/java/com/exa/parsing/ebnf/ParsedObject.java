@@ -9,7 +9,7 @@ public class ParsedObject<T> {
 	}
 
 	public ParsedString asParsedString() { return null; }
-	public ParsedMap asMap() { return null; }
+	public ParsedMap asParsedMap() { return null; }
 	public ParsedArray asParsedArray() { return null; }
 
 	public T getValue() { return value; }
@@ -18,5 +18,5 @@ public class ParsedObject<T> {
 	public String toString() { return null; }
 	
 	
-	
+	public void setValue(T value) { this.value = value; }
 }

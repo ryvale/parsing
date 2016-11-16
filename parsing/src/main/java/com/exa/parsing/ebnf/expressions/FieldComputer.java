@@ -1,10 +1,11 @@
-package com.exa.parsing.ebnf;
+package com.exa.parsing.ebnf.expressions;
 
 import java.util.Map;
 
 import com.exa.parsing.Parsing;
 import com.exa.parsing.ParsingEvent;
-import com.exa.parsing.ebnf.expressions.FieldFunction;
+import com.exa.parsing.ebnf.Field;
+import com.exa.parsing.ebnf.ParsedObject;
 
 public class FieldComputer<T> implements Cloneable {
 	protected Map<String, Field<?>> fields;
@@ -26,7 +27,7 @@ public class FieldComputer<T> implements Cloneable {
 		field.setValue(function.compute(parsing, field.getValue(), str));
 	}
 	
-	public String getName() { return fieldName; }
+	public String getFieldName() { return fieldName; }
 	
 	public T getValue() { 
 		return function.getFrom(fields.get(fieldName)).getValue(); 
@@ -34,7 +35,7 @@ public class FieldComputer<T> implements Cloneable {
 	
 	public ParsedObject<T> valueAsParsedObject() { return function.asParsedObject(function.getFrom(fields.get(fieldName)).getValue()); }
 	
-	public boolean doesntManageModifNotif(ParsingEvent peEvents) { return function == null; }
+	public boolean manageModifNotif(ParsingEvent peEvents) { return function == null; }
 
 	public Field<T> getField() { return function.getFrom(fields.get(fieldName)); }
 
@@ -46,5 +47,9 @@ public class FieldComputer<T> implements Cloneable {
 	public Map<String, Field<?>> getFields() {	return fields; }
 
 	public void setFields(Map<String, Field<?>> fields) { this.fields = fields; }
+	
+	public void reset() {
+		
+	}
 	
 }

@@ -4,10 +4,12 @@ public class ParsingEvent {
 	protected String word;
 	protected ParsingEntity parsingEntity;
 	protected ParsingEntity result;
+	protected Parsing<?> parsing;
 	
-	public ParsingEvent(ParsingEntity parsingEntity, ParsingEntity result, String word) {
+	public ParsingEvent(ParsingEntity parsingEntity, ParsingEntity result, Parsing<?> parsing) {
 		super();
-		this.word = word;
+		this.parsing = parsing;
+		this.word = parsing.currentWord();
 		this.parsingEntity = parsingEntity;
 		this.result = result;
 	}
@@ -17,5 +19,7 @@ public class ParsingEvent {
 	public ParsingEntity getParsingEntity() { return parsingEntity;	}
 
 	public ParsingEntity getResult() { return result; }
+
+	public Parsing<?> getParsing() { return parsing; }
 	
 }

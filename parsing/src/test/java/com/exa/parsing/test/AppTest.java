@@ -351,7 +351,7 @@ public class AppTest extends TestCase
     }
     
     public void testEBNF4() throws ManagedException {
-    	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; root : 'a';"), false);
+    	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; row : nom $= !':'+ ':' valeur $=(!'\n'|!'\r')+ '\n'?; root : 'a';"), false);
     	CompiledRule cr = ebnfParser.parse("nomA='a'|nomB='b'");
     	OutputParser1 p = new OutputParser1(cr);
     	
@@ -386,7 +386,6 @@ public class AppTest extends TestCase
     	p = new OutputParser1(cr);
     	pm = p.parse("a");
     	assertTrue(pm.get("nom").asParsedArray().get(0).toString().equals("a"));
-    	
     	
     	cr = ebnfParser.parse("nom []='a'+");
     	p = new OutputParser1(cr);
@@ -425,6 +424,13 @@ public class AppTest extends TestCase
     	
     	assertTrue(pm.get("propriete").toString().equals("nom"));
     	assertTrue(pm.get("valeur").toString().equals("Kouakou Koffi"));
+    	
+    	cr = ebnfParser.parse("propriete = row");
+    	p = new OutputParser1(cr);
+    	
+    	pm = p.parse("nom : Kouakou Koffi");
+    	assertTrue(pm.get("propriete").asParsedMap().get("nom").toString().equals("nom"));
+    	
     }
     
 }

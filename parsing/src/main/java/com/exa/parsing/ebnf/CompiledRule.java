@@ -1,5 +1,6 @@
 package com.exa.parsing.ebnf;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -7,22 +8,23 @@ import java.util.Map;
 import com.exa.lexing.Language;
 import com.exa.lexing.LexingRules;
 import com.exa.parsing.ParsingEntity;
+import com.exa.parsing.ebnf.expressions.FieldComputer;
 
-public class CompiledRule {
+public class CompiledRule implements Cloneable {
 	protected Language language;
 	protected Map<ParsingEntity, FieldComputer<?>> fieldComputers;
+	protected Map<String, Field<?>> fields;
 
-	public CompiledRule(Language language, Map<ParsingEntity, FieldComputer<?>> fieldComputers) {
+	public CompiledRule(Language language, Map<String, Field<?>> fields, Map<ParsingEntity, FieldComputer<?>> fieldComputers) {
 		super();
 		this.language = language;
 		this.fieldComputers = fieldComputers;
+		this.fields = fields;
 	}
 	
-	public CompiledRule(ParsingEntity parsingEntity, String ignoreChars, Map<ParsingEntity, FieldComputer<?>> fieldComputers) {
-		this(new Language(new LexingRules(ignoreChars), new HashSet<String>(), parsingEntity), fieldComputers);
+	public CompiledRule(ParsingEntity parsingEntity, String ignoreChars, Map<String, Field<?>> fields, Map<ParsingEntity, FieldComputer<?>> fieldComputers) {
+		this(new Language(new LexingRules(ignoreChars), new HashSet<String>(), parsingEntity), fields, fieldComputers);
 	}
-	
-	public CompiledRule(Language language) { this(language, new LinkedHashMap<ParsingEntity, FieldComputer<?>>());}
 	
 	public Language language() { return language; }
 	
@@ -39,5 +41,37 @@ public class CompiledRule {
 		
 		return res;
 	}
+
+	@Override
+	public CompiledRule clone() {
+		
+		Map<String, Field<?>> nfields = new HashMap<>();
+		for(String fname : fields.keySet()) {
+			nfields.put(fname, fields.get(fname).clone());
+		}
+		
+		Map<ParsingEntity, FieldComputer<?>> nfieldComputers = new HashMap<>();
+		
+		for(ParsingEntity pe : fieldComputers.keySet()) {
+			FieldComputer<?> fc = fieldComputers.get(pe).clone();
+			fc.setFields(nfields);
+			nfieldComputers.put(pe, fc);
+		}
+		
+		return new CompiledRule(language, nfields, nfieldComputers);
+	}
+
+	public Map<String, Field<?>> getFields() { return fields; }
+	
+	public void reset() {
+		for(Field<?> field : fields.values()) {
+			field.reset();
+		}
+		for(FieldComputer<?> fc : fieldComputers.values()) {
+			fc.reset();
+		}
+	}
+	
+	
 
 }

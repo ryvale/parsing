@@ -1,17 +1,9 @@
 package com.exa.parsing.ebnf.expressions;
 
-import java.util.Map;
-
 import com.exa.parsing.Parsing;
-import com.exa.parsing.ParsingEntity;
-import com.exa.parsing.ebnf.CompiledRule;
-import com.exa.parsing.ebnf.FDString;
 import com.exa.parsing.ebnf.Field;
-import com.exa.parsing.ebnf.FieldComputer;
-import com.exa.parsing.ebnf.ObjectField;
 import com.exa.parsing.ebnf.ParsedObject;
 import com.exa.parsing.ebnf.ParsedString;
-import com.exa.parsing.ebnf.expressions.Evaluator.FieldMan;
 
 public abstract class FieldFunction<T> {
 	
@@ -102,15 +94,18 @@ public abstract class FieldFunction<T> {
 	
 	public abstract Field<T> getFrom(Field<?> f);
 
-	public void addListenerForField(FieldMan fieldMan, ParsingEntity pe, String name, CompiledRule cr) {
+/*	public void addListenerForField(FieldMan fieldMan, ParsingEntity pe, String name, CompiledRule cr) {
 		if(cr == null) { addListenerForField(fieldMan, pe, name); return; }
 		
 		if(cr.getFieldComputers().size()>0) {
-			Map<ParsingEntity, FieldComputer<?>> nfieldComputers = cr.clonedFieldComputers();
-			//ObjectField of = new ObjectField(name, nfieldComputers);
+			CompiledRule crf = cr.clone();
+			
+			Map<ParsingEntity, FieldComputer<?>> nfieldComputers = crf.getFieldComputers();
 			
 			for(ParsingEntity npe : nfieldComputers.keySet()) {
-				fieldMan.map(npe, new FieldComputer<>(fieldMan.getFields(), name, null));
+				FieldComputer<?> fc = nfieldComputers.get(npe);
+				
+				fieldMan.map(npe, new ObjectFieldComputer<>(cr, fc));
 			}
 			return;
 		}
@@ -123,5 +118,5 @@ public abstract class FieldFunction<T> {
 		if(field == null) fieldMan.add(field = createField(name));
 		
 		fieldMan.map(pe, new FieldComputer<>(fieldMan.getFields(), name, this));
-	}
+	}*/
 }

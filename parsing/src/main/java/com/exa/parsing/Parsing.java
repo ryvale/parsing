@@ -74,7 +74,7 @@ public class Parsing<T> {
 		if(realResults.containsKey(sequence2)) result = realResults.get(sequence2);
 		
 		if(parser.notifyEvent(pe, result)) 
-			pevs.add(new ParsingEvent(pe, result, currentWrd));
+			pevs.add(new ParsingEvent(pe, result, this));
 		
 		
 		return result;

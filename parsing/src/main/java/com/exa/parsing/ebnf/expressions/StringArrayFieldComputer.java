@@ -1,4 +1,4 @@
-package com.exa.parsing.ebnf;
+package com.exa.parsing.ebnf.expressions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,37 +7,42 @@ import java.util.Map;
 import com.exa.parsing.Parsing;
 import com.exa.parsing.ParsingEntity;
 import com.exa.parsing.ParsingEvent;
-import com.exa.parsing.ebnf.expressions.FieldFunction;
+import com.exa.parsing.ebnf.Field;
+import com.exa.parsing.ebnf.ParsedArray;
+import com.exa.parsing.ebnf.ParsedObject;
+import com.exa.parsing.ebnf.ParsedString;
 
 public class StringArrayFieldComputer extends FieldComputer<List<ParsedObject<?>>> {
-	protected List<String> value = new ArrayList<>();
+	protected List<ParsedObject<?>> value = new ArrayList<>();
+	protected Field<List<ParsedObject<?>>> field = null;
 	protected int currentIdx = 0;
 	protected FieldFunction<String> itemFunction;
 	protected boolean addAfterUpdate = false;
+	private StringBuilder sbValue =  new StringBuilder();
 
 	public StringArrayFieldComputer(Map<String, Field<?>> fields, String fieldName, FieldFunction<String> function) {
 		super(fields, fieldName, null);
-		value.add("");
+		
 		this.itemFunction = function;
 	}
 
 	@Override
 	public void newValue(Parsing<?> parsing, String str) {
-		String old = value.get(currentIdx);
-		String nvalue = itemFunction.compute(parsing, old, str);
-		
-		value.set(currentIdx, nvalue);
+		ParsedString ps = value.get(currentIdx).asParsedString();
+		sbValue.append(itemFunction.compute(parsing, ps.asParsedString().getValue(), str));
+		ps.setValue(sbValue.toString());
 		if(addAfterUpdate) {
-			value.add(""); ++currentIdx;
+			value.add(new ParsedString(null)); ++currentIdx;
 			addAfterUpdate = false;
+			sbValue.setLength(0);
 		}
 	}
 
 	@Override
-	public boolean doesntManageModifNotif(ParsingEvent pev) {
+	public boolean manageModifNotif(ParsingEvent pev) {
 		if(pev.getResult() == ParsingEntity.PE_REPEAT_END) {
 			addAfterUpdate = true;
-			//value.add(""); ++currentIdx;
+			//value.add(new ParsedString(null)); ++currentIdx;
 		}
 		
 		return false;
@@ -45,7 +50,7 @@ public class StringArrayFieldComputer extends FieldComputer<List<ParsedObject<?>
 
 	@Override
 	public void setFields(Map<String, Field<?>> fields) {
-		Field<List<String>> field = fields.get(fieldName).asStringArrayField();
+		field = fields.get(fieldName).asArrayField();
 		field.setValue(value);
 		
 		super.setFields(fields);
@@ -53,29 +58,28 @@ public class StringArrayFieldComputer extends FieldComputer<List<ParsedObject<?>
 
 	@Override
 	public ParsedObject<List<ParsedObject<?>>> valueAsParsedObject() {
-		List<ParsedObject<?>> res = new ArrayList<>();
-		
-		for(String v : value) {
-			res.add(new ParsedString(v));
-		}
-		
-		return new ParsedArray(res);
+		return new ParsedArray(value);
 	}
 
 	@Override
-	public List<ParsedObject<?>> getValue() {
-		List<ParsedObject<?>> res = new ArrayList<>();
-		
-		for(String v : value) {
-			res.add(new ParsedString(v));
-		}
-		
-		return res;
-	}
+	public List<ParsedObject<?>> getValue() { return value; }
 
 	@Override
 	public StringArrayFieldComputer clone() {
 		return new StringArrayFieldComputer(fields, fieldName, itemFunction);
+	}
+
+	@Override
+	public void reset() {
+		value.clear();
+		value.add(new ParsedString(null));
+		
+		sbValue.setLength(0);
+		addAfterUpdate = false;
+		currentIdx = 0;
+		if(field == null) return;
+		
+		field.setValue(value);
 	}
 	
 	
