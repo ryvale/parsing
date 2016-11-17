@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.exa.lexing.CharReader.DataBuffer;
 import com.exa.lexing.WordIterator;
 import com.exa.utils.ManagedException;
 
@@ -14,8 +15,12 @@ public class Parsing<T> {
 	
 	protected WordIterator wi;
 	
-	protected String currentWrd;
-	protected String currentBlankBefore;
+	protected String lexerWord;
+	protected String lexerBlankBefore;
+	protected String currentWord = null;
+	//protected StringBuilder sbCurrentWord = new StringBuilder();
+	protected DataBuffer dataBuffer;
+	//protected String blankBefore = null;
 	protected ParsingEntity currentPE;
 	protected Parser<T> parser;
 	protected Parsing<T> parent;
@@ -39,10 +44,10 @@ public class Parsing<T> {
 	public T compute() throws ManagedException { 
 		if(expressionIsValid()) return expMan.compute();
 		
-		throw new ManagedException((currentWrd == null ? "" : "Error near " + currentWrd + "\n") + currentPE.asPEFail().getErrorMessage());
+		throw new ManagedException((lexerWord == null ? "" : "Error near " + lexerWord + "\n") + currentPE.asPEFail().getErrorMessage());
 	}
 	
-	public boolean expressionIsValid() throws ManagedException {
+	/*public boolean expressionIsValid() throws ManagedException {
 		expMan.setParsing(this);
 		expMan.reset();
 		
@@ -66,7 +71,40 @@ public class Parsing<T> {
 		currentPE = new PEFail("Unexpected end of file.");
 		
 		return false;
+	}*/
+	
+	public boolean expressionIsValid() throws ManagedException {
+		dataBuffer = wi.bufferize();
+		expMan.setParsing(this);
+		expMan.reset();
+		
+		currentPE = parser.getLanguage().getPERoot();
+		while(hasNextString()) {
+			nextCheck();
+			if(currentPE.failed()) return false;
+			
+			currentPE = expMan.push(lexerWord, currentPE, peEvents);
+			
+			if(currentPE instanceof PEFail) return false;
+			if(currentPE.isFinal()) break;
+		}
+		
+		dataBuffer.release();
+		
+		if(currentPE.failed()) return false;
+		
+		if(hasNextString()) {
+			currentPE = new PEFail("Remain string '" + nextString() + "' after parsing." );
+			return false;
+		}
+			
+		if(currentPE.checkFinal()) return true;
+		
+		currentPE = new PEFail("Unexpected end of file" );
+		return false;
 	}
+	
+	
 	
 	public T getResult() { return expMan.lastResult(); }
 	
@@ -81,15 +119,15 @@ public class Parsing<T> {
 	}
 	
 	public String getNextStringAndReturn() throws ManagedException {
-		String curWrd = currentWrd;
-		String curBlank = currentBlankBefore;
+		String curWrd = lexerWord;
+		String curBlank = lexerBlankBefore;
 		
 		String res = nextString();
 		
-		wi.addInWordBuffer(currentWrd, currentBlankBefore);
+		wi.addInWordBuffer(lexerWord);
 		
-		currentWrd = curWrd;
-		currentBlankBefore = curBlank;
+		lexerWord = curWrd;
+		lexerBlankBefore = curBlank;
 		
 		return res;
 	}
@@ -97,15 +135,26 @@ public class Parsing<T> {
 	protected void endParsing()  { }
 	
 	public String nextString() throws ManagedException { 
+		lexerWord = wi.nextString();
+		if(debugOn) System.out.println(lexerWord);
 		
-		currentWrd = wi.nextString();
-		if(debugOn) System.out.println(currentWrd);
-		currentBlankBefore = wi.readBlank();
-		
-		return currentWrd;
+		return lexerWord;
 	}
 	
-	public String currentWord() { return currentWrd; }
+	public ParsingEntity nextCheck() throws ManagedException {
+		//if(!wi.hasNextString()) return currentPE = PE_BREAK;
+		
+		peEvents.clear();
+		realResults.clear();
+		
+		dataBuffer.reset();
+		currentPE = currentPE.check(this, peEvents);
+		currentWord = dataBuffer.value();
+		
+		return currentPE;
+	}
+	
+	public String lexerWord() { return lexerWord; }
 	
 	public void setDebugOn(boolean debugOn) { this.debugOn = debugOn; }
 	
@@ -115,8 +164,24 @@ public class Parsing<T> {
 		realResults.put(sequence, res);
 	}
 	
-	
 	public boolean listens(ParsingEntity pe) { return parser.listens(pe); }
 
-	public String readBlank() { return currentBlankBefore; }
+	public String lexerBlankBefore() { return lexerBlankBefore; }
+	
+	public String currentWord() { return currentWord; }
+	
+	public String readingWord() { return dataBuffer.value(); }
+	
+	public void rewindWord(String word) {
+		wi.rewind(word);
+	}
+	
+	public boolean hasNextString() throws ManagedException {
+		return wi.hasNextString();
+	}
+	
+	public DataBuffer bufferize() { return wi.bufferize(); }
+	
+	public void trimLeft(DataBuffer db) { wi.trimLeft(db); }
+	
 }

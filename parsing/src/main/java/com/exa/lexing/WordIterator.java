@@ -3,15 +3,14 @@ package com.exa.lexing;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.exa.lexing.CharReader.DataBuffer;
 import com.exa.utils.ManagedException;
 
 public class WordIterator implements Cloneable {
 	protected CharReader charReader;
 	protected LexingRules lexingRules;
-	protected String readBlank = "";
 	
 	protected List<String> bufferStrings = new ArrayList<String>();
-	protected List<String> blankStrings = new ArrayList<String>();
 	
 	public WordIterator(CharReader charReader, LexingRules lexingRules, List<String> bufferStrings) {
 		this.charReader = charReader;
@@ -21,16 +20,10 @@ public class WordIterator implements Cloneable {
 	
 	public WordIterator(CharReader charReader, LexingRules lexingRules) {
 		this(charReader, lexingRules, new ArrayList<String>());
-		/*super();
-		this.charReader = charReader;
-		this.lexingRules = lexingRules;*/
 	}
 	
 	public WordIterator(String str, LexingRules lexingRules) throws ManagedException {
 		this(new CharReader(str), lexingRules);
-		/*super();
-		this.charReader = new CharReader(str);
-		this.lexingRules = lexingRules;*/
 	}
 	
 	public void reset(String str) throws ManagedException {
@@ -41,16 +34,12 @@ public class WordIterator implements Cloneable {
 		if(bufferStrings.size() > 0) {
 			String currentWrd = bufferStrings.get(0);
 			bufferStrings.remove(0);
-			
-			readBlank = blankStrings.get(0);
-			blankStrings.remove(0);
-			
+						
 			return currentWrd;
 		}
 		
 		String res = lexingRules.nextString(charReader);
 		
-		readBlank = lexingRules.readBlank();
 		return res;
 	}
 
@@ -62,17 +51,29 @@ public class WordIterator implements Cloneable {
 		charReader.close(); 
 	}
 	
-	public void addInWordBuffer(String word, String blank) {
+	public void addInWordBuffer(String word) {
 		bufferStrings.add(word);
-		blankStrings.add(blank);
 	}
 	
-	public String readBlank() { return readBlank; }
+	public void rewind(String word) { charReader.addInAnalysisBuffer(word);}
 	
 	@Override
-	public WordIterator clone() throws CloneNotSupportedException {
+	public WordIterator clone() {
 		return new WordIterator(charReader.clone(), lexingRules, bufferStrings);
 	}
 
+	public DataBuffer bufferize() { return charReader.bufferize(); }
+	
+	public boolean hasNextString() throws ManagedException {
+		Character c = lexingRules.nextNonBlankChar(charReader);
+		if(c == null) return false;
+		
+		charReader.addInAnalysisBuffer(c);
+		return true;
+	}
+	
+	public void trimLeft(DataBuffer db) {
+		lexingRules.trimLeft(db);
+	}
 	
 }

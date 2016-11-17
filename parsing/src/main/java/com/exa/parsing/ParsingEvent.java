@@ -9,7 +9,7 @@ public class ParsingEvent {
 	public ParsingEvent(ParsingEntity parsingEntity, ParsingEntity result, Parsing<?> parsing) {
 		super();
 		this.parsing = parsing;
-		this.word = parsing.currentWord();
+		this.word = parsing.lexerWord();
 		this.parsingEntity = parsingEntity;
 		this.result = result;
 	}

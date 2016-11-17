@@ -29,7 +29,7 @@ public class PreLanguage extends Language {
 		
 		@Override
 		public boolean isOK(ParsingEntity pe, Parsing<?> parsing) {
-			String id = parsing.currentWord();
+			String id = parsing.lexerWord();
 			
 			if(id.length() == 0) return false;
 			
@@ -68,7 +68,7 @@ public class PreLanguage extends Language {
 			
 			@Override
 			public boolean isOK(ParsingEntity pe, Parsing<?> parsing) {
-				String currentWord = parsing.currentWord().trim();
+				String currentWord = parsing.lexerWord().trim();
 				if(currentWord.charAt(0) != '\'' || currentWord.charAt(currentWord.length() - 1) != '\'') return false;
 				
 				currentWord = currentWord.substring(1, currentWord.length() -1);

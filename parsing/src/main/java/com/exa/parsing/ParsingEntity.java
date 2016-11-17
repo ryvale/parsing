@@ -2,6 +2,7 @@ package com.exa.parsing;
 
 import java.util.List;
 
+import com.exa.lexing.CharReader.DataBuffer;
 import com.exa.utils.ManagedException;
 
 public class ParsingEntity {
@@ -9,6 +10,8 @@ public class ParsingEntity {
 	public static PEFail DEFAULT_FAIL = new PEFail();
 	
 	public static PEFail DEFAULT_FATAL_FAIL = new PEFail();
+	
+	public static PEFail EOS_FAIL = new PEFail();
 	
 	public static ParsingEntity EOS = new FinalPE();
 	
@@ -51,7 +54,10 @@ public class ParsingEntity {
 	}
 	
 	public ParsingEntity check(Parsing<?> parsing, List<ParsingEvent> pevs) throws ManagedException {
+		//if(parsing.nextString() == null) return Parsing.PE_BREAK;
+		
 		int sequence = parsing.newParsing();
+		
 		ParsingEntity res = checkResult(parsing, sequence, pevs);
 		
 		parsing.notifyEvent(pevs, peForNotify(), sequence, res);
@@ -64,6 +70,13 @@ public class ParsingEntity {
 	public boolean isRoot() { return root; }
 
 	public void setRoot(boolean root) {	this.root = root; }
-
+	
+	public DataBuffer firstBufferizeRead(Parsing<?> parsing) throws ManagedException {
+		DataBuffer db = parsing.bufferize();
+		if(parsing.nextString() == null) { db.release(); return null; }
+		parsing.trimLeft(db);
+		
+		return db;
+	}
 
 }

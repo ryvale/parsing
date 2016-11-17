@@ -7,7 +7,9 @@ import com.exa.parsing.ParsingException;
 import com.exa.utils.ManagedException;
 
 public class CharReader implements Cloneable {
+	
 	public class DataBuffer {
+		
 		protected StringBuilder buffer = new StringBuilder();
 		
 		protected int position;
@@ -17,9 +19,27 @@ public class CharReader implements Cloneable {
 			this.position = position;
 		}
 		
+		public DataBuffer() {
+			this(CharReader.this.position);
+		}
+		
 		public String value() { return buffer.toString(); }
+		
+		public String release() { return CharReader.this.releaseBuffer(this); }
+		
+		public void reset() {
+			buffer.setLength(0);
+			this.position = CharReader.this.position;
+		}
+		
+		public String rewind() { 
+			String res = value();
+			addInAnalysisBuffer(res);
+			
+			return res;
+		}
 	}
-
+	
 	protected StringBuilder analysisBuffer;
 	protected CharIterator charIterator;
 	protected List<DataBuffer> dataBuffers = new ArrayList<DataBuffer>();
@@ -39,15 +59,10 @@ public class CharReader implements Cloneable {
 	
 	public CharReader(CharIterator charIterator) {
 		this(charIterator, new ArrayList<CharReader>(), "", -1);
-		/*this.charIterator = charIterator;
-		analysisBuffer = new StringBuilder();
-		this.clones = clones;*/
 	}
-	
-	
-	public CharReader(String str) throws ManagedException {
-		this(new StringCharIterator(str), new ArrayList<CharReader>(), "", -1);
 		
+	public CharReader(String str) throws ManagedException {
+		this(new StringCharIterator(str), new ArrayList<CharReader>(), "", -1);	
 	}
 	
 	public void reset(String str) throws ManagedException {
@@ -137,8 +152,7 @@ public class CharReader implements Cloneable {
 		addInAnalysisBuffer(res.toString());
 		return res.toString();
 	}
-
-
+	
 	public void addInAnalysisBuffer(Character ch) {
 		analysisBuffer.insert(0, ch);
 		position -= 1;
@@ -150,7 +164,6 @@ public class CharReader implements Cloneable {
 		position -= ch.length();
 		removeInDataBuffer(ch.length());
 	}
-
 	
 	private void removeInDataBuffer(int nbChar) {
 		for(DataBuffer db : dataBuffers) {
@@ -199,10 +212,8 @@ public class CharReader implements Cloneable {
 	}
 
 	@Override
-	protected CharReader clone() throws CloneNotSupportedException {
+	protected CharReader clone() {
 		return new CharReader(charIterator, clones, analysisBuffer.toString(), position);
 	}
 	
-	
-
 }

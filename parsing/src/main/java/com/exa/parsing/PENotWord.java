@@ -3,6 +3,7 @@ package com.exa.parsing;
 import java.util.HashSet;
 import java.util.List;
 
+import com.exa.lexing.CharReader.DataBuffer;
 import com.exa.utils.ManagedException;
 
 public class PENotWord extends ParsingEntity {
@@ -40,7 +41,10 @@ public class PENotWord extends ParsingEntity {
 	
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
-		if(requiredStrings.contains(parsing.currentWord())) return petFalse.get(null, parsing, pevs);
+		DataBuffer db = firstBufferizeRead(parsing);
+		if(db == null) return EOS_FAIL;
+		
+		if(requiredStrings.contains(parsing.lexerWord())) return petFalse.get(null, parsing, pevs);
 		
 		return nextPET.get(null, parsing, pevs);
 	}

@@ -10,12 +10,11 @@ import com.exa.parsing.ParsingException;
 import com.exa.utils.ManagedException;
 
 public class LexingRules {
-	
 	protected String blankCharacters;
-		
+	
 	public final static ActiveWord AW_FAKE_WORD_SEPARATOR = new WordSeparator(null, null);
 	protected HashMap<String, ActiveWord> activeWords;
-
+	
 	protected String lastWrd = null;
 	
 	protected StringBuilder sbBlank = new StringBuilder();
@@ -75,7 +74,7 @@ public class LexingRules {
 		return aw;
 	}
 		
-	public Character nextChar(CharReader charReader) throws ManagedException {
+	public Character nextNonBlankChar(CharReader charReader) throws ManagedException {
 		Character currentChar;
 		//StringBuilder sbBlank = new StringBuilder();
 		sbBlank.setLength(0);
@@ -217,7 +216,8 @@ public class LexingRules {
 	public String nextString(CharReader script) throws ManagedException {
 		StringBuilder wrd = new StringBuilder();
 		
-		Character currentChar = nextChar(script);
+		Character currentChar = nextNonBlankChar(script);
+		
 		if(currentChar == null) return lastWrd = null;
 		
 		ActiveWord aw = getActiveWord(currentChar.toString());
@@ -345,7 +345,7 @@ public class LexingRules {
 	}
 		
 	public Character nextForwardNonBlankChar(CharReader charReader) throws ManagedException {
-		Character currentChar = nextChar(charReader);
+		Character currentChar = nextNonBlankChar(charReader);
 		if(currentChar == null) return null;
 		
 		charReader.addInAnalysisBuffer(currentChar);
@@ -358,5 +358,21 @@ public class LexingRules {
 	}
 	
 	public String readBlank() { return sbBlank.toString(); }
+	
+	public void trimLeft(DataBuffer db) {
+		StringBuilder sb = db.buffer;
+		int i = 0;
+		
+		for(i = 0; i<sb.length(); i++) {
+			Character c = sb.charAt(i);
+			if(blankCharacters.contains(c.toString())) continue;
+			
+			break;
+		}
+		if(i == 0) return;
+		
+		sb.delete(0, i);
+		db.position += i;
+	}
 	
 }

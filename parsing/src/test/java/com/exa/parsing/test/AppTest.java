@@ -1,17 +1,24 @@
 package com.exa.parsing.test;
 
 
-import com.exa.parsing.IParser;
-import com.exa.parsing.ebnf.CompiledRule;
-import com.exa.parsing.ebnf.OutputParser1;
-import com.exa.parsing.ebnf.ParsedMap;
-import com.exa.parsing.ebnf.RuleParser;
-import com.exa.parsing.ebnf.predefs.PreParser;
+import java.util.HashSet;
+
+import com.exa.lexing.Language;
+import com.exa.lexing.LexingRules;
+import com.exa.lexing.WordIterator;
+import com.exa.parsing.ExpMan;
+import com.exa.parsing.PENotWord;
+import com.exa.parsing.PEWord;
+import com.exa.parsing.Parser;
+import com.exa.parsing.ParsingEntity;
+import com.exa.parsing.atomic.PEOr2;
+import com.exa.parsing.atomic.PERepeat2;
 import com.exa.utils.ManagedException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 
 /**
  * Unit test for simple App.
@@ -40,7 +47,7 @@ public class AppTest extends TestCase
      * Rigourous Test :-)
      */
     
-    public void testEBNF0() throws ManagedException {
+    /*public void testEBNF0() throws ManagedException {
 		PreParser parser = new PreParser();
 		
 		System.out.print(parser.parse("nom0:x;"));
@@ -431,6 +438,95 @@ public class AppTest extends TestCase
     	pm = p.parse("nom : Kouakou Koffi");
     	assertTrue(pm.get("propriete").asParsedMap().get("nom").toString().equals("nom"));
     	
+    }*/
+    
+    private Parser<?> parserForTest(ParsingEntity pe) {
+    	return new Parser<Boolean>(new Language(new LexingRules(), new HashSet<String>(), pe)) {
+
+			@Override
+			public ExpMan<Boolean> createExpMan(WordIterator wi) throws ManagedException {
+				return new ExpMan<>(null);
+			}
+		};
+    }
+    
+    public void testParsing0() throws ManagedException {
+    	Parser<?> parser = parserForTest(new PEWord("a"));
+		
+		assertTrue(parser.validates("a"));
+		assertTrue(parser.validates("a "));
+		
+		assertFalse(parser.validates("b"));
+		
+		parser = parserForTest(new PEWord("a b"));
+		assertTrue(parser.validates("a b"));
+		
+		assertFalse(parser.validates("a"));
+		assertFalse(parser.validates("b"));
+		
+		parser = parserForTest(new PEWord("a", "b"));
+		assertTrue(parser.validates("a"));
+		assertTrue(parser.validates("b"));
+		
+		assertFalse(parser.validates("c"));
+		
+		parser = parserForTest(new PENotWord("a"));
+		assertTrue(parser.validates("b"));
+		
+		assertFalse(parser.validates("a"));
+		assertFalse(parser.validates("b c"));
+		
+		parser = parserForTest(new PENotWord("a b"));
+		assertTrue(parser.validates("cd"));
+		assertTrue(parser.validates("ac"));
+		
+		assertFalse(parser.validates("a b"));
+		assertFalse(parser.validates("a b c d"));
+		
+		parser = parserForTest(new PERepeat2(new PEWord("a"), 1));
+		assertTrue(parser.validates("a"));
+		assertTrue(parser.validates("a "));
+		assertTrue(parser.validates("a a"));
+		
+		assertFalse(parser.validates("b"));
+		assertFalse(parser.validates("a b"));
+		assertFalse(parser.validates(""));
+		
+		ParsingEntity peRoot = new PEWord("a");
+		peRoot.setNextPE(new PEWord("b"));
+		
+		parser = parserForTest(new PERepeat2(peRoot, 1));
+		assertTrue(parser.validates("a b"));
+		assertTrue(parser.validates("a b a b"));
+		
+		assertFalse(parser.validates("a"));
+		assertFalse(parser.validates("ab"));
+		assertFalse(parser.validates("a a"));
+		assertFalse(parser.validates("a b a"));
+		
+		parser = parserForTest(new PERepeat2(peRoot, 0));
+		assertTrue(parser.validates(""));
+		assertTrue(parser.validates("a b"));
+		assertTrue(parser.validates("a b a b"));
+		
+		assertFalse(parser.validates("a"));
+		assertFalse(parser.validates("a b a"));
+		
+		parser = parserForTest(new PEOr2().add("a").add("b"));
+		assertTrue(parser.validates("a"));
+		assertTrue(parser.validates("b"));
+		
+		assertFalse(parser.validates("c"));
+		assertFalse(parser.validates(""));
+		
+		parser = parserForTest(new PEOr2().add("ab").add("cd").add("ab cd"));
+		assertTrue(parser.validates("ab"));
+		assertTrue(parser.validates("cd"));
+		assertTrue(parser.validates("ab cd"));
+		
+		
+		assertFalse(parser.validates("db"));
+		assertFalse(parser.validates("cd ab"));
     }
     
 }
