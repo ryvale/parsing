@@ -7,19 +7,21 @@ import com.exa.utils.ManagedException;
 
 public class ParsingEntity {
 	
-	public static PEFail DEFAULT_FAIL = new PEFail();
+	public final static PEFail DEFAULT_FAIL = new PEFail();
 	
-	public static PEFail DEFAULT_FATAL_FAIL = new PEFail();
+	public final static PEFail DEFAULT_FATAL_FAIL = new PEFail();
 	
-	public static PEFail EOS_FAIL = new PEFail();
+	public final static PEFail EOS_FAIL = new PEFail();
 	
-	public static ParsingEntity EOS = new FinalPE();
+	public final static ParsingEntity EOS = new FinalPE();
 	
-	public static ParsingEntity OK = new FinalPE();
+	public final static ParsingEntity OK = new FinalPE();
 	
-	public static ParsingEntity MISSING = new PEMissing();
+	public final static ParsingEntity PE_NEXT_CHECK = new PEFail();
 	
 	public final static ParsingEntity PE_REPEAT_END = new ParsingEntity();
+	
+	public final static ParsingEntity PE_NULL = new ParsingEntity();
 	
 	protected PETWithPE nextPET;
 	
@@ -46,7 +48,16 @@ public class ParsingEntity {
 	public ParsingEntity getNextPE() { return nextPET.getPE(); }
 	public ParsingEntity setNextPE(ParsingEntity nextPE) { 
 		nextPET.setPE(nextPE);
+		
+		if(nextPE.isFinal()) return nextPE;
+		
+		nextPE.setRoot(root);
+		
 		return nextPE;
+	}
+	
+	public ParsingEntity setNextPE(String word) {
+		return setNextPE(new PEWord(word));
 	}
 	
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException { 
@@ -54,8 +65,6 @@ public class ParsingEntity {
 	}
 	
 	public ParsingEntity check(Parsing<?> parsing, List<ParsingEvent> pevs) throws ManagedException {
-		//if(parsing.nextString() == null) return Parsing.PE_BREAK;
-		
 		int sequence = parsing.newParsing();
 		
 		ParsingEntity res = checkResult(parsing, sequence, pevs);
@@ -69,14 +78,46 @@ public class ParsingEntity {
 	
 	public boolean isRoot() { return root; }
 
-	public void setRoot(boolean root) {	this.root = root; }
-	
-	public DataBuffer firstBufferizeRead(Parsing<?> parsing) throws ManagedException {
-		DataBuffer db = parsing.bufferize();
-		if(parsing.nextString() == null) { db.release(); return null; }
-		parsing.trimLeft(db);
+	public void setRoot(boolean root) {	
+		this.root = root;
 		
-		return db;
+		ParsingEntity nextPE = getNextPE();
+		if(nextPE.isFinal()) return;
+		nextPE.setRoot(root);
+	}
+		
+	public ParsingEntity checkBranch(Parsing<?> parsing, List<ParsingEvent> pevs) throws ManagedException {
+		ParsingEntity currentPE = this;
+	
+		DataBuffer db = parsing.bufferize();
+		
+		do { currentPE = currentPE.check(parsing, pevs); } while(!currentPE.isFinal());
+		
+		if(currentPE != PE_NEXT_CHECK && currentPE.failed()) db.rewindAndRelease();
+		else db.release();
+		
+		return currentPE;
+	}
+	
+	public ParsingEntity standardReseultInterpretation(ParsingEntity currentPE, Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
+		if(currentPE.failed()) {
+			if(currentPE == PE_NEXT_CHECK) {
+				ParsingEntity nextPE = getNextPE();
+				if(nextPE.isFinal()) {
+					if(isRoot()) return DEFAULT_FAIL;
+					
+					return PE_NEXT_CHECK;
+				}
+				
+				parsing.registerResult(sequence, currentPE);
+				
+				return nextPE.check(parsing, pevs);
+			}
+			
+			return currentPE;
+		}
+		
+		return currentPE;
 	}
 
 }

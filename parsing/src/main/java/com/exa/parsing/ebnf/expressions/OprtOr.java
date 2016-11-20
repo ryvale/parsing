@@ -2,9 +2,10 @@ package com.exa.parsing.ebnf.expressions;
 
 import com.exa.expression.StackEvaluator;
 import com.exa.expression.XPressionException;
+import com.exa.parsing.PEOr;
 import com.exa.parsing.PEWord;
 import com.exa.parsing.ParsingEntity;
-import com.exa.parsing.atomic.PEOr;
+//import com.exa.parsing.atomic.PEOr;
 
 public class OprtOr extends OperatorBase<ParsingEntity> {
 

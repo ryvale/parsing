@@ -3,7 +3,6 @@ package com.exa.parsing;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.exa.parsing.atomic.PEAtomic;
 import com.exa.utils.ManagedException;
 
 
@@ -30,7 +29,7 @@ public class ParsingRouter {
 	}
 	
 	public ParsingRouter addRoute(PERule rule, PETransformer pet) {
-		pActions.add(new ConditionalAction(rule, pet, PEAtomic.PE_INSTANCE));
+		pActions.add(new ConditionalAction(rule, pet, ParsingEntity.DEFAULT_FAIL));
 		return this;
 	}
 	
@@ -39,7 +38,7 @@ public class ParsingRouter {
 	}
 	
 	public ParsingRouter addPrimaryRoute(PERule rule, PETransformer pet) {
-		pActions.addFirst(new ConditionalAction(rule, pet, PEAtomic.PE_INSTANCE));
+		pActions.addFirst(new ConditionalAction(rule, pet, ParsingEntity.DEFAULT_FAIL));
 		return this;
 	}
 	

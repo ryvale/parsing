@@ -1,5 +1,7 @@
 package com.exa.parsing;
 
+import com.exa.utils.ManagedException;
+
 public abstract class PERule {
 	
 	public static final PERule FAIL = new PERule() {
@@ -77,6 +79,6 @@ public abstract class PERule {
 
 	};
 	
-	public abstract boolean isOK(ParsingEntity pe, Parsing<?> parsing);
+	public abstract boolean isOK(ParsingEntity pe, Parsing<?> parsing) throws ManagedException;
 	
 }

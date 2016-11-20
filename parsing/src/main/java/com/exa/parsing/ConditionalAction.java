@@ -5,14 +5,11 @@ import java.util.List;
 import com.exa.utils.ManagedException;
 
 public class ConditionalAction {
-	public static final FinalPE PE_VOID = new FinalPE();
-	
 	protected PERule rule;
 	protected PETransformer pet;
 	protected ParsingEntity peRuleFail;
 
 	public ConditionalAction(PERule rule, PETransformer pet, ParsingEntity peRuleFail) {
-		
 		this.rule = rule;
 		this.pet = pet;
 		this.peRuleFail = peRuleFail;

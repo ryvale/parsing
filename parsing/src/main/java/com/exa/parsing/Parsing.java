@@ -17,9 +17,9 @@ public class Parsing<T> {
 	
 	protected String lexerWord;
 	protected String lexerBlankBefore;
-	protected String currentWord = null;
+	//protected String currentWord = null;
 	//protected StringBuilder sbCurrentWord = new StringBuilder();
-	protected DataBuffer dataBuffer;
+	//protected DataBuffer dataBuffer;
 	//protected String blankBefore = null;
 	protected ParsingEntity currentPE;
 	protected Parser<T> parser;
@@ -74,7 +74,7 @@ public class Parsing<T> {
 	}*/
 	
 	public boolean expressionIsValid() throws ManagedException {
-		dataBuffer = wi.bufferize();
+		//dataBuffer = wi.bufferize();
 		expMan.setParsing(this);
 		expMan.reset();
 		
@@ -83,13 +83,13 @@ public class Parsing<T> {
 			nextCheck();
 			if(currentPE.failed()) return false;
 			
-			currentPE = expMan.push(lexerWord, currentPE, peEvents);
+			//currentPE = expMan.push(lexerWord, currentPE, peEvents);
 			
 			if(currentPE instanceof PEFail) return false;
 			if(currentPE.isFinal()) break;
 		}
 		
-		dataBuffer.release();
+		//dataBuffer.release();
 		
 		if(currentPE.failed()) return false;
 		
@@ -142,14 +142,10 @@ public class Parsing<T> {
 	}
 	
 	public ParsingEntity nextCheck() throws ManagedException {
-		//if(!wi.hasNextString()) return currentPE = PE_BREAK;
-		
 		peEvents.clear();
 		realResults.clear();
 		
-		dataBuffer.reset();
 		currentPE = currentPE.check(this, peEvents);
-		currentWord = dataBuffer.value();
 		
 		return currentPE;
 	}
@@ -168,9 +164,9 @@ public class Parsing<T> {
 
 	public String lexerBlankBefore() { return lexerBlankBefore; }
 	
-	public String currentWord() { return currentWord; }
+	//public String currentWord() { return currentWord; }
 	
-	public String readingWord() { return dataBuffer.value(); }
+	//public String readingWord() { return dataBuffer.value(); }
 	
 	public void rewindWord(String word) {
 		wi.rewind(word);
@@ -178,6 +174,14 @@ public class Parsing<T> {
 	
 	public boolean hasNextString() throws ManagedException {
 		return wi.hasNextString();
+	}
+	
+	public DataBuffer firstBufferizeRead() throws ManagedException {
+		DataBuffer db = bufferize();
+		if(nextString() == null) { db.release(); return null; }
+		trimLeft(db);
+		
+		return db;
 	}
 	
 	public DataBuffer bufferize() { return wi.bufferize(); }

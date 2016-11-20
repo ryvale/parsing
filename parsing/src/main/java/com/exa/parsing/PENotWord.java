@@ -41,11 +41,15 @@ public class PENotWord extends ParsingEntity {
 	
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
-		DataBuffer db = firstBufferizeRead(parsing);
+		DataBuffer db = parsing.firstBufferizeRead();
 		if(db == null) return EOS_FAIL;
 		
-		if(requiredStrings.contains(parsing.lexerWord())) return petFalse.get(null, parsing, pevs);
+		if(requiredStrings.contains(parsing.lexerWord())) {
+			db.rewindAndRelease();
+			return petFalse.get(null, parsing, pevs);
+		}
 		
+		db.release();
 		return nextPET.get(null, parsing, pevs);
 	}
 }

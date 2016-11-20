@@ -8,10 +8,11 @@ import com.exa.parsing.PEWord;
 import com.exa.parsing.Parsing;
 import com.exa.parsing.ParsingEntity;
 import com.exa.parsing.ParsingRuleBuilder;
-import com.exa.parsing.atomic.PEStandardAtomic;
-import com.exa.parsing.atomic.PEOptional;
-import com.exa.parsing.atomic.PEOr;
-import com.exa.parsing.atomic.PERepeat;
+import com.exa.parsing.PEAtomic;
+import com.exa.parsing.PEOptional;
+import com.exa.parsing.PEOr;
+import com.exa.parsing.PERepeat;
+
 
 public class RuleLanguage extends com.exa.lexing.Language {	
 	
@@ -51,58 +52,38 @@ public class RuleLanguage extends com.exa.lexing.Language {
 		
 		return res;
 	}
-		
-	static void addOperandEx(ParsingRuleBuilder prb) {
-		prb.
-			next(new PEOptional(new PEWord("*", "+", "?")));
-	}
 	
-	static void addEBNFExp(ParsingRuleBuilder prb) {
-		
-	}
+	static void addEBNFExp(ParsingRuleBuilder prb) {}
 
 	public RuleLanguage() {
 		super(new LexingRules(), new HashSet<String>(), null);
 		
 		lexingRules.addActiveWord(new StringDelimiter(lexingRules, '\''));
-		//lexingRules.addWordSeparator(" ");
 		
-		lexingRules.addWordSeparator("|");
-		lexingRules.addWordSeparator("*");
-		lexingRules.addWordSeparator("+");
-		lexingRules.addWordSeparator("?");
-		lexingRules.addWordSeparator("$");
-		lexingRules.addWordSeparator("!");
-		lexingRules.addWordSeparator("(");
-		lexingRules.addWordSeparator(")");
+		lexingRules.addWordSeparator("|", "*", "+", "?", "$", "!", "(", ")", "=", "$=", "[]=");
 		
-		lexingRules.addWordSeparator("=");
-		lexingRules.addWordSeparator("$=");
-		lexingRules.addWordSeparator("[]=");
-		
-		PEOptional peOperandEx = new PEOptional(new PEWord("!"));
 		PEOr pePrimitiveOperand = pePrimitiveOperand();
+		pePrimitiveOperand.setNextPE(new PEOptional("*", "+", "?"));
 		
+		PEOptional peOperandEx = new PEOptional("!");
 		peOperandEx.setNextPE(pePrimitiveOperand);
 		
-		pePrimitiveOperand.setNextPE(new PEOptional(new PEWord("*", "+", "?")));
+		PEAtomic peBinaryPartNext = new PEAtomic(peOperandEx);
 		
-		PEStandardAtomic peBinaryPartNext = new PEStandardAtomic(peOperandEx);
-		
-		ParsingRuleBuilder prbBinaryPart = new ParsingRuleBuilder(new PEWord("|", "=", "$=", "[]=")).
+		ParsingRuleBuilder prbBinaryPart = new ParsingRuleBuilder("|", "=", "$=", "[]=").
 			next(peBinaryPartNext);
 	
-		peBinaryPartNext.setNextPE(new PERepeat(new PEStandardAtomic(prbBinaryPart.parsingEntity())));
+		peBinaryPartNext.setNextPE(new PERepeat(prbBinaryPart.parsingEntity()));
 		
-		ParsingRuleBuilder prbMainRow = new ParsingRuleBuilder(new PEStandardAtomic(peOperandEx));
+		ParsingRuleBuilder prbMainRow = new ParsingRuleBuilder(new PEAtomic(peOperandEx));
 		
-		prbMainRow.next(new PERepeat(new PEStandardAtomic(prbBinaryPart.parsingEntity())));
+		prbMainRow.next(new PERepeat(prbBinaryPart.parsingEntity()));
 		
 		ParsingEntity peExp = new PERepeat(prbMainRow.parsingEntity());
 		
 		pePrimitiveOperand.add(
 			new ParsingRuleBuilder("(").
-				next(new PEStandardAtomic(peExp)).
+				next(new PEAtomic(peExp)).
 				next(")").
 			parsingEntity()
 		);

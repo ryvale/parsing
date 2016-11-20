@@ -27,7 +27,7 @@ public class CharReader implements Cloneable {
 		
 		public String release() { return CharReader.this.releaseBuffer(this); }
 		
-		public void reset() {
+		public void markPosition() {
 			buffer.setLength(0);
 			this.position = CharReader.this.position;
 		}
@@ -38,6 +38,9 @@ public class CharReader implements Cloneable {
 			
 			return res;
 		}
+		
+		public void rewindAndRelease() { rewind(); release(); };
+		
 	}
 	
 	protected StringBuilder analysisBuffer;

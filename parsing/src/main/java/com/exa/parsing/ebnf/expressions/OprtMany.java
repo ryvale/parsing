@@ -1,9 +1,9 @@
 package com.exa.parsing.ebnf.expressions;
 
 import com.exa.expression.XPressionException;
+import com.exa.parsing.PERepeat;
 import com.exa.parsing.PEWord;
 import com.exa.parsing.ParsingEntity;
-import com.exa.parsing.atomic.PERepeat;
 
 public class OprtMany extends UnaryOp<ParsingEntity> {
 	protected int min;

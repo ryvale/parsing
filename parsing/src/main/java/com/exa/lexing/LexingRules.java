@@ -57,6 +57,10 @@ public class LexingRules {
 		addWordSeparator(new WordSeparator(w, this));
 	}
 	
+	public void addWordSeparator(String ... words) {
+		for(String w : words) addWordSeparator(new WordSeparator(w, this));
+	}
+	
 	public void addActiveWord(String key, ActiveWord aw) {
 		activeWords.put(key, aw);
 	}
@@ -372,7 +376,6 @@ public class LexingRules {
 		if(i == 0) return;
 		
 		sb.delete(0, i);
-		db.position += i;
 	}
 	
 }

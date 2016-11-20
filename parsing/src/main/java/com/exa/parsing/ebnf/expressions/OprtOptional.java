@@ -1,9 +1,9 @@
 package com.exa.parsing.ebnf.expressions;
 
 import com.exa.expression.XPressionException;
+import com.exa.parsing.PEOptional;
 import com.exa.parsing.PEWord;
 import com.exa.parsing.ParsingEntity;
-import com.exa.parsing.atomic.PEOptional;
 
 public class OprtOptional extends UnaryOp<ParsingEntity> {
 
@@ -31,7 +31,6 @@ public class OprtOptional extends UnaryOp<ParsingEntity> {
 
 	@Override
 	public boolean canManage(com.exa.expression.Operand<Item<?>> oprd, int order) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 	

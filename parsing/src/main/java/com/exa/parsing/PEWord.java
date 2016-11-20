@@ -42,46 +42,72 @@ public class PEWord extends ParsingEntity {
 	
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
-		DataBuffer db = firstBufferizeRead(parsing);
+		DataBuffer db = parsing.firstBufferizeRead();
 		if(db == null) return EOS_FAIL; 
 		
 		HashSet<String> strs = new HashSet<>();
 		strs.addAll(requiredStrings);
 		
+		DataBuffer db2 = parsing.bufferize();
+		String strOK = null;
 		Iterator<String> it = strs.iterator();
 		while(it.hasNext()) {
 			String str = it.next();
-			if(str.contains(db.value())) continue;
+			if(str.contains(db.value())) {
+				if(str.equals(db.value())) strOK = str;
+				continue;
+			}
 			it.remove();
 		}
 		
-		if(strs.size() == 0) {
-			db.rewind();
-			return petFalse.get(null, parsing, pevs);
+		if(strs.size() == 0) { 
+			db.rewindAndRelease();
+			return petFalse.get(this, parsing, pevs);
 		}
 		
-		while(strs.size() > 1) {
+		while(strs.size() > 0) {
 			if(parsing.nextString() == null) {
-				db.rewind();
-				return petFalse.get(null, parsing, pevs);
+				if(strOK == null) {
+					db.rewindAndRelease();
+					return petFalse.get(this, parsing, pevs);
+				}
+				
+				db2.rewindAndRelease();
+				db.release();
+				return nextPET.get(this, parsing, pevs);
 			}
 			
 			it = strs.iterator();
 			while(it.hasNext()) {
 				String str = it.next();
-				if(str.contains(db.value())) continue;
+				if(str.contains(db.value())) {
+					if(str.equals(db.value())) {
+						db2.markPosition();
+						strOK = str;
+					}
+					continue;
+				}
 				it.remove();
 			}
 		}
 		
-		String str = strs.iterator().next();
+		if(strOK == null) {
+			db.rewindAndRelease();
+			return petFalse.get(this, parsing, pevs);
+		}
+		
+		/*String str = strs.iterator().next();
 		while(str.contains(db.value())) {
-			if(str.equals(db.value())) return nextPET.get(null, parsing, pevs);
+			if(str.equals(db.value())) {
+				db.release();
+				return nextPET.get(this, parsing, pevs);
+			}
 			
 			if(parsing.nextString() == null) break;
-		}
+		}*/
 	
-		db.rewind();
-		return petFalse.get(null, parsing, pevs);
+		db2.rewindAndRelease();
+		db.release();
+		return nextPET.get(this, parsing, pevs);
 	}
 }

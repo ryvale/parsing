@@ -9,7 +9,7 @@ public class PEAllWord extends ParsingEntity {
 	
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
-		DataBuffer db = firstBufferizeRead(parsing);
+		DataBuffer db = parsing.firstBufferizeRead();
 		if(db == null) return EOS_FAIL;
 		
 		if(parsing.lexerWord() == null) {
