@@ -15,6 +15,8 @@ public class PEAtomic extends ParsingEntity {
 	}
 	
 	public PEAtomic(ParsingEntity peRoot) { this(peRoot, PETransformer.petEOS()); }
+	
+	public PEAtomic(ParsingEntity peRoot, ParsingEntity nextPE) { this(peRoot, new PETIdentity(nextPE)); }
 
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs)	throws ManagedException {

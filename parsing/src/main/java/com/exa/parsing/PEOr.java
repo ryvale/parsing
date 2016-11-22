@@ -69,7 +69,7 @@ public class PEOr extends ParsingEntity {
 		
 		if(nb == 0) return new PEFail("No parsing entity can parse in a or");
 		
-		if(nb > 1) return new PEFail("Too many parsing entity can parse in a or");
+		//if(nb > 1) return new PEFail("Too many parsing entity can parse in a or");
 		
 		isdOK.reset();
 		isdOK.check(parsing);

@@ -184,10 +184,8 @@ public class AppTest extends TestCase
     	assertTrue(p.validates("b"));
     	
     	assertFalse(p.validates("a"));
-    	
-    	
     }
-    /*
+    
     public void testEBNF3() throws ManagedException {
     	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; row : nom = !':'+ ':' valeur=(!'\n'|!'\r')+ '\n'?; test : 'a';"), false);
     	
@@ -350,9 +348,8 @@ public class AppTest extends TestCase
     	
     	cr = ebnfParser.parse("valeur $='a'+ ('b')");
     	p = new OutputParser1(cr);
-    	assertTrue(p.validates("a"));
     	assertTrue(p.validates("a b"));
-    	
+    	assertFalse(p.validates("a"));
     	
     	cr = ebnfParser.parse("row");
     	p = new OutputParser1(cr);
@@ -365,6 +362,7 @@ public class AppTest extends TestCase
     	assertTrue(p.validates("Prénoms : Joseph François"));
     }
     
+    /*
     public void testEBNF4() throws ManagedException {
     	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; row : nom $= !':'+ ':' valeur $=(!'\n'|!'\r')+ '\n'?; root : 'a';"), false);
     	CompiledRule cr = ebnfParser.parse("nomA='a'|nomB='b'");

@@ -17,6 +17,8 @@ public class ParsingEntity {
 	
 	public final static ParsingEntity OK = new FinalPE();
 	
+	public final static ParsingEntity PE_NEXT = new FinalPE();
+	
 	public final static ParsingEntity PE_NEXT_CHECK = new PEFail();
 	
 	public final static ParsingEntity PE_REPEAT_END = new ParsingEntity();
@@ -69,8 +71,6 @@ public class ParsingEntity {
 		
 		ParsingEntity res = checkResult(parsing, sequence, pevs);
 		
-		//parsing.notifyEvent(pevs, peForNotify(), sequence, res);
-		
 		return res;
 	}
 	
@@ -113,6 +113,17 @@ public class ParsingEntity {
 			}
 			
 			return currentPE;
+		}
+		
+		if(currentPE == PE_NEXT) {
+			ParsingEntity nextPE = getNextPE();
+			if(nextPE.isFinal()) {
+				if(isRoot()) return EOS;
+				
+				return PE_NEXT;
+			}
+			
+			return nextPE;
 		}
 		
 		return currentPE;

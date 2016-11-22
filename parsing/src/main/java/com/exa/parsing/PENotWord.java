@@ -46,7 +46,7 @@ public class PENotWord extends ParsingEntity {
 		
 		if(requiredStrings.contains(parsing.lexerWord())) {
 			db.rewindAndRelease();
-			return notifyReult(parsing, petFalse.get(null, parsing, pevs), parsing.lexerWord(), pevs);
+			return notifyReult(parsing, petFalse.get(null, parsing, pevs), null, pevs);
 		}
 		
 		return notifyReult(parsing, nextPET.get(null, parsing, pevs), db.release(), pevs);

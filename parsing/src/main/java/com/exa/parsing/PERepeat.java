@@ -14,6 +14,7 @@ public class PERepeat extends ParsingEntity {
 		this.min = min;
 		this.peRoot = peRoot;
 		peRoot.setRoot(false);
+		if(peRoot.getNextPE() == EOS) peRoot.setNextPE(PE_NEXT);
 	}
 	
 	public PERepeat(ParsingEntity peRoot, int min) { this(peRoot, min, PETransformer.petEOS());}

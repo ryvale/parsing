@@ -12,6 +12,7 @@ public class PEOptional extends ParsingEntity {
 		super(nextPET);
 		this.peRoot = peRoot;
 		peRoot.setRoot(false);
+		
 	}
 	
 	public PEOptional(ParsingEntity peRoot) { this(peRoot, PETransformer.petEOS());}
@@ -25,22 +26,27 @@ public class PEOptional extends ParsingEntity {
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
 		if(!parsing.hasNextString()) return EOS;
 		
+		ParsingEntity nextPE = getNextPE();
+		
 		List<ParsingEvent> lpevs = new ArrayList<>();
 		ParsingEntity currentPE = peRoot.checkBranch(parsing, lpevs);
 		if(currentPE.failed()) {
-			ParsingEntity currentPE2 = getNextPE();
+			ParsingEntity currentPE2 = nextPE;
 			
 			if(currentPE2.isFinal()) {  
 				if(isRoot()) return notifyResult(parsing, DEFAULT_FAIL, lpevs, pevs);
 				
 				return notifyResult(parsing, PE_NEXT_CHECK, lpevs, pevs);	
 			}
-			//parsing.registerResult(sequence, currentPE);
 			
 			currentPE2 = currentPE2.check(parsing, lpevs);
 			if(currentPE2.failed()) return notifyResult(parsing, currentPE, lpevs, pevs);
 			
 			return notifyResult(parsing, currentPE2, lpevs, pevs);
+		}
+		
+		if(nextPE == EOS) {
+			if(!isRoot()) return notifyResult(parsing,PE_NEXT, lpevs, pevs);
 		}
 		
 		return notifyResult(parsing, nextPET.get(currentPE, parsing, lpevs), lpevs, pevs);

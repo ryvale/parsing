@@ -68,7 +68,7 @@ public class RuleLanguage extends com.exa.lexing.Language {
 		PEOptional peOperandEx = new PEOptional("!");
 		peOperandEx.setNextPE(pePrimitiveOperand);
 		
-		PEAtomic peBinaryPartNext = new PEAtomic(peOperandEx);
+		PEAtomic peBinaryPartNext = new PEAtomic(peOperandEx, ParsingEntity.PE_NEXT);
 		
 		ParsingRuleBuilder prbBinaryPart = new ParsingRuleBuilder("|", "=", "$=", "[]=").
 			next(peBinaryPartNext);
