@@ -69,7 +69,7 @@ public class ParsingEntity {
 		
 		ParsingEntity res = checkResult(parsing, sequence, pevs);
 		
-		parsing.notifyEvent(pevs, peForNotify(), sequence, res);
+		//parsing.notifyEvent(pevs, peForNotify(), sequence, res);
 		
 		return res;
 	}
@@ -109,8 +109,6 @@ public class ParsingEntity {
 					return PE_NEXT_CHECK;
 				}
 				
-				parsing.registerResult(sequence, currentPE);
-				
 				return nextPE.check(parsing, pevs);
 			}
 			
@@ -118,6 +116,18 @@ public class ParsingEntity {
 		}
 		
 		return currentPE;
+	}
+	
+	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, List<ParsingEvent> lpevs, List<ParsingEvent> pevs) throws ManagedException {
+		int nb = 0;
+		for(ParsingEvent pev : lpevs) {
+			if(pev.getWord() == null) ++nb;
+		}
+		
+		if(parsing.notifyEvent(pevs, this, nb, result))
+			pevs.addAll(lpevs);
+		
+		return result;
 	}
 
 }

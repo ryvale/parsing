@@ -4,6 +4,7 @@ import com.exa.lexing.Language;
 import com.exa.lexing.WordIterator;
 import com.exa.parsing.ExpMan;
 import com.exa.parsing.Parser;
+import com.exa.parsing.ParsingEntity;
 import com.exa.utils.ManagedException;
 
 public class RuleParser extends Parser<CompiledRule> {
@@ -32,5 +33,10 @@ public class RuleParser extends Parser<CompiledRule> {
 	}
 	
 	public RulesConfig getRuleConfig() { return rulesConfig; }
+
+	@Override
+	public boolean listen(ParsingEntity pe) { return true; }
+	
+	
 	
 }

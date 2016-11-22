@@ -24,8 +24,8 @@ public class OutputExpMan extends ExpMan<ParsedMap> {
 	public OutputExpMan(Parsing<ParsedMap> parsing, CompiledRule compiledRule) { this(parsing, compiledRule, new ParsedMap()); }
 	
 	@Override
-	public ParsingEntity push(String exp, ParsingEntity currentPE, List<ParsingEvent> peEvents)	throws ManagedException {
-		ParsingEntity res = super.push(exp, currentPE, peEvents);
+	public ParsingEntity push(ParsingEntity currentPE, List<ParsingEvent> peEvents)	throws ManagedException {
+		
 		for(ParsingEvent pev : peEvents) {
 			ParsingEntity pe = pev.getParsingEntity();
 			FieldComputer<?> computer = compiledRule.getFieldComputer(pe);
@@ -35,7 +35,7 @@ public class OutputExpMan extends ExpMan<ParsedMap> {
 			
 			computer.newValue(parsing, pev.getWord());
 		}
-		return res;
+		return currentPE;
 	}
 	
 	@Override

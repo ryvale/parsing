@@ -84,7 +84,7 @@ public class PreLanguage extends Language {
 		
 		ParsingEntity peRow = new 
 				ParsingRuleBuilder(PE_RULE_NAME).
-				next(new PEWord(WS_RULE_PART_SEP)).
+				next(WS_RULE_PART_SEP).
 				next(PE_RULE_EXP).
 				next(new PEWord(WS_RULE_SEP)).
 			parsingEntity();

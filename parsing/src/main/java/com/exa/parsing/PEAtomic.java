@@ -8,7 +8,6 @@ import com.exa.utils.ManagedException;
 public class PEAtomic extends ParsingEntity {
 	protected ParsingEntity peRoot;
 	
-
 	public PEAtomic(ParsingEntity peRoot, PETWithPE nextPET) {
 		super(nextPET);
 		this.peRoot = peRoot;

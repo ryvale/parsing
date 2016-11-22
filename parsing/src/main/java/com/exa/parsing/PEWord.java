@@ -43,7 +43,7 @@ public class PEWord extends ParsingEntity {
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
 		DataBuffer db = parsing.firstBufferizeRead();
-		if(db == null) return EOS_FAIL; 
+		if(db == null) return EOS_FAIL;
 		
 		HashSet<String> strs = new HashSet<>();
 		strs.addAll(requiredStrings);
@@ -62,19 +62,18 @@ public class PEWord extends ParsingEntity {
 		
 		if(strs.size() == 0) { 
 			db.rewindAndRelease();
-			return petFalse.get(this, parsing, pevs);
+			return notifyReult(parsing, petFalse.get(this, parsing, pevs), null, pevs);
 		}
 		
 		while(strs.size() > 0) {
 			if(parsing.nextString() == null) {
 				if(strOK == null) {
 					db.rewindAndRelease();
-					return petFalse.get(this, parsing, pevs);
+					return notifyReult(parsing, petFalse.get(this, parsing, pevs), null, pevs);
 				}
 				
 				db2.rewindAndRelease();
-				db.release();
-				return nextPET.get(this, parsing, pevs);
+				return notifyReult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
 			}
 			
 			it = strs.iterator();
@@ -93,21 +92,16 @@ public class PEWord extends ParsingEntity {
 		
 		if(strOK == null) {
 			db.rewindAndRelease();
-			return petFalse.get(this, parsing, pevs);
+			return notifyReult(parsing, petFalse.get(this, parsing, pevs), null, pevs); //petFalse.get(this, parsing, pevs);
 		}
 		
-		/*String str = strs.iterator().next();
-		while(str.contains(db.value())) {
-			if(str.equals(db.value())) {
-				db.release();
-				return nextPET.get(this, parsing, pevs);
-			}
-			
-			if(parsing.nextString() == null) break;
-		}*/
-	
 		db2.rewindAndRelease();
-		db.release();
-		return nextPET.get(this, parsing, pevs);
+		return notifyReult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
 	}
+	
+	protected ParsingEntity notifyReult(Parsing<?> parsing, ParsingEntity result, String word, List<ParsingEvent> pevs) throws ManagedException {
+		parsing.notifyEvent(pevs, this, word, result);
+		return result;
+	}
+	
 }

@@ -1,5 +1,6 @@
 package com.exa.parsing;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.exa.utils.ManagedException;
@@ -24,24 +25,25 @@ public class PEOptional extends ParsingEntity {
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
 		if(!parsing.hasNextString()) return EOS;
 		
-		ParsingEntity currentPE = peRoot.checkBranch(parsing, pevs);
+		List<ParsingEvent> lpevs = new ArrayList<>();
+		ParsingEntity currentPE = peRoot.checkBranch(parsing, lpevs);
 		if(currentPE.failed()) {
 			ParsingEntity currentPE2 = getNextPE();
 			
 			if(currentPE2.isFinal()) {  
-				if(isRoot()) return DEFAULT_FAIL;
+				if(isRoot()) return notifyResult(parsing, DEFAULT_FAIL, lpevs, pevs);
 				
-				return PE_NEXT_CHECK;	
+				return notifyResult(parsing, PE_NEXT_CHECK, lpevs, pevs);	
 			}
-			parsing.registerResult(sequence, currentPE);
+			//parsing.registerResult(sequence, currentPE);
 			
-			currentPE2 = currentPE2.check(parsing, pevs);
-			if(currentPE2.failed()) return currentPE;
+			currentPE2 = currentPE2.check(parsing, lpevs);
+			if(currentPE2.failed()) return notifyResult(parsing, currentPE, lpevs, pevs);
 			
-			return currentPE2;
+			return notifyResult(parsing, currentPE2, lpevs, pevs);
 		}
 		
-		return nextPET.get(currentPE, parsing, pevs);
+		return notifyResult(parsing, nextPET.get(currentPE, parsing, lpevs), lpevs, pevs);
 	}
 
 	@Override
@@ -53,6 +55,8 @@ public class PEOptional extends ParsingEntity {
 		
 		return false;
 	}
+	
+	
 	
 	
 	

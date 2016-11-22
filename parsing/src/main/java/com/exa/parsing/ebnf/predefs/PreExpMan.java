@@ -23,40 +23,48 @@ public class PreExpMan extends ExpMan<RulesConfig> {
 	public PreExpMan() { this(new RulesConfig()); }
 
 	@Override
-	public ParsingEntity push(String exp, ParsingEntity currentPE, List<ParsingEvent> peEvents) {
-		if(PreLanguage.WS_RULE_PART_SEP.equals(exp)) return currentPE;
+	public ParsingEntity push(ParsingEntity currentPE, List<ParsingEvent> pevs) {
 		
-		if(PreLanguage.WS_RULE_SEP.equals(exp)) {
-			if(ignorePresent) {
-				ignorePresent = false;
-				return currentPE;
+		for(ParsingEvent pev : pevs) {
+			String word = pev.getWord();
+			
+			if(word == null) continue;
+			
+			if(PreLanguage.WS_RULE_PART_SEP.equals(word)) continue;
+			
+			if(PreLanguage.WS_RULE_SEP.equals(word)) {
+				if(ignorePresent) {
+					ignorePresent = false;
+					continue;
+				}
 			}
+			
+			if("ignore".equals(word)) {
+				ignorePresent = true;
+				continue;
+			}
+			
+			if(ignorePresent) {
+				res.charsToIgnore(word.substring(1, word.length() - 1).replaceAll("\\\\'", "'"));
+				continue;
+			}
+			
+			if(currentKey == null) {
+				if(res.containsRule(word)) return new PEFail("The rule '" + word+ "' defined twice");
+				currentKey = word;
+				continue;
+			}
+			
+			if(PreLanguage.WS_RULE_SEP.equals(word)) {
+				res.addRule(currentKey, new RuleScript(currentKey, sbValue.toString()));
+				currentKey = null;
+				sbValue.setLength(0);
+				continue;
+			} 
+			
+			sbValue.append(word);
+			
 		}
-		
-		if("ignore".equals(exp)) {
-			ignorePresent = true;
-			return currentPE;
-		}
-		
-		if(ignorePresent) {
-			res.charsToIgnore(exp.substring(1, exp.length() - 1).replaceAll("\\\\'", "'"));
-			return currentPE;
-		}
-		
-		if(currentKey == null) {
-			if(res.containsRule(exp)) return new PEFail("The rule '" + exp+ "' defined twice");
-			currentKey = exp;
-			return currentPE;
-		}
-		
-		if(PreLanguage.WS_RULE_SEP.equals(exp)) {
-			res.addRule(currentKey, new RuleScript(currentKey, sbValue.toString())); //.put(currentKey, new RuleScript(currentKey, sbValue.toString()));
-			currentKey = null;
-			sbValue.setLength(0);
-			return currentPE;
-		} 
-		
-		sbValue.append(exp);
 		
 		return currentPE;
 	}

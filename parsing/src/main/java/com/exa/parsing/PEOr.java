@@ -25,7 +25,10 @@ public class PEOr extends ParsingEntity {
 			return currentPE = currentPE.checkBranch(parsing, pevs);
 		}
 		
-		public void reset() { currentPE = orBranchPE; }
+		public void reset() {
+			pevs.clear();
+			currentPE = orBranchPE;
+		}
 	}
 	
 	protected List<ParsingEntity> pes;

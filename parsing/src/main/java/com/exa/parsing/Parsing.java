@@ -17,10 +17,6 @@ public class Parsing<T> {
 	
 	protected String lexerWord;
 	protected String lexerBlankBefore;
-	//protected String currentWord = null;
-	//protected StringBuilder sbCurrentWord = new StringBuilder();
-	//protected DataBuffer dataBuffer;
-	//protected String blankBefore = null;
 	protected ParsingEntity currentPE;
 	protected Parser<T> parser;
 	protected Parsing<T> parent;
@@ -74,7 +70,7 @@ public class Parsing<T> {
 	}*/
 	
 	public boolean expressionIsValid() throws ManagedException {
-		//dataBuffer = wi.bufferize();
+		
 		expMan.setParsing(this);
 		expMan.reset();
 		
@@ -83,15 +79,12 @@ public class Parsing<T> {
 			nextCheck();
 			if(currentPE.failed()) return false;
 			
-			//currentPE = expMan.push(lexerWord, currentPE, peEvents);
+			currentPE = expMan.push(currentPE, peEvents);
 			
-			if(currentPE instanceof PEFail) return false;
+			if(currentPE.failed()) return false;
+			
 			if(currentPE.isFinal()) break;
 		}
-		
-		//dataBuffer.release();
-		
-		if(currentPE.failed()) return false;
 		
 		if(hasNextString()) {
 			currentPE = new PEFail("Remain string '" + nextString() + "' after parsing." );
@@ -104,21 +97,38 @@ public class Parsing<T> {
 		return false;
 	}
 	
-	
-	
 	public T getResult() { return expMan.lastResult(); }
 	
-	public ParsingEntity notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, int sequence2, ParsingEntity result) throws ManagedException {
+	public boolean notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, String word, ParsingEntity result) {
+		if(parser.notifyEvent(pe, result)) {
+			pevs.add(new ParsingEvent(pe, result, this, word));
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, int nb, ParsingEntity result) {
+		if(parser.notifyEvent(pe, result)) {
+			pevs.add(new ParsingEvent(pe, result, this, nb));
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/*public ParsingEntity notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, int sequence2, ParsingEntity result) throws ManagedException {
 		if(realResults.containsKey(sequence2)) result = realResults.get(sequence2);
 		
 		if(parser.notifyEvent(pe, result)) 
 			pevs.add(new ParsingEvent(pe, result, this));
 		
-		
 		return result;
-	}
+	}*/
 	
-	public String getNextStringAndReturn() throws ManagedException {
+	//public void notifyEvent(List<ParsingEvent> pevs, 
+	
+	/*public String getNextStringAndReturn() throws ManagedException {
 		String curWrd = lexerWord;
 		String curBlank = lexerBlankBefore;
 		
@@ -130,7 +140,7 @@ public class Parsing<T> {
 		lexerBlankBefore = curBlank;
 		
 		return res;
-	}
+	}*/
 		
 	protected void endParsing()  { }
 	
@@ -160,7 +170,7 @@ public class Parsing<T> {
 		realResults.put(sequence, res);
 	}
 	
-	public boolean listens(ParsingEntity pe) { return parser.listens(pe); }
+	public boolean listen(ParsingEntity pe) { return parser.listen(pe); }
 
 	public String lexerBlankBefore() { return lexerBlankBefore; }
 	
@@ -187,5 +197,9 @@ public class Parsing<T> {
 	public DataBuffer bufferize() { return wi.bufferize(); }
 	
 	public void trimLeft(DataBuffer db) { wi.trimLeft(db); }
+	
+	public boolean eventToNofify(ParsingEntity pe, ParsingEntity result) {
+		return parser.notifyEvent(pe, result);
+	}
 	
 }

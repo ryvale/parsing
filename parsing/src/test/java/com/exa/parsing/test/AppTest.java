@@ -7,6 +7,7 @@ import com.exa.lexing.Language;
 import com.exa.lexing.LexingRules;
 import com.exa.lexing.WordIterator;
 import com.exa.parsing.ExpMan;
+import com.exa.parsing.IParser;
 import com.exa.parsing.PENotWord;
 import com.exa.parsing.PEOptional;
 import com.exa.parsing.PEOr;
@@ -16,6 +17,8 @@ import com.exa.parsing.PEWord;
 import com.exa.parsing.Parser;
 import com.exa.parsing.ParsingEntity;
 import com.exa.parsing.ParsingRuleBuilder;
+import com.exa.parsing.ebnf.CompiledRule;
+import com.exa.parsing.ebnf.OutputParser1;
 import com.exa.parsing.ebnf.RuleParser;
 import com.exa.parsing.ebnf.predefs.PreParser;
 import com.exa.utils.ManagedException;
@@ -100,7 +103,7 @@ public class AppTest extends TestCase
     	assertFalse(parser.validates("'a"));
     }
     
-    /*
+    
     public void testEBNF2() throws ManagedException {
     	RuleParser ebnfParser = new RuleParser(new PreParser(false).parse("ignore ' ';root : 'a';"), false);
     
@@ -182,10 +185,9 @@ public class AppTest extends TestCase
     	
     	assertFalse(p.validates("a"));
     	
-    	cr = ebnfParser.parse("valeur=!'\n'|!'\r'");
-    	p = new OutputParser1(cr);
+    	
     }
-    
+    /*
     public void testEBNF3() throws ManagedException {
     	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; row : nom = !':'+ ':' valeur=(!'\n'|!'\r')+ '\n'?; test : 'a';"), false);
     	
@@ -454,7 +456,28 @@ public class AppTest extends TestCase
 				wi.getLexingRules().addWordSeparator(":");
 				return new ExpMan<>(null);
 			}
+
+			@Override
+			public boolean listen(ParsingEntity pe) {
+				return true;
+			}
+			
+			
 		};
+    }
+    
+    public void testPrioritaire() throws ManagedException {
+    	Parser<?> parser = parserForTest(new PERepeat("a", 1));
+    	assertTrue(parser.validates("a"));
+    	
+    	assertFalse(parser.validates("b"));
+    	
+    	ParsingEntity peRoot = new PERepeat("a", 0);
+    	peRoot.setNextPE("b");
+    	parser = parserForTest(peRoot);
+    	assertTrue(parser.validates("a b"));
+    	assertTrue(parser.validates("b"));
+    	
     }
     
     public void testParsing0() throws ManagedException {
@@ -524,6 +547,14 @@ public class AppTest extends TestCase
 		assertFalse(parser.validates("a a"));
 		assertFalse(parser.validates("a b a"));
 		
+		
+		peRoot = new PERepeat("a", 0);
+		peRoot.setNextPE("b");
+		parser = parserForTest(peRoot);
+		assertTrue(parser.validates("a b"));
+		assertTrue(parser.validates("a b"));
+		assertTrue(parser.validates("b"));
+		
 		parser = parserForTest(new PERepeat(peRoot, 0));
 		assertTrue(parser.validates(""));
 		assertTrue(parser.validates("a b"));
@@ -577,8 +608,6 @@ public class AppTest extends TestCase
     	);
 		assertTrue(parser.validates("nom:valeur"));
 		assertTrue(parser.validates("nom : valeur"));
-		
-		
     }
     
 }

@@ -5,13 +5,22 @@ public class ParsingEvent {
 	protected ParsingEntity parsingEntity;
 	protected ParsingEntity result;
 	protected Parsing<?> parsing;
+	protected int nb;
 	
-	public ParsingEvent(ParsingEntity parsingEntity, ParsingEntity result, Parsing<?> parsing) {
-		super();
+	public ParsingEvent(ParsingEntity parsingEntity, ParsingEntity result, Parsing<?> parsing, String word, int nb) {
 		this.parsing = parsing;
-		this.word = parsing.lexerWord();
+		this.word = word;
+		this.nb = nb;
 		this.parsingEntity = parsingEntity;
 		this.result = result;
+	}
+	
+	public ParsingEvent(ParsingEntity parsingEntity, ParsingEntity result, Parsing<?> parsing, String word) {
+		this(parsingEntity, result, parsing, word, 1);
+	}
+	
+	public ParsingEvent(ParsingEntity parsingEntity, ParsingEntity result, Parsing<?> parsing, int nb) {
+		this(parsingEntity, result, parsing, null, nb);
 	}
 
 	public String getWord() { return word; }
@@ -21,5 +30,7 @@ public class ParsingEvent {
 	public ParsingEntity getResult() { return result; }
 
 	public Parsing<?> getParsing() { return parsing; }
+
+	public int getNb() { return nb;	}
 	
 }

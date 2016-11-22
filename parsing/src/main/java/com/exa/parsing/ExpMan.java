@@ -12,7 +12,7 @@ public class ExpMan<T> {
 		this.parsing = parsing;
 	}
 
-	public ParsingEntity push(String exp, ParsingEntity currentPE, List<ParsingEvent> peEvents) throws ManagedException {
+	public ParsingEntity push(ParsingEntity currentPE, List<ParsingEvent> peEvents) throws ManagedException {
 		return currentPE;
 	}
 	
@@ -24,5 +24,4 @@ public class ExpMan<T> {
 
 	public void setParsing(Parsing<T> parsing) { this.parsing = parsing; }
 	
-
 }

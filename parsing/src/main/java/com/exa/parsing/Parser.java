@@ -66,11 +66,11 @@ public abstract class Parser<T> implements IParser<T> {
 		return language.newFileWordIterator(fileName, charset);
 	}
 	
-	public boolean notifyEvent(ParsingEntity pe, ParsingEntity result) throws ManagedException {
-		if(result.failed()) return false;
-		return pesToListen.contains(pe);
+	public boolean notifyEvent(ParsingEntity pe, ParsingEntity result)  {
+		if(result != ParsingEntity.PE_NEXT_CHECK && result.failed()) return false;
+		return listen(pe);
 	}
 	
-	public boolean listens(ParsingEntity pe) { return pesToListen.contains(pe); }
+	public boolean listen(ParsingEntity pe) { return pesToListen.contains(pe); }
 
 }

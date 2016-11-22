@@ -18,8 +18,14 @@ public class RuleExpMan extends ExpMan<CompiledRule> {
 	}
 	
 	@Override
-	public ParsingEntity push(String exp, ParsingEntity currentPE, List<ParsingEvent> peEvents) throws ManagedException {
-		eval.push(exp);
+	public ParsingEntity push(ParsingEntity currentPE, List<ParsingEvent> pevs) throws ManagedException {
+		
+		for(ParsingEvent pev : pevs) {
+			String word = pev.getWord();
+			if(word == null) continue;
+			
+			eval.push(word);
+		}
 		
 		return currentPE;
 	}
