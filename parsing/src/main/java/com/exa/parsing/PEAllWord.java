@@ -14,14 +14,10 @@ public class PEAllWord extends ParsingEntity {
 		
 		if(parsing.lexerWord() == null) {
 			db.rewindAndRelease();
-			return notifyReult(parsing, new PEFail("Unexpected end of file."), db.release(), pevs); //new PEFail("Unexpected end of file.");
+			return notifyResult(parsing, new PEFail("Unexpected end of file."), (String)null, pevs); //new PEFail("Unexpected end of file.");
 		}
 		
-		return notifyReult(parsing, nextPET.get(null, parsing, pevs), db.release(), pevs);
+		return notifyResult(parsing, nextPET.get(null, parsing, pevs), db.release(), pevs);
 	}
 	
-	protected ParsingEntity notifyReult(Parsing<?> parsing, ParsingEntity result, String word, List<ParsingEvent> pevs) throws ManagedException {
-		parsing.notifyEvent(pevs, this, word, result);
-		return result;
-	}
 }

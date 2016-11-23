@@ -1,5 +1,6 @@
 package com.exa.parsing.ebnf;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,22 @@ public class OutputExpMan extends ExpMan<ParsedMap> {
 	@Override
 	public ParsingEntity push(ParsingEntity currentPE, List<ParsingEvent> peEvents)	throws ManagedException {
 		
-		for(ParsingEvent pev : peEvents) {
+		Iterator<ParsingEvent> it = peEvents.iterator();
+		while(it.hasNext()) {
+			ParsingEvent pev = it.next();
+			
+			ParsingEntity pe = pev.getParsingEntity();
+			
+			FieldComputer<?> computer = compiledRule.getFieldComputer(pe);
+			
+			if(computer == null) continue;
+			
+			if(computer.manageModifNotif(pev)) continue;
+			
+			computer.newValue(parsing, pev.getWord());
+		}
+		
+		/*for(ParsingEvent pev : peEvents) {
 			ParsingEntity pe = pev.getParsingEntity();
 			FieldComputer<?> computer = compiledRule.getFieldComputer(pe);
 			
@@ -34,7 +50,7 @@ public class OutputExpMan extends ExpMan<ParsedMap> {
 			if(computer.manageModifNotif(pev)) continue;
 			
 			computer.newValue(parsing, pev.getWord());
-		}
+		}*/
 		return currentPE;
 	}
 	

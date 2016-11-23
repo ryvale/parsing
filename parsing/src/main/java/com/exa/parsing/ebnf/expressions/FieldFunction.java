@@ -37,7 +37,7 @@ public abstract class FieldFunction<T> {
 		@Override
 		public String compute(Parsing<?> parsing, String old, String nvalue) {
 			if(old == null)	return nvalue;
-			return old + parsing.lexerBlankBefore() + nvalue;
+			return old + " " + nvalue;
 		}
 		
 		@Override

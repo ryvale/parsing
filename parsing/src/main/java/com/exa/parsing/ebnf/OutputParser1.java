@@ -11,7 +11,7 @@ import com.exa.utils.ManagedException;
 
 public class OutputParser1 extends Parser<ParsedMap> {
 	protected CompiledRule compiledRule;
-
+	
 	public OutputParser1(CompiledRule compiledRule, boolean debugOn) {
 		super(compiledRule.language(), debugOn);
 		this.compiledRule = compiledRule;
@@ -20,7 +20,6 @@ public class OutputParser1 extends Parser<ParsedMap> {
 		for(ParsingEntity pe : fieldComputers.keySet()) {
 			pesToListen.add(pe);
 		}
-		
 	}
 	
 	public OutputParser1(CompiledRule compiledRule) { this(compiledRule, false); }

@@ -378,4 +378,20 @@ public class LexingRules {
 		sb.delete(0, i);
 	}
 	
+	public String trimLeft(String str) {
+		StringBuilder sb = new StringBuilder(str);
+		int i = 0;
+		
+		for(i = 0; i<sb.length(); i++) {
+			Character c = sb.charAt(i);
+			if(blankCharacters.contains(c.toString())) continue;
+			
+			break;
+		}
+		if(i == 0) return sb.toString();
+		
+		sb.delete(0, i);
+		return sb.toString();
+	}
+	
 }

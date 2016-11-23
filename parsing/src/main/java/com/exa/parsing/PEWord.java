@@ -62,18 +62,18 @@ public class PEWord extends ParsingEntity {
 		
 		if(strs.size() == 0) { 
 			db.rewindAndRelease();
-			return notifyReult(parsing, petFalse.get(this, parsing, pevs), null, pevs);
+			return notifyResult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);
 		}
 		
 		while(strs.size() > 0) {
 			if(parsing.nextString() == null) {
 				if(strOK == null) {
 					db.rewindAndRelease();
-					return notifyReult(parsing, petFalse.get(this, parsing, pevs), null, pevs);
+					return notifyResult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);
 				}
 				
 				db2.rewindAndRelease();
-				return notifyReult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
+				return notifyResult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
 			}
 			
 			it = strs.iterator();
@@ -92,16 +92,16 @@ public class PEWord extends ParsingEntity {
 		
 		if(strOK == null) {
 			db.rewindAndRelease();
-			return notifyReult(parsing, petFalse.get(this, parsing, pevs), null, pevs); //petFalse.get(this, parsing, pevs);
+			return notifyResult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);
 		}
 		
 		db2.rewindAndRelease();
-		return notifyReult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
+		return notifyResult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
 	}
 	
-	protected ParsingEntity notifyReult(Parsing<?> parsing, ParsingEntity result, String word, List<ParsingEvent> pevs) throws ManagedException {
+	/*protected ParsingEntity notifyReult(Parsing<?> parsing, ParsingEntity result, String word, List<ParsingEvent> pevs) throws ManagedException {
 		parsing.notifyEvent(pevs, this, word, result);
 		return result;
-	}
+	}*/
 	
 }

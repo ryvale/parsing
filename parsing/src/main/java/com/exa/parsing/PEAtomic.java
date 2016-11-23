@@ -1,5 +1,6 @@
 package com.exa.parsing;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.exa.lexing.CharReader.DataBuffer;
@@ -22,15 +23,42 @@ public class PEAtomic extends ParsingEntity {
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs)	throws ManagedException {
 		ParsingEntity currentPE = peRoot;
 		
+		List<ParsingEvent> lpevs = new ArrayList<>();
+		
 		DataBuffer db = parsing.bufferize();
 		while(!currentPE.isFinal()) 
-			currentPE = currentPE.check(parsing, pevs);
+			currentPE = currentPE.check(parsing, lpevs);
 		
 		if(currentPE != PE_NEXT_CHECK && currentPE.failed()) db.rewindAndRelease(); else db.release();
 		
-		currentPE = standardReseultInterpretation(currentPE, parsing, sequence, pevs);
+		if(currentPE.failed()) {
+			if(currentPE == PE_NEXT_CHECK) {
+				ParsingEntity nextPE = getNextPE();
+				if(nextPE.isFinal()) {
+					if(isRoot()) return notifyResult(parsing, DEFAULT_FAIL, lpevs, pevs);
+					
+					return notifyResult(parsing, PE_NEXT_CHECK, lpevs, pevs);
+				}
+				
+				notifyResult(parsing, PE_NEXT_CHECK, lpevs, pevs);
+				return nextPE.check(parsing, pevs);
+			}
+			
+			return notifyResult(parsing, currentPE, lpevs, pevs);
+		}
 		
-		return currentPE;
+		if(currentPE == PE_NEXT) {
+			ParsingEntity nextPE = getNextPE();
+			if(nextPE.isFinal()) {
+				if(isRoot()) return notifyResult(parsing, EOS, lpevs, pevs);
+				
+				return notifyResult(parsing, PE_NEXT, lpevs, pevs);
+			}
+			
+			return notifyResult(parsing, nextPE, lpevs, pevs);
+		}
+		
+		return notifyResult(parsing, currentPE, lpevs, pevs);
 	}
 	
 }

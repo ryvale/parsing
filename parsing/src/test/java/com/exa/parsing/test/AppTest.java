@@ -19,6 +19,7 @@ import com.exa.parsing.ParsingEntity;
 import com.exa.parsing.ParsingRuleBuilder;
 import com.exa.parsing.ebnf.CompiledRule;
 import com.exa.parsing.ebnf.OutputParser1;
+import com.exa.parsing.ebnf.ParsedMap;
 import com.exa.parsing.ebnf.RuleParser;
 import com.exa.parsing.ebnf.predefs.PreParser;
 import com.exa.utils.ManagedException;
@@ -326,25 +327,21 @@ public class AppTest extends TestCase
     	assertTrue(p.validates("a"));
     	assertFalse(p.validates("b"));
     	
-    	
     	cr = ebnfParser.parse("nom = !':'+ ':' valeur=$+");
     	p = new OutputParser1(cr);
     	assertTrue(p.validates("nom : Kouakou Koffi"));
     	assertTrue(p.validates("Prénoms : Joseph François"));
-    	
     	
     	cr = ebnfParser.parse("nom = !':'+ ':' valeur=(!'\n'|!'\r')+ '\n'?");
     	p = new OutputParser1(cr);
     	assertTrue(p.validates("nom : Kouakou Koffi"));
     	assertTrue(p.validates("Prénoms : Joseph François"));
     	assertTrue(p.validates("nom : Kouakou Koffi\n"));
-    	
-    	
+    		
     	cr = ebnfParser.parse("valeur $='a' ('b')?");
     	p = new OutputParser1(cr);
     	assertTrue(p.validates("a"));
     	assertTrue(p.validates("a b"));
-    	
     	
     	cr = ebnfParser.parse("valeur $='a'+ ('b')");
     	p = new OutputParser1(cr);
@@ -360,9 +357,11 @@ public class AppTest extends TestCase
     	p = new OutputParser1(cr);
     	assertTrue(p.validates("nom : Kouakou Koffi\n"));
     	assertTrue(p.validates("Prénoms : Joseph François"));
+    	
+    	
     }
     
-    /*
+    
     public void testEBNF4() throws ManagedException {
     	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; row : nom $= !':'+ ':' valeur $=(!'\n'|!'\r')+ '\n'?; root : 'a';"), false);
     	CompiledRule cr = ebnfParser.parse("nomA='a'|nomB='b'");
@@ -392,8 +391,7 @@ public class AppTest extends TestCase
     	pm = p.parse("a b");
     	assertTrue(pm.get("nom").toString().equals("a b"));
     	pm = p.parse("a\tb");
-    	assertTrue(pm.get("nom").toString().equals("a\tb"));
-    	
+    	assertTrue(pm.get("nom").toString().equals("a b"));
     	
     	cr = ebnfParser.parse("nom []='a'");
     	p = new OutputParser1(cr);
@@ -401,6 +399,13 @@ public class AppTest extends TestCase
     	assertTrue(pm.get("nom").asParsedArray().get(0).toString().equals("a"));
     	
     	cr = ebnfParser.parse("nom []='a'+");
+    	p = new OutputParser1(cr);
+    	pm = p.parse("a");
+    	assertTrue(pm.get("nom").asParsedArray().get(0).toString().equals("a"));
+    	/*pm = p.parse("a a");
+    	assertTrue(pm.get("nom").asParsedArray().get(1).toString().equals("a"));*/
+    	
+    	cr = ebnfParser.parse("(nom []='a')+");
     	p = new OutputParser1(cr);
     	pm = p.parse("a");
     	assertTrue(pm.get("nom").asParsedArray().get(0).toString().equals("a"));
@@ -443,8 +448,7 @@ public class AppTest extends TestCase
     	
     	pm = p.parse("nom : Kouakou Koffi");
     	assertTrue(pm.get("propriete").asParsedMap().get("nom").toString().equals("nom"));
-    	
-    }*/
+    }
     
     private Parser<?> parserForTest(ParsingEntity pe) {
     	return new Parser<Boolean>(new Language(new LexingRules(), new HashSet<String>(), pe)) {

@@ -73,13 +73,14 @@ public class PEOr extends ParsingEntity {
 		
 		isdOK.reset();
 		isdOK.check(parsing);
-		pevs.addAll(isdOK.pevs);
+		//pevs.addAll(isdOK.pevs);
 		
-		if(isdOK.currentPE == PE_NEXT_CHECK) {
+		/*if(isdOK.currentPE == PE_NEXT_CHECK) {
 			return nextPET.getPE().check(parsing, pevs);
-		}
+		}*/
+		ParsingEntity result = nextPET.get(isdOK.currentPE, parsing, pevs);
 		
-		return nextPET.get(isdOK.currentPE, parsing, pevs);
+		return notifyResult(parsing, result, isdOK.pevs, pevs);
 
 	}
 

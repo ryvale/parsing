@@ -26,6 +26,7 @@ public class PreExpMan extends ExpMan<RulesConfig> {
 	public ParsingEntity push(ParsingEntity currentPE, List<ParsingEvent> pevs) {
 		
 		for(ParsingEvent pev : pevs) {
+			if(pev.isParent()) continue;
 			String word = pev.getWord();
 			
 			if(word == null) continue;

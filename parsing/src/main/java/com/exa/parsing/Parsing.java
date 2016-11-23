@@ -70,7 +70,6 @@ public class Parsing<T> {
 	}*/
 	
 	public boolean expressionIsValid() throws ManagedException {
-		
 		expMan.setParsing(this);
 		expMan.reset();
 		
@@ -90,7 +89,7 @@ public class Parsing<T> {
 			currentPE = new PEFail("Remain string '" + nextString() + "' after parsing." );
 			return false;
 		}
-			
+		
 		if(currentPE.checkFinal()) return true;
 		
 		currentPE = new PEFail("Unexpected end of file" );
@@ -100,21 +99,17 @@ public class Parsing<T> {
 	public T getResult() { return expMan.lastResult(); }
 	
 	public boolean notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, String word, ParsingEntity result) {
-		if(parser.notifyEvent(pe, result)) {
-			pevs.add(new ParsingEvent(pe, result, this, word));
-			return true;
-		}
+		pevs.add(new ParsingEvent(pe, result, this, word));
 		
-		return false;
+		return parser.notifyEvent(pe, result);
 	}
 	
-	public boolean notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, int nb, ParsingEntity result) {
-		if(parser.notifyEvent(pe, result)) {
-			pevs.add(new ParsingEvent(pe, result, this, nb));
-			return true;
-		}
+	public boolean notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, List<ParsingEvent> lpevs, ParsingEntity result) {
+		if(result.asPEFail() == null)
+			pevs.add(new ParsingEvent(pe, result, this, lpevs));
 		
-		return false;
+		return parser.notifyEvent(pe, result);
+		
 	}
 	
 	/*public ParsingEntity notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, int sequence2, ParsingEntity result) throws ManagedException {
@@ -197,6 +192,8 @@ public class Parsing<T> {
 	public DataBuffer bufferize() { return wi.bufferize(); }
 	
 	public void trimLeft(DataBuffer db) { wi.trimLeft(db); }
+	
+	public String trimLeft(String str) { return wi.trimLeft(str); }
 	
 	public boolean eventToNofify(ParsingEntity pe, ParsingEntity result) {
 		return parser.notifyEvent(pe, result);

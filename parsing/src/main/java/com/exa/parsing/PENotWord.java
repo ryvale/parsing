@@ -46,14 +46,14 @@ public class PENotWord extends ParsingEntity {
 		
 		if(requiredStrings.contains(parsing.lexerWord())) {
 			db.rewindAndRelease();
-			return notifyReult(parsing, petFalse.get(null, parsing, pevs), null, pevs);
+			return notifyResult(parsing, petFalse.get(null, parsing, pevs), pevs);
 		}
 		
-		return notifyReult(parsing, nextPET.get(null, parsing, pevs), db.release(), pevs);
+		return notifyResult(parsing, nextPET.get(null, parsing, pevs), db.release(), pevs);
 	}
 	
-	protected ParsingEntity notifyReult(Parsing<?> parsing, ParsingEntity result, String word, List<ParsingEvent> pevs) throws ManagedException {
+	/*protected ParsingEntity notifyReult(Parsing<?> parsing, ParsingEntity result, String word, List<ParsingEvent> pevs) throws ManagedException {
 		parsing.notifyEvent(pevs, this, word, result);
 		return result;
-	}
+	}*/
 }

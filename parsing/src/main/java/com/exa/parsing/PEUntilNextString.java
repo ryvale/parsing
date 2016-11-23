@@ -33,28 +33,23 @@ public class PEUntilNextString extends ParsingEntity {
 			++nb;
 			if(seekString.equals(parsing.lexerWord())) {
 				if(include)	 {
-					return notifyReult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
+					return notifyResult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
 				}
 				db.rewind();
 				
 				for(int i=1; i<nb; i++) parsing.nextString();
 				
-				return notifyReult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
+				return notifyResult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
 			}
 		}
 		while(parsing.nextString() != null);
 		
 		if(mandatory) {
 			db.rewindAndRelease();
-			return notifyReult(parsing, new PEFail("Unable to find '"+ seekString+"' in the expression."), null, pevs); //new PEFail("Unable to find '"+ seekString+"' in the expression.");
+			return notifyResult(parsing, new PEFail("Unable to find '"+ seekString+"' in the expression."), (String)null, pevs); //new PEFail("Unable to find '"+ seekString+"' in the expression.");
 		}
 		
-		return notifyReult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
-	}
-	
-	protected ParsingEntity notifyReult(Parsing<?> parsing, ParsingEntity result, String word, List<ParsingEvent> pevs) throws ManagedException {
-		parsing.notifyEvent(pevs, this, word, result);
-		return result;
+		return notifyResult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
 	}
 	
 	

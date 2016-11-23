@@ -28,14 +28,15 @@ public class StringArrayFieldComputer extends FieldComputer<List<ParsedObject<?>
 
 	@Override
 	public void newValue(Parsing<?> parsing, String str) {
-		ParsedString ps = value.get(currentIdx).asParsedString();
-		sbValue.append(itemFunction.compute(parsing, ps.asParsedString().getValue(), str));
-		ps.setValue(sbValue.toString());
-		if(addAfterUpdate) {
-			value.add(new ParsedString(null)); ++currentIdx;
+		//ParsedString ps = value.get(currentIdx++).asParsedString();
+		//sbValue.append(itemFunction.compute(parsing, ps.asParsedString().getValue(), str));
+		//ps.setValue(sbValue.toString());
+		value.add(new ParsedString(itemFunction.compute(parsing, null, str))); 
+		/*if(addAfterUpdate) {
+			value.add(new ParsedString(null)); 
 			addAfterUpdate = false;
 			sbValue.setLength(0);
-		}
+		}*/
 	}
 
 	@Override
@@ -72,7 +73,7 @@ public class StringArrayFieldComputer extends FieldComputer<List<ParsedObject<?>
 	@Override
 	public void reset() {
 		value.clear();
-		value.add(new ParsedString(null));
+		//value.add(new ParsedString(null));
 		
 		sbValue.setLength(0);
 		addAfterUpdate = false;

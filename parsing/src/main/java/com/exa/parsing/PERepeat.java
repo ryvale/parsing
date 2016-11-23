@@ -44,7 +44,8 @@ public class PERepeat extends ParsingEntity {
 						return notifyResult(parsing, PE_NEXT_CHECK, lpevs, pevs);
 					}
 					
-					notifyResult(parsing, PE_NEXT_CHECK, lpevs, pevs);
+					notifyResult(parsing, (execCount>0? OK : PE_NEXT_CHECK), lpevs, pevs);
+					
 					return nextPE.check(parsing, pevs);
 				}
 				
@@ -71,15 +72,11 @@ public class PERepeat extends ParsingEntity {
 	@Override
 	public boolean checkFinal() { return min == 0; }
 	
-	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, List<ParsingEvent> lpevs, List<ParsingEvent> pevs) throws ManagedException {
-		int nb = 0;
-		for(ParsingEvent pev : lpevs) {
-			if(pev.getWord() == null) ++nb;
-		}
+	/*protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, List<ParsingEvent> lpevs, List<ParsingEvent> pevs) throws ManagedException {
 		
-		if(parsing.notifyEvent(pevs, this, nb, result))
-			pevs.addAll(lpevs);
+		parsing.notifyEvent(pevs, this, lpevs, result);
+		pevs.addAll(lpevs);
 		
 		return result;
-	}
+	}*/
 }

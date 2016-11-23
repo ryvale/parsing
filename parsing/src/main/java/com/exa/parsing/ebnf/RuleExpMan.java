@@ -21,6 +21,7 @@ public class RuleExpMan extends ExpMan<CompiledRule> {
 	public ParsingEntity push(ParsingEntity currentPE, List<ParsingEvent> pevs) throws ManagedException {
 		
 		for(ParsingEvent pev : pevs) {
+			if(pev.isParent()) continue;
 			String word = pev.getWord();
 			if(word == null) continue;
 			

@@ -28,16 +28,13 @@ public class PELexerString extends ParsingEntity {
 		
 		if(perValid.isOK(this, parsing)) {
 			//db.release();
-			return notifyReult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
+			return notifyResult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs); //notifyResult(parsing, result, lpevs, pevs); // notifyReult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
 		}
 		
 		db.rewindAndRelease();
-		return notifyReult(parsing, petFalse.get(this, parsing, pevs), null, pevs); //petFalse.get(this, parsing, pevs);
+		return notifyResult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);//notifyReult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);
 	}
 	
-	protected ParsingEntity notifyReult(Parsing<?> parsing, ParsingEntity result, String word, List<ParsingEvent> pevs) throws ManagedException {
-		parsing.notifyEvent(pevs, this, word, result);
-		return result;
-	}
+	
 
 }
