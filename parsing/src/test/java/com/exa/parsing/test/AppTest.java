@@ -448,6 +448,15 @@ public class AppTest extends TestCase
     	
     	pm = p.parse("nom : Kouakou Koffi");
     	assertTrue(pm.get("propriete").asParsedMap().get("nom").toString().equals("nom"));
+    	assertTrue(pm.get("propriete").asParsedMap().get("valeur").toString().equals("Kouakou Koffi"));
+    	
+    	cr = ebnfParser.parse("propriete = row+");
+    	p = new OutputParser1(cr);
+    	
+    	pm = p.parse("nom : Kouakou Koffi\nnom: Jocelyn");
+    	System.out.println(pm.get("propriete").asParsedString().getValue());
+    	//assertTrue(pm.get("propriete").asParsedMap().get("nom").toString().equals("nom"));
+    	//assertTrue(pm.get("propriete").asParsedMap().get("valeur").toString().equals("Kouakou Koffi"));
     }
     
     private Parser<?> parserForTest(ParsingEntity pe) {

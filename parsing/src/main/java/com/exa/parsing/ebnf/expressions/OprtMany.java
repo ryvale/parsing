@@ -20,7 +20,10 @@ public class OprtMany extends UnaryOp<ParsingEntity> {
 		
 		if(oppe == null) {
 			Operand<String> opstr = oprd.asOPString();
-			if(opstr == null) throw new XPressionException("Error in expression near '"+symbol+"'");
+			if(opstr == null) {
+				
+				throw new XPressionException("Error in expression near '"+symbol+"'");
+			}
 			
 			pe = new PEWord(opstr.value());
 		}

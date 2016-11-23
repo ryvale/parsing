@@ -141,5 +141,20 @@ public class Evaluator extends StackEvaluator<Item<?>> {
 	}
 
 	public Map<String, Field<?>> getFields() { return fieldManager.getFields(); }
+
+	@Override
+	public Operand<?> operandReinterpreted(com.exa.expression.Operand<Item<?>> oprd) throws XPressionException {
+		Operand<String> opId = oprd.asSpecificItem().asOperand().asOPIdentifier();
+		if(opId == null) return oprd.asSpecificItem().asOperand();
+		
+		CompiledRule cr = null;
+		RuleScript rs = ruleParser.getRuleConfig().getRule(opId.value());
+		
+		try { cr = ruleParser.parse(rs.src()); } catch (ManagedException e) { throw new XPressionException(e); }
+		return new ConstantParsingEntity(cr.language().getPERoot());
+		
+	}
+	
+	
 	
 }

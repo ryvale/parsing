@@ -22,7 +22,7 @@ public abstract class UnaryOp<T> extends OperatorBase<T> {
 			oprd = eval.popOperand().item().asOperand();
 		}
 		
-		Operand<T> specificOprd = getResult(oprd);
+		Operand<T> specificOprd = getResult(eval.operandReinterpreted(oprd).asSpecificItem().asOperand());
 		
 		eval.pushOperand(specificOprd);
 	}
