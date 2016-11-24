@@ -182,14 +182,14 @@ public class Parsing<T> {
 	}
 	
 	public DataBuffer firstBufferizeRead() throws ManagedException {
-		DataBuffer db = bufferize();
+		DataBuffer db = monitorCharReading(true);
 		if(nextString() == null) { db.release(); return null; }
 		trimLeft(db);
 		
 		return db;
 	}
 	
-	public DataBuffer bufferize() { return wi.bufferize(); }
+	public DataBuffer monitorCharReading(boolean toBeBuffered) { return wi.monitorCharReading(toBeBuffered); }
 	
 	public void trimLeft(DataBuffer db) { wi.trimLeft(db); }
 	

@@ -21,9 +21,25 @@ public class ParsingRuleBuilder {
 	}
 	
 	public ParsingRuleBuilder next(ParsingEntity pe) {
-		 currentPE.setNextPE(pe);
-		 
-		 currentPE = pe;
+		currentPE = currentPE.setNextPE(pe);
+		
+		return this;
+	}
+	
+	public ParsingRuleBuilder optional(ParsingEntity pe) {
+		currentPE = currentPE.setNextPE(new PEOptional(pe));
+		
+		return this;
+	}
+	
+	public ParsingRuleBuilder repeat(ParsingEntity pe, int min) {
+		currentPE = currentPE.setNextPE(new PERepeat(pe, min));
+		
+		return this;
+	}
+	
+	public ParsingRuleBuilder repeat(ParsingEntity pe) {
+		currentPE = currentPE.setNextPE(new PERepeat(pe, 0));
 		
 		return this;
 	}

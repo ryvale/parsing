@@ -62,7 +62,7 @@ public class WordIterator implements Cloneable {
 		return new WordIterator(charReader.clone(), lexingRules, bufferStrings);
 	}
 
-	public DataBuffer bufferize() { return charReader.bufferize(); }
+	public DataBuffer monitorCharReading(boolean toBeBuffered) { return charReader.monitorCharReading(toBeBuffered); }
 	
 	public boolean hasNextString() throws ManagedException {
 		Character c = lexingRules.nextNonBlankChar(charReader);

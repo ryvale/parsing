@@ -29,6 +29,7 @@ public class PEOr extends ParsingEntity {
 			pevs.clear();
 			currentPE = orBranchPE;
 		}
+		
 	}
 	
 	protected List<ParsingEntity> pes;
@@ -48,7 +49,7 @@ public class PEOr extends ParsingEntity {
 
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
-		DataBuffer db = parsing.bufferize();
+		DataBuffer db = parsing.monitorCharReading(false);
 		
 		int nb = 0;
 		InstanceSpecificData isdOK = null;

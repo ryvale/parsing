@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.exa.lexing.Language;
 import com.exa.lexing.LexingRules;
@@ -22,8 +23,12 @@ public class CompiledRule implements Cloneable {
 		this.fields = fields;
 	}
 	
-	public CompiledRule(ParsingEntity parsingEntity, String ignoreChars, Map<String, Field<?>> fields, Map<ParsingEntity, FieldComputer<?>> fieldComputers) {
+	public CompiledRule(ParsingEntity parsingEntity, String ignoreChars, Set<String> separators, Map<String, Field<?>> fields, Map<ParsingEntity, FieldComputer<?>> fieldComputers) {
 		this(new Language(new LexingRules(ignoreChars), new HashSet<String>(), parsingEntity), fields, fieldComputers);
+		
+		for (String sep : separators) {
+			language.getLexingRules().addWordSeparator(sep);
+		}
 	}
 	
 	public Language language() { return language; }

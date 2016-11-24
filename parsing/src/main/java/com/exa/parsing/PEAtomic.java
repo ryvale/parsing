@@ -25,7 +25,7 @@ public class PEAtomic extends ParsingEntity {
 		
 		List<ParsingEvent> lpevs = new ArrayList<>();
 		
-		DataBuffer db = parsing.bufferize();
+		DataBuffer db = parsing.monitorCharReading(false);
 		while(!currentPE.isFinal()) 
 			currentPE = currentPE.check(parsing, lpevs);
 		

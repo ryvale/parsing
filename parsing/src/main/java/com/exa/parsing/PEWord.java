@@ -48,7 +48,7 @@ public class PEWord extends ParsingEntity {
 		HashSet<String> strs = new HashSet<>();
 		strs.addAll(requiredStrings);
 		
-		DataBuffer db2 = parsing.bufferize();
+		DataBuffer db2 = parsing.monitorCharReading(false);
 		String strOK = null;
 		Iterator<String> it = strs.iterator();
 		while(it.hasNext()) {

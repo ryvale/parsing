@@ -12,6 +12,7 @@ import com.exa.parsing.PENotWord;
 import com.exa.parsing.PEOptional;
 import com.exa.parsing.PEOr;
 import com.exa.parsing.PERepeat;
+import com.exa.parsing.PEUnordered;
 import com.exa.parsing.PEUntilNextString;
 import com.exa.parsing.PEWord;
 import com.exa.parsing.Parser;
@@ -72,6 +73,12 @@ public class AppTest extends TestCase
 		System.out.print(parser.parse("nom8: 'x'; nom9: 'y';"));
 		System.out.print(parser.parse("nom9: !'x';"));
 		
+		assertTrue(parser.validates("ignore ' \t\n';"));
+		assertTrue(parser.validates("separators ' ';"));
+		assertTrue(parser.validates("ignore ' \t\n'; separators '+';"));
+		assertTrue(parser.validates("separators '+'; ignore ' \t\n';"));
+		assertTrue(parser.validates("separators '+'; ignore ' \t\n'; nom :x;"));
+		
 		assertTrue(parser.validates("nom0:x;"));
 		
 		assertFalse(parser.validates(":nom1"));
@@ -106,7 +113,7 @@ public class AppTest extends TestCase
     
     
     public void testEBNF2() throws ManagedException {
-    	RuleParser ebnfParser = new RuleParser(new PreParser(false).parse("ignore ' ';root : 'a';"), false);
+    	RuleParser ebnfParser = new RuleParser(new PreParser(false).parse("ignore ' ';separators '+','-';root : 'a';"), false);
     
     	CompiledRule cr = ebnfParser.parse("'a'");
     	IParser<?> p = new OutputParser1(cr, false);
@@ -188,7 +195,7 @@ public class AppTest extends TestCase
     }
     
     public void testEBNF3() throws ManagedException {
-    	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; row : nom = !':'+ ':' valeur=(!'\n'|!'\r')+ '\n'?; test : 'a';"), false);
+    	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; separators ':'; row : nom = !':'+ ':' valeur=(!'\n'|!'\r')+ '\n'?; test : 'a';"), false);
     	
     	CompiledRule cr = ebnfParser.parse("'a''b'");
     	IParser<?> p = new OutputParser1(cr);
@@ -594,6 +601,18 @@ public class AppTest extends TestCase
 		assertTrue(parser.validates(":"));
 		assertTrue(parser.validates("nom:"));
 		
+		parser = parserForTest(new PEUnordered().add("a").add("b").add("c"));
+		assertTrue(parser.validates("a"));
+		assertTrue(parser.validates("b"));
+		assertTrue(parser.validates("c"));
+		assertTrue(parser.validates("a b"));
+		assertTrue(parser.validates("a c"));
+		assertTrue(parser.validates("b a"));
+		assertTrue(parser.validates("b a c"));
+		
+		assertFalse(parser.validates("b b"));
+		assertFalse(parser.validates("b a b"));
+		
     }
     
     public void testParsing1() throws ManagedException {
@@ -619,6 +638,14 @@ public class AppTest extends TestCase
     	);
 		assertTrue(parser.validates("nom:valeur"));
 		assertTrue(parser.validates("nom : valeur"));
+		
+		parser = parserForTest(new PEUnordered().add("a b").add("c b").add("c a"));
+		assertTrue(parser.validates("a b"));
+		assertTrue(parser.validates("c a"));
+		assertTrue(parser.validates("c a a b"));
+		
+		assertFalse(parser.validates("c a a a"));
+		assertFalse(parser.validates("c a a"));
     }
     
 }

@@ -4,9 +4,9 @@ import java.util.HashSet;
 
 import com.exa.lexing.Language;
 import com.exa.lexing.LexingRules;
-import com.exa.parsing.PEOptional;
 import com.exa.parsing.PERepeat;
 import com.exa.parsing.PERule;
+import com.exa.parsing.PEUnordered;
 import com.exa.parsing.PEUntilNextString;
 import com.exa.parsing.PEWord;
 import com.exa.parsing.Parsing;
@@ -53,17 +53,8 @@ public class PreLanguage extends Language {
 		PE_RULE_EXP = new PEUntilNextString(WS_RULE_SEP, true, false);
 	}
 	
-	public PreLanguage() { 
-		super(new LexingRules(), new HashSet<String>(), null);
-		lexingRules.addWordSeparator(WS_RULE_PART_SEP);
-		lexingRules.addWordSeparator(WS_RULE_SEP);
-		
-		lexingRules.addActiveWord(new StringDelimiter(lexingRules, '\''));
-		
-		//lexingRules.addActiveWord(new WordWithOpenCloseDelimiter(lexingRules, WS_KEYWORD_DELIMITER.charAt(0), WS_KEYWORD_DELIMITER.charAt(0)));
-		
-		ParsingEntity pe0 = new PEWord("ignore");
-		pe0.setNextPE(ParsingRuleBuilder.peOneIterationCheck(new PERule() {
+	ParsingEntity peStringLiteral() {
+		return ParsingRuleBuilder.peOneIterationCheck(new PERule() {
 			
 			@Override
 			public boolean isOK(ParsingEntity pe, Parsing<?> parsing) {
@@ -80,17 +71,42 @@ public class PreLanguage extends Language {
 				
 				return true;
 			}
-		})).setNextPE(new PEWord(WS_RULE_SEP));
+		});
+	}
+	
+	public PreLanguage() { 
+		super(new LexingRules(), new HashSet<String>(), null);
+		lexingRules.addWordSeparator(WS_RULE_PART_SEP);
+		lexingRules.addWordSeparator(WS_RULE_SEP);
+		
+		lexingRules.addActiveWord(new StringDelimiter(lexingRules, '\''));
+		
+		//lexingRules.addActiveWord(new WordWithOpenCloseDelimiter(lexingRules, WS_KEYWORD_DELIMITER.charAt(0), WS_KEYWORD_DELIMITER.charAt(0)));
+		
+		ParsingEntity pe0 = new PEWord("ignore");
+		pe0.setNextPE(peStringLiteral()).setNextPE(WS_RULE_SEP);
+		
+		ParsingEntity p1 = 
+			new ParsingRuleBuilder("separators").
+				next(peStringLiteral()).
+				optional(new PERepeat(
+							new ParsingRuleBuilder(",").
+								next(peStringLiteral()).
+							parsingEntity()
+						)
+				).
+				next(WS_RULE_SEP).
+			parsingEntity();
 		
 		ParsingEntity peRow = new 
 				ParsingRuleBuilder(PE_RULE_NAME).
 				next(WS_RULE_PART_SEP).
 				next(PE_RULE_EXP).
-				next(new PEWord(WS_RULE_SEP)).
+				next(WS_RULE_SEP).
 			parsingEntity();
 		
 		
-		peRoot = new PEOptional(pe0);
+		peRoot = new PEUnordered().add(pe0).add(p1);
 		peRoot.setNextPE(new PERepeat(peRow));
 	}
 }

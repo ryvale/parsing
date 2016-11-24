@@ -46,7 +46,7 @@ public class PEOptional extends ParsingEntity {
 		}
 		
 		if(nextPE == EOS) {
-			if(!isRoot()) return notifyResult(parsing,PE_NEXT, lpevs, pevs);
+			if(!isRoot()) return notifyResult(parsing, PE_NEXT, lpevs, pevs);
 		}
 		
 		return notifyResult(parsing, nextPET.get(currentPE, parsing, lpevs), lpevs, pevs);

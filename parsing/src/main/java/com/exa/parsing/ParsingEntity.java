@@ -89,7 +89,7 @@ public class ParsingEntity {
 	public ParsingEntity checkBranch(Parsing<?> parsing, List<ParsingEvent> pevs) throws ManagedException {
 		ParsingEntity currentPE = this;
 	
-		DataBuffer db = parsing.bufferize();
+		DataBuffer db = parsing.monitorCharReading(false);
 		
 		do { currentPE = currentPE.check(parsing, pevs); } while(!currentPE.isFinal());
 		

@@ -17,7 +17,7 @@ public class StringDelimiter extends WordSeparator {
 	
 	@Override
 	public void nextToEndOfWord(CharReader script) throws ManagedException {
-		DataBuffer db = script.bufferize();
+		DataBuffer db = script.monitorCharReading(true);
 		
 		String bd;
 		do {
@@ -28,7 +28,7 @@ public class StringDelimiter extends WordSeparator {
 			
 		} while(bd.charAt(bd.length()-2) == '\\');
 		
-		script.releaseBuffer(db);
+		script.releaseCharReading(db);
 	}
 
 	@Override

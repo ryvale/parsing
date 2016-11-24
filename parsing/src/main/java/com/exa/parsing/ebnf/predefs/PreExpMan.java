@@ -14,6 +14,7 @@ public class PreExpMan extends ExpMan<RulesConfig> {
 	private String currentKey = null;
 	private StringBuilder sbValue = new StringBuilder();
 	private boolean ignorePresent = false; 
+	private boolean separatorsPresent = false; 
 
 	public PreExpMan(RulesConfig res) {
 		super(null);
@@ -38,6 +39,11 @@ public class PreExpMan extends ExpMan<RulesConfig> {
 					ignorePresent = false;
 					continue;
 				}
+				
+				if(separatorsPresent) {
+					separatorsPresent = false;
+					continue;
+				}
 			}
 			
 			if("ignore".equals(word)) {
@@ -45,9 +51,20 @@ public class PreExpMan extends ExpMan<RulesConfig> {
 				continue;
 			}
 			
+			if("separators".equals(word)) {
+				separatorsPresent = true;
+				continue;
+			}
+			
 			if(ignorePresent) {
 				res.charsToIgnore(word.substring(1, word.length() - 1).replaceAll("\\\\'", "'"));
 				continue;
+			}
+			
+			if(separatorsPresent) {
+				if(",".equals(word)) continue;
+				
+				res.separator(word.substring(1, word.length() - 1).replaceAll("\\\\'", "'"));
 			}
 			
 			if(currentKey == null) {

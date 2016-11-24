@@ -12,24 +12,42 @@ public class CharReader implements Cloneable {
 		
 		protected StringBuilder buffer = new StringBuilder();
 		
-		protected int position;
+		protected int initialPosition, position;
+		protected boolean buffered;
+		protected DataBuffer boundDB;
 		
-		public DataBuffer(int position) {
+		public DataBuffer(int position, boolean buffered) {
 			super();
 			this.position = position;
+			this.initialPosition = position;
+			this.buffered = buffered;
+			if(buffered) return;
+			
+			boundDB = sharedNBDB.get();
 		}
+		
+		public DataBuffer(int position) { this(position, true);}
 		
 		public DataBuffer() {
 			this(CharReader.this.position);
 		}
 		
-		public String value() { return buffer.toString(); }
+		public String value() { 
+			if(buffered) return buffer.toString(); 
+			
+			return sharedNBDB.value(initialPosition, position);
+		}
 		
-		public String release() { return CharReader.this.releaseBuffer(this); }
+		public String release() { 
+			if(buffered) return CharReader.this.releaseCharReading(this); 
+			
+			return  sharedNBDB.release();
+		}
 		
 		public void markPosition() {
 			buffer.setLength(0);
 			this.position = CharReader.this.position;
+			this.initialPosition = CharReader.this.position;
 		}
 		
 		public String rewind() { 
@@ -43,9 +61,36 @@ public class CharReader implements Cloneable {
 		
 	}
 	
+	class SharedNonBufferedDB {
+		protected DataBuffer db = null;
+		protected int refCount;
+		
+		public DataBuffer get() {
+			++refCount;
+			if(db == null) db = monitorCharReading(true);
+			return db;
+		}
+		
+		public String release() {
+			--refCount;
+			String res = db.value();
+			
+			if(refCount == 0) {
+				db.release();
+				db = null;
+			}
+			return res;
+		}
+		
+		public String value(int start, int end) {
+			return db.buffer.substring(start-db.initialPosition, end-db.initialPosition);
+		}
+	}
+	
 	protected StringBuilder analysisBuffer;
 	protected CharIterator charIterator;
 	protected List<DataBuffer> dataBuffers = new ArrayList<DataBuffer>();
+	protected SharedNonBufferedDB sharedNBDB = new SharedNonBufferedDB();
 	
 	protected final List<CharReader> clones;
 	
@@ -170,26 +215,28 @@ public class CharReader implements Cloneable {
 	
 	private void removeInDataBuffer(int nbChar) {
 		for(DataBuffer db : dataBuffers) {
-			int startToDelete = db.buffer.length() - nbChar;
+			if(db.buffered) {
+				int startToDelete = db.buffer.length() - nbChar;
+				
+				if(startToDelete<0) continue;
 			
-			if(startToDelete<0) continue;
+				db.buffer.delete(startToDelete, db.buffer.length());
 			
-			/*if(startToDelete>0)*/ db.buffer.delete(startToDelete, db.buffer.length());
-			//else db.buffer.delete(db.buffer.length(), db.buffer.length());
+			}
 			
 			db.position -= nbChar;
 		}
 		
 	}
 	
-	public DataBuffer bufferize() {
-		DataBuffer db = new DataBuffer(position);
+	public DataBuffer monitorCharReading(boolean toBeBuffered) {
+		DataBuffer db = new DataBuffer(position, toBeBuffered);
 		dataBuffers.add(db);
 		
 		return db;
 	}
 	
-	public String releaseBuffer(DataBuffer db) {
+	public String releaseCharReading(DataBuffer db) {
 		dataBuffers.remove(db);
 		return db.value();
 	}
@@ -199,7 +246,7 @@ public class CharReader implements Cloneable {
 		for(DataBuffer db : dataBuffers) {
 			if(position < db.position) continue;
 			
-			db.buffer.append(ch);
+			if(db.buffered)	db.buffer.append(ch);
 			db.position++;
 		}
 	}

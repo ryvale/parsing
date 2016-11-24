@@ -231,9 +231,9 @@ public class LexingRules {
 		DataBuffer db;
 		
 		if(aw.isFirstCharManager()) {
-			db = script.bufferize();
+			db = script.monitorCharReading(true);
 			aw.nextToEndOfWord(script);
-			return lastWrd = currentChar + script.releaseBuffer(db);
+			return lastWrd = currentChar + script.releaseCharReading(db);
 		}
 		
 		if(aw.isWordSeparator()) {
