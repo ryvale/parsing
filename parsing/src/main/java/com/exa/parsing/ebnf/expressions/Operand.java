@@ -15,6 +15,8 @@ public interface Operand<T> extends com.exa.expression.Operand<Item<?>>, Item<T>
 
 	Operand<String> asOPIdentifier();
 	
+	Operand<Integer> asOPInteger();
+	
 	ExpressionOperand asExpressionOperand();
 
 }

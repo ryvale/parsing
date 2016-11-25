@@ -65,6 +65,7 @@ public class PreExpMan extends ExpMan<RulesConfig> {
 				if(",".equals(word)) continue;
 				
 				res.separator(word.substring(1, word.length() - 1).replaceAll("\\\\'", "'"));
+				continue;
 			}
 			
 			if(currentKey == null) {

@@ -18,6 +18,8 @@ import com.exa.parsing.ebnf.RuleScript;
 import com.exa.utils.ManagedException;
 
 public class Evaluator extends StackEvaluator<Item<?>> {
+	static final Operator<ParsingEntity> OPRT_PE_ATOMIC = new OprtPEAtomic();
+	
 	public class FieldMan {
 		Map<ParsingEntity, FieldComputer<?>> fieldsParsingMap = new HashMap<>();
 		Map<String, Field<?>> fields = new HashMap<String, Field<?>>();
@@ -143,16 +145,33 @@ public class Evaluator extends StackEvaluator<Item<?>> {
 	public Map<String, Field<?>> getFields() { return fieldManager.getFields(); }
 
 	@Override
-	public Operand<?> operandReinterpreted(com.exa.expression.Operand<Item<?>> oprd) throws XPressionException {
-		Operand<String> opId = oprd.asSpecificItem().asOperand().asOPIdentifier();
-		if(opId == null) return oprd.asSpecificItem().asOperand();
+	public Operand<?> operandReinterpreted(com.exa.expression.Operand<Item<?>> oprd0) throws XPressionException {
+		Operand<?> oprd = oprd0.asSpecificItem().asOperand();
+		Operand<String> opId = oprd.asOPIdentifier();
+		if(opId == null) {
+			
+			return oprd0.asSpecificItem().asOperand();
+		}
 		
 		CompiledRule cr = null;
 		RuleScript rs = ruleParser.getRuleConfig().getRule(opId.value());
 		
 		try { cr = ruleParser.parse(rs.src()); } catch (ManagedException e) { throw new XPressionException(e); }
 		return new ConstantParsingEntity(cr.language().getPERoot());
+	}
+
+	@Override
+	public void closeSubExpression(String checkSymbol) throws XPressionException {
 		
+		if(")".equals(checkSymbol)) {
+			int nb = subExpProperties.peek().getSolvedStackSize();
+			super.closeSubExpression(checkSymbol);
+		
+			pushOperand(new ConstantInteger(nb));
+			pushOperand(OPRT_PE_ATOMIC);
+			return;
+		}
+		super.closeSubExpression(checkSymbol);
 	}
 	
 	

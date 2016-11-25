@@ -39,12 +39,17 @@ public class PERepeat extends ParsingEntity {
 				if(execCount >= min) {
 					
 					if(nextPE.isFinal()) {
-						if(isRoot()) return notifyResult(parsing, EOS, lpevs, pevs);
+						if(currentPE == EOS_FAIL) {
+							/*if(isRoot())*/ return notifyResult(parsing, EOS, lpevs, pevs);
+						}
+						
+						
+						if(isRoot()) return notifyResult(parsing, currentPE, lpevs, pevs);
 						
 						return notifyResult(parsing, PE_NEXT_CHECK, lpevs, pevs);
 					}
 					
-					notifyResult(parsing, (execCount>0? OK : PE_NEXT_CHECK), lpevs, pevs);
+					notifyResult(parsing, (execCount > 0 ? OK : PE_NEXT_CHECK), lpevs, pevs);
 					
 					return nextPE.check(parsing, pevs);
 				}

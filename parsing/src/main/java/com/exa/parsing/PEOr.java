@@ -49,6 +49,15 @@ public class PEOr extends ParsingEntity {
 
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
+		if(!parsing.hasNextString()) {
+			for(ParsingEntity pe : pes) {
+				if(pe.checkFinal()) continue;
+				return EOS_FAIL;
+			}
+			
+			return EOS;
+		}
+		
 		DataBuffer db = parsing.monitorCharReading(false);
 		
 		int nb = 0;
@@ -74,12 +83,9 @@ public class PEOr extends ParsingEntity {
 		
 		isdOK.reset();
 		isdOK.check(parsing);
-		//pevs.addAll(isdOK.pevs);
 		
-		/*if(isdOK.currentPE == PE_NEXT_CHECK) {
-			return nextPET.getPE().check(parsing, pevs);
-		}*/
 		ParsingEntity result = nextPET.get(isdOK.currentPE, parsing, pevs);
+		if(result.isFinal()) result = PE_NEXT;
 		
 		return notifyResult(parsing, result, isdOK.pevs, pevs);
 

@@ -24,7 +24,8 @@ public abstract class OperandBase<T> extends com.exa.expression.OperandBase<Item
 
 	@Override
 	public ExpressionOperand asExpressionOperand() { return null; }
-	
-	
+
+	@Override
+	public Operand<Integer> asOPInteger() {	return null; }
 	
 }

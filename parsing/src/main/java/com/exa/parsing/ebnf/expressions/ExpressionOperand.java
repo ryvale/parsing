@@ -35,5 +35,8 @@ public class ExpressionOperand extends com.exa.expression.ExpressionOperand<Item
 
 	@Override
 	public ExpressionOperand asExpressionOperand() { return this; }
+
+	@Override
+	public Operand<Integer> asOPInteger() { return null; }
 	
 }

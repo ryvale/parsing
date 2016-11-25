@@ -192,6 +192,13 @@ public class AppTest extends TestCase
     	assertTrue(p.validates("b"));
     	
     	assertFalse(p.validates("a"));
+    	
+    	cr = ebnfParser.parse("('a')");
+    	p = new OutputParser1(cr);
+    	
+    	assertTrue(p.validates("a"));
+    	
+    	assertFalse(p.validates("b"));
     }
     
     public void testEBNF3() throws ManagedException {
