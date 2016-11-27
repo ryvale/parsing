@@ -24,6 +24,7 @@ public class ParsedMap extends ParsedObject<Map<String, ParsedObject<?>>> {
 	
 	public boolean containsKey(String key) { return value.containsKey(key); }
 	
+	@Override
 	public ParsedObject<?> get(String key) { return value.get(key); }
 	
 }

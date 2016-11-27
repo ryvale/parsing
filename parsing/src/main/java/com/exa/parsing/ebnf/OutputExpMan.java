@@ -39,7 +39,7 @@ public class OutputExpMan extends ExpMan<ParsedMap> {
 			
 			if(computer.manageModifNotif(pev)) continue;
 			
-			computer.newValue(parsing, pev.getWord());
+			computer.newValue(pev);
 		}
 		
 		/*for(ParsingEvent pev : peEvents) {

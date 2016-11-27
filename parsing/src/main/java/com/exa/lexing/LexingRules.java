@@ -375,6 +375,7 @@ public class LexingRules {
 		}
 		if(i == 0) return;
 		
+		db.initialPosition += i;
 		sb.delete(0, i);
 	}
 	

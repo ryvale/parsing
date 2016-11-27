@@ -2,7 +2,6 @@ package com.exa.parsing.ebnf.expressions;
 
 import java.util.Map;
 
-import com.exa.parsing.Parsing;
 import com.exa.parsing.ParsingEvent;
 import com.exa.parsing.ebnf.Field;
 import com.exa.parsing.ebnf.ParsedObject;
@@ -22,9 +21,9 @@ public class FieldComputer<T> implements Cloneable {
 		this(null, fieldName, function);
 	}
 		
-	public void newValue(Parsing<?> parsing, String str) {
+	public void newValue(ParsingEvent pev) {
 		Field<T> field = function.getFrom(fields.get(fieldName));
-		field.setValue(function.compute(parsing, field.getValue(), str));
+		field.setValue(function.compute(pev.getParsing(), field.getValue(), pev.getWord()));
 	}
 	
 	public String getFieldName() { return fieldName; }

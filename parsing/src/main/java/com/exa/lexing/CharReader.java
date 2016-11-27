@@ -89,6 +89,7 @@ public class CharReader implements Cloneable {
 	
 	protected StringBuilder analysisBuffer;
 	protected CharIterator charIterator;
+	protected EscapeCharMan escapeCharMan;
 	protected List<DataBuffer> dataBuffers = new ArrayList<DataBuffer>();
 	protected SharedNonBufferedDB sharedNBDB = new SharedNonBufferedDB();
 	
@@ -102,11 +103,29 @@ public class CharReader implements Cloneable {
 		this.clones = clones;
 		this.position = position;
 		
+		this.escapeCharMan = EscapeCharMan.NO_ESCAPE;
+		
 		clones.add(this);
+		
+	}
+	
+	protected CharReader(EscapeCharMan escapeCharMan, List<CharReader> clones, String analysisBuffer, int position) {
+		this.escapeCharMan = escapeCharMan;
+		this.charIterator = escapeCharMan.getCharIterator();
+		this.analysisBuffer = new StringBuilder(analysisBuffer);
+		this.clones = clones;
+		this.position = position;
+		
+		clones.add(this);
+		
 	}
 	
 	public CharReader(CharIterator charIterator) {
 		this(charIterator, new ArrayList<CharReader>(), "", -1);
+	}
+	
+	public CharReader(EscapeCharMan escapeCharMan) {
+		this(escapeCharMan, new ArrayList<CharReader>(), "", -1);
 	}
 		
 	public CharReader(String str) throws ManagedException {
@@ -134,6 +153,8 @@ public class CharReader implements Cloneable {
 		
 		if(charIterator.next()) {
 			Character currentChar = charIterator.getCurrentChar();
+			currentChar = escapeCharMan.translated(currentChar);
+			
 			addInDataBuffer(currentChar);
 			addInCloneAnalysisBuffer(currentChar);
 			position++;

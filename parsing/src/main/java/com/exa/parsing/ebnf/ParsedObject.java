@@ -11,6 +11,9 @@ public class ParsedObject<T> {
 	public ParsedString asParsedString() { return null; }
 	public ParsedMap asParsedMap() { return null; }
 	public ParsedArray asParsedArray() { return null; }
+	
+	public Object get(String field) { return null;}
+	public Object get(int i) { return null;}
 
 	public T getValue() { return value; }
 	
@@ -19,4 +22,6 @@ public class ParsedObject<T> {
 	
 	
 	public void setValue(T value) { this.value = value; }
+	
+	
 }

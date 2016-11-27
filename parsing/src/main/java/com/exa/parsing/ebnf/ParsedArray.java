@@ -14,6 +14,7 @@ public class ParsedArray extends ParsedObject<List<ParsedObject<?>>> {
 	@Override
 	public ParsedArray asParsedArray() { return this;	}
 	
-	public ParsedObject<?> get(int i) { return value.get(0); }
+	@Override
+	public ParsedObject<?> get(int i) { return value.get(i); }
 	
 }

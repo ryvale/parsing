@@ -19,7 +19,9 @@ public class OprtPEAtomic extends OperatorBase<ParsingEntity> {
 		Operand<Integer> oprInt = oprd.asOPInteger();
 		Integer nb = oprInt.value();
 		
-		ParsingEntity peRoot = null, currentPE = null;
+		ParsingEntity peRoot = null;
+		
+		int nbPE = 0;
 		
 		while(eval.stackLength() > nb) {
 			ComputedItem<Item<?>> ci = eval.popOperand();
@@ -45,13 +47,17 @@ public class OprtPEAtomic extends OperatorBase<ParsingEntity> {
 			}
 			else pe = oppe.value();
 			
-			if(currentPE == null) {
-				peRoot = currentPE = pe;
+			if(peRoot == null) {
+				peRoot = pe;
 			}
-			else currentPE = currentPE.setNextPE(pe);
+			else {
+				pe.setNextPE(peRoot);
+				peRoot = pe;
+			}
+			++nbPE;
 		}
 		
-		eval.pushOperand(new ConstantParsingEntity(new PEAtomic(peRoot)));
+		eval.pushOperand(new ConstantParsingEntity(nbPE == 1 ? peRoot : new PEAtomic(peRoot)));
 	}
 
 	@Override

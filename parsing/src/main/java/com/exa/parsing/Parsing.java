@@ -99,7 +99,8 @@ public class Parsing<T> {
 	public T getResult() { return expMan.lastResult(); }
 	
 	public boolean notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, String word, ParsingEntity result) {
-		pevs.add(new ParsingEvent(pe, result, this, word));
+		if(result.asPEFail() == null)
+			pevs.add(new ParsingEvent(pe, result, this, word));
 		
 		return parser.notifyEvent(pe, result);
 	}

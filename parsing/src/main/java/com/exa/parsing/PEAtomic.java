@@ -40,7 +40,7 @@ public class PEAtomic extends ParsingEntity {
 					return notifyResult(parsing, PE_NEXT_CHECK, lpevs, pevs);
 				}
 				
-				notifyResult(parsing, PE_NEXT_CHECK, lpevs, pevs);
+				notifyResult(parsing, OK, lpevs, pevs);
 				return nextPE.check(parsing, pevs);
 			}
 			

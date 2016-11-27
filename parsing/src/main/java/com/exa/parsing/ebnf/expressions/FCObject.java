@@ -4,11 +4,11 @@ import com.exa.parsing.ParsingEvent;
 import com.exa.parsing.ebnf.CompiledRule;
 import com.exa.parsing.ebnf.ParsedObject;
 
-public class ObjectFieldComputer<T> extends FieldComputer<T> {
+public class FCObject<T> extends FieldComputer<T> {
 	protected FieldComputer<T> computer;
 	private CompiledRule compiledRule;
 
-	public ObjectFieldComputer(CompiledRule cr, FieldComputer<T> computer) {
+	public FCObject(CompiledRule cr, FieldComputer<T> computer) {
 		super(cr.getFields(), computer.getFieldName(), null);
 		this.computer = computer;
 		this.compiledRule = cr;
@@ -16,7 +16,7 @@ public class ObjectFieldComputer<T> extends FieldComputer<T> {
 
 	@Override
 	public boolean manageModifNotif(ParsingEvent pev) {
-		computer.newValue(pev.getParsing(), pev.getWord());
+		computer.newValue(pev);
 		
 		return true;
 	}
@@ -32,8 +32,8 @@ public class ObjectFieldComputer<T> extends FieldComputer<T> {
 	}
 
 	@Override
-	public ObjectFieldComputer<T> clone() {
-		return new ObjectFieldComputer<>(compiledRule, computer);
+	public FCObject<T> clone() {
+		return new FCObject<>(compiledRule, computer);
 	}
 	
 	

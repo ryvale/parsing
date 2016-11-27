@@ -29,6 +29,11 @@ public abstract class Parser<T> implements IParser<T> {
 		return parse(wi, createExpMan(wi));
 	}
 	
+	public T parseFile(String fileName) throws ManagedException {
+		WordIterator wi = newFileWIterator(fileName, "utf8");
+		return parse(wi, createExpMan(wi));
+	}
+	
 	public T parse(WordIterator wi, ExpMan<T> ires) throws ManagedException {
 		Parsing<T> parsing = createParsing(wi, ires);
 		
@@ -51,6 +56,15 @@ public abstract class Parser<T> implements IParser<T> {
 		
 		return parsing.expressionIsValid();
 	}
+	
+	public boolean validatesFile(String fileName) throws ManagedException {
+		WordIterator wi = newFileWIterator(fileName, "utf8");
+		
+		Parsing<T> parsing = createParsing(wi, createExpMan(wi));
+		
+		return parsing.expressionIsValid();
+	}
+	
 	
 	protected Parsing<T> createParsing(WordIterator wi, ExpMan<T> em) { 
 		return new Parsing<T>(this, wi, em, null, debugOn); 

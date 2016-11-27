@@ -468,9 +468,21 @@ public class AppTest extends TestCase
     	p = new OutputParser1(cr);
     	
     	pm = p.parse("nom : Kouakou Koffi\nnom: Jocelyn");
-    	System.out.println(pm.get("propriete").asParsedString().getValue());
-    	//assertTrue(pm.get("propriete").asParsedMap().get("nom").toString().equals("nom"));
-    	//assertTrue(pm.get("propriete").asParsedMap().get("valeur").toString().equals("Kouakou Koffi"));
+    	System.out.println(pm.get("propriete").asParsedString().getValue());    	
+    	
+    	cr = ebnfParser.parse("(v[]='a')+");
+    	p = new OutputParser1(cr);
+    	pm = p.parse("a");
+    	assertTrue(pm.get("v").get(0).toString().equals("a"));
+    	
+    	cr = ebnfParser.parse("(v[]=('a''b'))+");
+    	p = new OutputParser1(cr);
+    	pm = p.parse("a b");
+    	assertTrue(pm.get("v").get(0).toString().equals("a b"));
+    	
+    	pm = p.parse("a b a b");
+    	assertTrue(pm.get("v").get(0).toString().equals("a b"));
+    	assertTrue(pm.get("v").get(1).toString().equals("a b"));
     }
     
     private Parser<?> parserForTest(ParsingEntity pe) {
@@ -489,20 +501,6 @@ public class AppTest extends TestCase
 			
 			
 		};
-    }
-    
-    public void testPrioritaire() throws ManagedException {
-    	Parser<?> parser = parserForTest(new PERepeat("a", 1));
-    	assertTrue(parser.validates("a"));
-    	
-    	assertFalse(parser.validates("b"));
-    	
-    	ParsingEntity peRoot = new PERepeat("a", 0);
-    	peRoot.setNextPE("b");
-    	parser = parserForTest(peRoot);
-    	assertTrue(parser.validates("a b"));
-    	assertTrue(parser.validates("b"));
-    	
     }
     
     public void testParsing0() throws ManagedException {
@@ -571,7 +569,6 @@ public class AppTest extends TestCase
 		assertFalse(parser.validates("ab"));
 		assertFalse(parser.validates("a a"));
 		assertFalse(parser.validates("a b a"));
-		
 		
 		peRoot = new PERepeat("a", 0);
 		peRoot.setNextPE("b");
@@ -653,6 +650,24 @@ public class AppTest extends TestCase
 		
 		assertFalse(parser.validates("c a a a"));
 		assertFalse(parser.validates("c a a"));
+    }
+    
+    public void testFileParsing0() throws ManagedException {
+    	RuleParser ebnfParser = new RuleParser(new PreParser().parseFile("C:/recherches/parsing5/parsing/src/test/java/com/exa/parsing/test/script.parser"), false);
+    	CompiledRule cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("root").src());
+    	OutputParser1 p = new OutputParser1(cr);
+    	
+    	ParsedMap pm = p.parse("nom : Kouakou Koffi");
+    	assertTrue("nom".equals(pm.get("rows").asParsedArray().get(0).get("champ").toString()));
+    	assertTrue("Kouakou Koffi".equals(pm.get("rows").asParsedArray().get(0).get("valeur").toString()));
+    	
+    	pm = p.parse("nom : Koffi\nprénoms : Kouakou");
+    	assertTrue("nom".equals(pm.get("rows").asParsedArray().get(0).get("champ").toString()));
+    	System.out.println(pm.get("rows").asParsedArray().get(0).get("valeur").toString());
+    	assertTrue("Koffi".equals(pm.get("rows").asParsedArray().get(0).get("valeur").toString()));
+    	
+    	assertTrue("prénoms".equals(pm.get("rows").asParsedArray().get(1).get("champ").toString()));
+    	assertTrue("Kouakou".equals(pm.get("rows").asParsedArray().get(1).get("valeur").toString()));
     }
     
 }

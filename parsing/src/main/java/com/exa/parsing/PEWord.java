@@ -31,14 +31,21 @@ public class PEWord extends ParsingEntity {
 		this(kw, PETransformer.petOK(), PETransformer.petFAIL());
 	}
 	
+	public PEWord() {
+		super(PETransformer.petEOS());
+		this.petFalse = PETransformer.petFAIL();
+	}
+	
 	public PEWord(String ... strs) {
 		super(PETransformer.petOK());
 		this.petFalse = PETransformer.petFAIL();
 		
 		for(String str : strs) {
-			requiredStrings.add(str);
+			requiredStrings.add(str.replace("\\n", "\n"));
 		}
 	}
+	
+	public void add(String str) { requiredStrings.add(str.replace("\\n", "\n")); }
 	
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
@@ -60,6 +67,8 @@ public class PEWord extends ParsingEntity {
 			it.remove();
 		}
 		
+		ParsingEntity nextPE = getNextPE();
+		
 		if(strs.size() == 0) { 
 			db.rewindAndRelease();
 			return notifyResult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);
@@ -73,7 +82,10 @@ public class PEWord extends ParsingEntity {
 				}
 				
 				db2.rewindAndRelease();
-				return notifyResult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
+				if(nextPE.isFinal())
+					return notifyResult(parsing, PE_NEXT, db.release(), pevs);
+				
+				return notifyResult(parsing, nextPE, db.release(), pevs);
 			}
 			
 			it = strs.iterator();
@@ -96,12 +108,22 @@ public class PEWord extends ParsingEntity {
 		}
 		
 		db2.rewindAndRelease();
-		return notifyResult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
+		
+		
+		if(nextPE.isFinal())
+			return notifyResult(parsing, PE_NEXT, db.release(), pevs);
+		
+		return notifyResult(parsing, nextPE, db.release(), pevs);
 	}
+
+	public HashSet<String> getRequiredStrings() {
+		return requiredStrings;
+	}
+
+	@Override
+	public PEWord asPEWord() { return this;	}
 	
-	/*protected ParsingEntity notifyReult(Parsing<?> parsing, ParsingEntity result, String word, List<ParsingEvent> pevs) throws ManagedException {
-		parsing.notifyEvent(pevs, this, word, result);
-		return result;
-	}*/
+	
+	
 	
 }

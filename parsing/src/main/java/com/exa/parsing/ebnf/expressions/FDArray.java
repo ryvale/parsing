@@ -28,8 +28,4 @@ public class FDArray extends Field<List<ParsedObject<?>>> {
 	public ParsedArray valueAsParsedObject() {
 		return new ParsedArray(value);
 	}
-	
-	
-	
-	
 }

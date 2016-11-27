@@ -25,7 +25,8 @@ public class Language {
 	}
 	
 	public WordIterator newFileWordIterator(String fileName, String charset) throws ManagedException {
-		return new WordIterator(new CharReader(new BufferedFileCharIterator(fileName, charset)), lexingRules);
+		EscapeCharMan ecm = new EscapeCharMan.Standard(new BufferedFileCharIterator(fileName, charset));
+		return new WordIterator(new CharReader(ecm), lexingRules);
 	}
 	
 	

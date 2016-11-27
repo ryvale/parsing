@@ -5,6 +5,7 @@ import java.util.Map;
 import com.exa.expression.ComputedItem;
 import com.exa.expression.StackEvaluator;
 import com.exa.expression.XPressionException;
+import com.exa.parsing.PEAtomic;
 import com.exa.parsing.PEWord;
 import com.exa.parsing.ParsingEntity;
 import com.exa.parsing.ebnf.CompiledRule;
@@ -52,8 +53,8 @@ public class OpPropertySetter<T> extends OperatorBase<T> {
 				RuleScript rs = ruleParser.getRuleConfig().getRule(opId.value());
 			
 				try { cr = ruleParser.parse(rs.src()); } catch (ManagedException e) { throw new XPressionException(e); }
-			
-				oppe = new ConstantParsingEntity(cr.language().getPERoot());
+				ParsingEntity peRoot = cr.language().getPERoot();
+				oppe = new ConstantParsingEntity(peRoot.getNextPE().isFinal() ? peRoot : new PEAtomic(cr.language().getPERoot()));
 			}
 		}
 		
@@ -86,7 +87,7 @@ public class OpPropertySetter<T> extends OperatorBase<T> {
 			for(ParsingEntity npe : nfieldComputers.keySet()) {
 				FieldComputer<?> fc = nfieldComputers.get(npe);
 				
-				fieldMan.map(npe, new ObjectFieldComputer<>(crf, fc));
+				fieldMan.map(npe, new FCObject<>(crf, fc));
 			}
 			Field<?> field = fieldMan.getField(fieldName);
 			if(field == null) fieldMan.add(new FDObject(fieldName, crf.getFields()));

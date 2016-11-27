@@ -46,7 +46,9 @@ public class PERepeat extends ParsingEntity {
 						
 						if(isRoot()) return notifyResult(parsing, currentPE, lpevs, pevs);
 						
-						return notifyResult(parsing, PE_NEXT_CHECK, lpevs, pevs);
+						notifyResult(parsing, (execCount > 0 ? OK : PE_NEXT_CHECK), lpevs, pevs);
+						
+						return PE_NEXT_CHECK;
 					}
 					
 					notifyResult(parsing, (execCount > 0 ? OK : PE_NEXT_CHECK), lpevs, pevs);

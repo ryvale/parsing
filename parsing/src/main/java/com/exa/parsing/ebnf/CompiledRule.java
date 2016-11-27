@@ -55,12 +55,17 @@ public class CompiledRule implements Cloneable {
 			nfields.put(fname, fields.get(fname).clone());
 		}
 		
+		Map<FieldComputer<?>, FieldComputer<?>> oldNewFC = new HashMap<>();
+		
 		Map<ParsingEntity, FieldComputer<?>> nfieldComputers = new HashMap<>();
 		
 		for(ParsingEntity pe : fieldComputers.keySet()) {
-			FieldComputer<?> fc = fieldComputers.get(pe).clone();
+			FieldComputer<?> oldFC = fieldComputers.get(pe);
+			
+			FieldComputer<?> fc = oldNewFC.containsKey(oldFC) ? oldNewFC.get(oldFC) : oldFC.clone();
 			fc.setFields(nfields);
 			nfieldComputers.put(pe, fc);
+			oldNewFC.put(oldFC, fc);
 		}
 		
 		return new CompiledRule(language, nfields, nfieldComputers);

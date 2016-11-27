@@ -22,6 +22,12 @@ public class PENotWord extends ParsingEntity {
 		this.petFalse = petFalse;
 	}
 	
+	public PENotWord(HashSet<String> requiredStrings) {
+		super(PETransformer.petEOS());
+		this.requiredStrings.addAll(requiredStrings);
+		this.petFalse = PETransformer.petFAIL();
+	}
+	
 	public PENotWord(String kw, PETWithPE petOK) {
 		this(kw, petOK, PETransformer.petFAIL());
 	}

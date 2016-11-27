@@ -17,7 +17,9 @@ public class OprtOr extends OperatorBase<ParsingEntity> {
 	public void resolve(StackEvaluator<Item<?>> eval, int order, int nbOperands) throws XPressionException {
 		if(eval.stackLength() < nbOperands) throw new XPressionException("Error in the expression near '"+ symbol +"'");
 		
-		PEOr peOr = new PEOr();
+		PEOr peOr = null;
+		
+		PEWord peWord = new PEWord();
 		
 		for(int i=0; i<nbOperands; i++) {
 			Operand<?> oprd = eval.popComputedOperand().asSpecificItem().asOperand();
@@ -26,13 +28,19 @@ public class OprtOr extends OperatorBase<ParsingEntity> {
 				Operand<String> opstr = oprd.asOPString();
 				if(opstr == null) throw new XPressionException("Error in the expression near '"+ symbol +"'");
 				
-				oppe = new ConstantParsingEntity(new PEWord(opstr.value()));
+				if(peWord == null) peOr.add(new PEWord(opstr.value()));
+				else peWord.add(opstr.value());
+				continue;
 			}
-			
+			if(peOr == null) {
+				peOr = new PEOr();
+				peOr.add(peWord);
+				peWord = null;
+			}
 			peOr.add(oppe.value());
 		}
 		
-		eval.pushOperand(new ConstantParsingEntity(peOr));
+		eval.pushOperand(new ConstantParsingEntity(peWord == null ? peOr : peWord));
 	}
 
 	@Override

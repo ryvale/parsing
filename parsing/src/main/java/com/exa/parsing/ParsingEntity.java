@@ -130,6 +130,7 @@ public class ParsingEntity {
 	}
 	
 	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, List<ParsingEvent> lpevs, List<ParsingEvent> pevs) throws ManagedException {
+		
 		parsing.notifyEvent(pevs, this, lpevs, result);
 		pevs.addAll(lpevs);
 		
@@ -142,17 +143,18 @@ public class ParsingEntity {
 		return result;
 	}
 	
+	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, String word, List<ParsingEvent> lpevs, List<ParsingEvent> pevs) throws ManagedException {
+		parsing.notifyEvent(pevs, this, word, result);
+		
+		return result;
+	}
+	
 	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, List<ParsingEvent> pevs) throws ManagedException {
 		parsing.notifyEvent(pevs, this, (String)null, result);
 		
 		return result;
 	}
 	
-	/*protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, List<ParsingEvent> pevs) throws ManagedException {
-		
-		if(parsing.notifyEvent(pevs, this, 1, result));
-		
-		return result;
-	}*/
-
+	
+	public PEWord asPEWord() { return null; }
 }

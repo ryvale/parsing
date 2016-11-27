@@ -1,0 +1,6 @@
+ignore ' \t';
+separators ':', '\n', '\r';
+
+root :  (('\n'|'\r')* rows[]=row  ('\n'|'\r')*)+;
+
+row : champ = !':'+ ':' valeur =!('\n'|'\r')+ ;
