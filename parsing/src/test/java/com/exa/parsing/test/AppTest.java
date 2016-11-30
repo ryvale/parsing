@@ -668,6 +668,30 @@ public class AppTest extends TestCase
     	
     	assertTrue("prénoms".equals(pm.get("rows").asParsedArray().get(1).get("champ").toString()));
     	assertTrue("Kouakou".equals(pm.get("rows").asParsedArray().get(1).get("valeur").toString()));
+    	
+    	ebnfParser = new RuleParser(new PreParser().parseFile("C:/recherches/parsing5/parsing/src/test/java/com/exa/parsing/test/exat.parser"), false);
+    	cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("root").src());
+    	p = new OutputParser1(cr);
+    	
+    	pm = p.parse("test");
+    	assertTrue("test".equals(pm.get("tpart0").toString()));
+    	
+    	pm = p.parse("test1 %x% test2");
+    	assertTrue("test1 ".equals(pm.get("tpart0").toString()));
+    	assertTrue("x".equals(pm.get("parts").asParsedArray().get(0).get("epart").toString()));
+    	assertTrue(" test2".equals(pm.get("parts").asParsedArray().get(0).get("tpart").toString()));
+    	
+    	pm = p.parse("test1 %x% test2 %y% test3");
+    	assertTrue("test1 ".equals(pm.get("tpart0").toString()));
+    	assertTrue("x".equals(pm.get("parts").asParsedArray().get(0).get("epart").toString()));
+    	assertTrue(" test2 ".equals(pm.get("parts").asParsedArray().get(0).get("tpart").toString()));
+    	assertTrue("y".equals(pm.get("parts").asParsedArray().get(1).get("epart").toString()));
+    	assertTrue(" test3".equals(pm.get("parts").asParsedArray().get(1).get("tpart").toString()));
+    	
+    	pm = p.parse("test\\%");
+    	assertTrue("test\\%".equals(pm.get("tpart0").toString()));
     }
+    
+    
     
 }

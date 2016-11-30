@@ -22,7 +22,7 @@ public class OpArrayPropertySetter extends OpPropertySetter<List<ParsedObject<?>
 		Field<List<ParsedObject<?>>> field = f == null ? null : f.asArrayField();
 		if(field == null) fieldMan.add(field = new FDArray(fieldName));
 		
-		fieldMan.map(pe, new FCStringArray(fieldMan.getFields(), fieldName, FieldFunction.concatener));
+		fieldMan.map(pe, new FCStringArray(fieldMan.getFields(), fieldName, FieldFunction.assigner));
 	}
 
 	@Override

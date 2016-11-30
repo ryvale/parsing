@@ -22,12 +22,15 @@ public class PEAtomic extends ParsingEntity {
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs)	throws ManagedException {
 		ParsingEntity currentPE = peRoot;
+		int exec = 0;
 		
 		List<ParsingEvent> lpevs = new ArrayList<>();
 		
 		DataBuffer db = parsing.monitorCharReading(false);
-		while(!currentPE.isFinal()) 
+		while(!currentPE.isFinal()) {
 			currentPE = currentPE.check(parsing, lpevs);
+			++exec;
+		}
 		
 		if(currentPE != PE_NEXT_CHECK && currentPE.failed()) db.rewindAndRelease(); else db.release();
 		
@@ -37,7 +40,9 @@ public class PEAtomic extends ParsingEntity {
 				if(nextPE.isFinal()) {
 					if(isRoot()) return notifyResult(parsing, DEFAULT_FAIL, lpevs, pevs);
 					
-					return notifyResult(parsing, PE_NEXT_CHECK, lpevs, pevs);
+					notifyResult(parsing, exec>1 ? OK : PE_NEXT_CHECK, lpevs, pevs);
+					
+					return PE_NEXT_CHECK;
 				}
 				
 				notifyResult(parsing, OK, lpevs, pevs);
@@ -60,5 +65,10 @@ public class PEAtomic extends ParsingEntity {
 		
 		return notifyResult(parsing, currentPE, lpevs, pevs);
 	}
+
+	@Override
+	public PEAtomic asPEAtomic() { return this;	}
+	
+	
 	
 }

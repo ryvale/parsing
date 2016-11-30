@@ -54,7 +54,7 @@ public class OpPropertySetter<T> extends OperatorBase<T> {
 			
 				try { cr = ruleParser.parse(rs.src()); } catch (ManagedException e) { throw new XPressionException(e); }
 				ParsingEntity peRoot = cr.language().getPERoot();
-				oppe = new ConstantParsingEntity(peRoot.getNextPE().isFinal() ? peRoot : new PEAtomic(cr.language().getPERoot()));
+				oppe = new ConstantParsingEntity(peRoot.getNextPE().isFinal() ? peRoot : ( peRoot.asPEAtomic() == null ? new PEAtomic(peRoot) : peRoot));
 			}
 		}
 		

@@ -37,9 +37,11 @@ public class ParsingEntity {
 
 	public boolean isFinal() { return false; }
 	
-	public boolean isPEMissing() { return false; }
+	//public boolean isPEMissing() { return false; }
 		
 	public PEFail asPEFail() { return null; }
+	
+	public PEAtomic asPEAtomic() { return null; }
 
 	public boolean failed() { return asPEFail() != null; }
 	

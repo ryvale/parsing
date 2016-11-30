@@ -86,7 +86,7 @@ public class PreLanguage extends Language {
 		ParsingEntity pe0 = new PEWord("ignore");
 		pe0.setNextPE(peStringLiteral()).setNextPE(WS_RULE_SEP);
 		
-		ParsingEntity p1 = 
+		ParsingEntity pe1 = 
 			new ParsingRuleBuilder("separators").
 				next(peStringLiteral()).
 				optional(new PERepeat(
@@ -98,6 +98,9 @@ public class PreLanguage extends Language {
 				next(WS_RULE_SEP).
 			parsingEntity();
 		
+		ParsingEntity pe2 = new PEWord("lexerConcat");
+		pe2.setNextPE(peStringLiteral());
+		
 		ParsingEntity peRow = new 
 				ParsingRuleBuilder(PE_RULE_NAME).
 				next(WS_RULE_PART_SEP).
@@ -106,7 +109,7 @@ public class PreLanguage extends Language {
 			parsingEntity();
 		
 		
-		peRoot = new PEUnordered().add(pe0).add(p1);
+		peRoot = new PEUnordered().add(pe0).add(pe1).add(pe2);
 		peRoot.setNextPE(new PERepeat(peRow));
 	}
 }
