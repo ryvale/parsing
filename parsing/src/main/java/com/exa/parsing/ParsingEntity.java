@@ -2,7 +2,7 @@ package com.exa.parsing;
 
 import java.util.List;
 
-import com.exa.lexing.CharReader.DataBuffer;
+import com.exa.lexing.CharReader.Buffer;
 import com.exa.utils.ManagedException;
 
 public class ParsingEntity {
@@ -91,7 +91,7 @@ public class ParsingEntity {
 	public ParsingEntity checkBranch(Parsing<?> parsing, List<ParsingEvent> pevs) throws ManagedException {
 		ParsingEntity currentPE = this;
 	
-		DataBuffer db = parsing.monitorCharReading(false);
+		Buffer db = parsing.bufferize();
 		
 		do { currentPE = currentPE.check(parsing, pevs); } while(!currentPE.isFinal());
 		

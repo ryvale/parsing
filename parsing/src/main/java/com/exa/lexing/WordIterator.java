@@ -3,7 +3,7 @@ package com.exa.lexing;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.exa.lexing.CharReader.DataBuffer;
+import com.exa.lexing.CharReader.Buffer;
 import com.exa.utils.ManagedException;
 
 public class WordIterator implements Cloneable {
@@ -62,7 +62,9 @@ public class WordIterator implements Cloneable {
 		return new WordIterator(charReader.clone(), lexingRules, bufferStrings);
 	}
 
-	public DataBuffer monitorCharReading(boolean toBeBuffered) { return charReader.monitorCharReading(toBeBuffered); }
+	//public DataBuffer monitorCharReading(boolean toBeBuffered) { return charReader.monitorCharReading(toBeBuffered); }
+	
+	public Buffer bufferize() { return charReader.bufferize(); }
 	
 	public boolean hasNextString() throws ManagedException {
 		Character c = lexingRules.nextNonBlankChar(charReader);
@@ -72,12 +74,16 @@ public class WordIterator implements Cloneable {
 		return true;
 	}
 	
-	public void trimLeft(DataBuffer db) {
+	/*public void trimLeft(DataBuffer db) {
 		lexingRules.trimLeft(db);
-	}
+	}*/
 	
 	public String trimLeft(String str) {
 		return lexingRules.trimLeft(str);
+	}
+
+	public void trimLeft(Buffer db) {
+		lexingRules.trimLeft(db);
 	}
 	
 }

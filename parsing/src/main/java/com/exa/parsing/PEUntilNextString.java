@@ -2,7 +2,7 @@ package com.exa.parsing;
 
 import java.util.List;
 
-import com.exa.lexing.CharReader.DataBuffer;
+import com.exa.lexing.CharReader.Buffer;
 import com.exa.utils.ManagedException;
 
 public class PEUntilNextString extends ParsingEntity {
@@ -25,7 +25,7 @@ public class PEUntilNextString extends ParsingEntity {
 
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
-		DataBuffer db = parsing.firstBufferizeRead();
+		Buffer db = parsing.firstBufferizedRead();
 		if(db == null) return EOS_FAIL;
 		
 		int nb = 0;

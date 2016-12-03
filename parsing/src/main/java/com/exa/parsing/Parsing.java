@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.exa.lexing.CharReader.DataBuffer;
+import com.exa.lexing.CharReader.Buffer;
 import com.exa.lexing.WordIterator;
 import com.exa.utils.ManagedException;
 
@@ -182,17 +182,28 @@ public class Parsing<T> {
 		return wi.hasNextString();
 	}
 	
-	public DataBuffer firstBufferizeRead() throws ManagedException {
+	/*public DataBuffer firstBufferizeRead() throws ManagedException {
 		DataBuffer db = monitorCharReading(true);
+		if(nextString() == null) { db.release(); return null; }
+		trimLeft(db);
+		
+		return db;
+	}*/
+	
+	public Buffer firstBufferizedRead() throws ManagedException {
+		Buffer db = bufferize();
 		if(nextString() == null) { db.release(); return null; }
 		trimLeft(db);
 		
 		return db;
 	}
 	
-	public DataBuffer monitorCharReading(boolean toBeBuffered) { return wi.monitorCharReading(toBeBuffered); }
+	//public DataBuffer monitorCharReading(boolean toBeBuffered) { return wi.monitorCharReading(toBeBuffered); }
+	public Buffer bufferize() { return wi.bufferize(); }
 	
-	public void trimLeft(DataBuffer db) { wi.trimLeft(db); }
+	//public void trimLeft(DataBuffer db) { wi.trimLeft(db); }
+	
+	public void trimLeft(Buffer db) { wi.trimLeft(db); }
 	
 	public String trimLeft(String str) { return wi.trimLeft(str); }
 	

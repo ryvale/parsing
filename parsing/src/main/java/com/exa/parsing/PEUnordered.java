@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.exa.lexing.CharReader.DataBuffer;
+import com.exa.lexing.CharReader.Buffer;
 import com.exa.utils.ManagedException;
 
 public class PEUnordered extends ParsingEntity {
@@ -110,9 +110,9 @@ public class PEUnordered extends ParsingEntity {
 			return EOS;
 		}
 		
-		DataBuffer dbOrigine = parsing.monitorCharReading(false);
+		Buffer dbOrigine = parsing.bufferize();
 		
-		DataBuffer db = parsing.monitorCharReading(false);
+		Buffer db = parsing.bufferize();
 		
 		List<InstanceSpecificData> npes = new ArrayList<>(), pesOK = new ArrayList<>();
 		for(PESpecic pesp : pes) npes.add(new InstanceSpecificData(pesp));

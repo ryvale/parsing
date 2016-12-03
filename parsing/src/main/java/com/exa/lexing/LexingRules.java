@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-
-import com.exa.lexing.CharReader.DataBuffer;
+import com.exa.lexing.CharReader.Buffer;
 import com.exa.parsing.ParsingException;
 import com.exa.utils.ManagedException;
 
@@ -228,12 +227,14 @@ public class LexingRules {
 		
 		if(aw == null) return lastWrd = currentChar + nextWordStartingWithNonWS(script);
 		
-		DataBuffer db;
+		//DataBuffer db;
+		Buffer buffer;
 		
 		if(aw.isFirstCharManager()) {
-			db = script.monitorCharReading(true);
+			buffer = script.bufferize();
+			//db = script.monitorCharReading(true);
 			aw.nextToEndOfWord(script);
-			return lastWrd = currentChar + script.releaseCharReading(db);
+			return lastWrd = currentChar + buffer.release(); //script.releaseCharReading(db);
 		}
 		
 		if(aw.isWordSeparator()) {
@@ -363,7 +364,7 @@ public class LexingRules {
 	
 	public String readBlank() { return sbBlank.toString(); }
 	
-	public void trimLeft(DataBuffer db) {
+	/*public void trimLeft(DataBuffer db) {
 		StringBuilder sb = db.buffer;
 		int i = 0;
 		
@@ -377,7 +378,7 @@ public class LexingRules {
 		
 		db.initialPosition += i;
 		sb.delete(0, i);
-	}
+	}*/
 	
 	public String trimLeft(String str) {
 		StringBuilder sb = new StringBuilder(str);
@@ -393,6 +394,23 @@ public class LexingRules {
 		
 		sb.delete(0, i);
 		return sb.toString();
+	}
+
+	public void trimLeft(Buffer db) {
+		StringBuilder sb = db.buffer;
+		int i = 0;
+		
+		for(i = db.start; i<sb.length(); i++) {
+			Character c = sb.charAt(i);
+			if(blankCharacters.contains(c.toString())) continue;
+			
+			break;
+		}
+		if(i == 0) return;
+		
+		db.start += (i-db.start);
+		//sb.delete(0, i);
+		
 	}
 	
 }

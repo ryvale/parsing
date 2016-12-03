@@ -25,7 +25,7 @@ public class BufferedFileCharIterator implements CharIterator {
 	protected char currentChar;
 	
 	protected int bufferizeInc = 0;
-	protected StringBuilder dataBuffer = new StringBuilder();
+	//protected StringBuilder dataBuffer = new StringBuilder();
 	
 	public BufferedFileCharIterator(String fileName) throws ManagedException {
 		this(fileName, Charset.defaultCharset(), DEFAULT_BUFFER_SIZE, 0, true);
@@ -101,7 +101,7 @@ public class BufferedFileCharIterator implements CharIterator {
 			char lastChar = currentChar;
 			
 			currentChar = buffer[++charPos];
-			if(bufferizeInc>0) dataBuffer.append(currentChar);
+			//if(bufferizeInc>0) dataBuffer.append(currentChar);
 			
 			updateLineProperties(lastChar);
 						

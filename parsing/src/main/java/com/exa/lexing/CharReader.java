@@ -8,8 +8,74 @@ import com.exa.utils.ManagedException;
 
 public class CharReader implements Cloneable {
 	
-	public class DataBuffer {
+	public class Buffer {
+		protected StringBuilder buffer;
+		protected int start;
+		protected Integer end = null;
 		
+		public Buffer(int position) {
+			buffer = sharedBuffer.get();
+			
+			this.start = position - sharedBuffer.start;
+		}
+		
+		public Buffer() { this(position); }
+
+		@Override
+		public String toString() {
+			return buffer.substring(start, end == null ? position - sharedBuffer.start : end);
+		}
+		
+		public void markPosition() {
+			//buffer.setLength(0);
+			start = position - sharedBuffer.start;
+			//this.initialPosition = CharReader.this.position;
+		}
+		
+		public String release() {
+			sharedBuffer.release();
+			end = position - sharedBuffer.start;
+			return toString();
+		}
+		
+		public String rewind() { 
+			String res = toString();
+			addInAnalysisBuffer(res);
+			
+			return res;
+		}
+		
+		public void rewindAndRelease() { rewind(); release(); };
+		
+	}
+	
+	class SharedBuffer {
+		protected StringBuilder currentBuffer;
+		protected int refCount = 0;
+		protected int start;
+		
+		public StringBuilder get() {
+			++refCount;
+			
+			if(refCount == 1) {
+				currentBuffer = new StringBuilder();
+				
+				start = position;
+			}
+			
+			return currentBuffer;
+		}
+		
+		public void release() {
+			--refCount;
+			if(refCount == 0) currentBuffer = null; 
+		}
+		
+		public void reset() { refCount = 0; currentBuffer = null; }
+	}
+	
+	
+	/*public class DataBuffer {
 		protected StringBuilder buffer = new StringBuilder();
 		
 		protected int initialPosition, position;
@@ -85,13 +151,18 @@ public class CharReader implements Cloneable {
 		public String value(int start, int end) {
 			return db.buffer.substring(start-db.initialPosition, end-db.initialPosition);
 		}
-	}
+	}*/
 	
 	protected StringBuilder analysisBuffer;
 	protected CharIterator charIterator;
 	protected EscapeCharMan escapeCharMan;
-	protected List<DataBuffer> dataBuffers = new ArrayList<DataBuffer>();
-	protected SharedNonBufferedDB sharedNBDB = new SharedNonBufferedDB();
+	//protected List<DataBuffer> dataBuffers = new ArrayList<DataBuffer>();
+	
+	protected SharedBuffer sharedBuffer = new SharedBuffer();
+	
+	//protected SharedNonBufferedDB sharedNBDB = new SharedNonBufferedDB();
+	
+	
 	
 	protected final List<CharReader> clones;
 	
@@ -136,7 +207,8 @@ public class CharReader implements Cloneable {
 		this.charIterator = new StringCharIterator(str);
 		analysisBuffer.delete(0, analysisBuffer.length());
 		position = -1;
-		dataBuffers.clear();
+		//dataBuffers.clear();
+		sharedBuffer.reset();
 	}
 	
 	public int getPosition() { return position; }
@@ -235,7 +307,7 @@ public class CharReader implements Cloneable {
 	}
 	
 	private void removeInDataBuffer(int nbChar) {
-		for(DataBuffer db : dataBuffers) {
+		/*for(DataBuffer db : dataBuffers) {
 			if(db.buffered) {
 				int startToDelete = db.buffer.length() - nbChar;
 				
@@ -246,29 +318,41 @@ public class CharReader implements Cloneable {
 			}
 			
 			db.position -= nbChar;
-		}
+		}*/
+		
+		if(sharedBuffer.refCount<=0) return;
+		
+		int startToDelete = sharedBuffer.currentBuffer.length() - nbChar;
+		if(startToDelete<0) return;
+		sharedBuffer.currentBuffer.delete(startToDelete, sharedBuffer.currentBuffer.length());
 		
 	}
 	
-	public DataBuffer monitorCharReading(boolean toBeBuffered) {
+	/*public DataBuffer monitorCharReading(boolean toBeBuffered) {
 		DataBuffer db = new DataBuffer(position, toBeBuffered);
 		dataBuffers.add(db);
 		
 		return db;
-	}
+	}*/
 	
-	public String releaseCharReading(DataBuffer db) {
+	public Buffer bufferize() { return new Buffer(position); }
+	
+	/*public String releaseCharReading(DataBuffer db) {
 		dataBuffers.remove(db);
 		return db.value();
-	}
+	}*/
 
 	
 	private void addInDataBuffer(Character ch) {
-		for(DataBuffer db : dataBuffers) {
+		
+		/*for(DataBuffer db : dataBuffers) {
 			if(position < db.position) continue;
 			
 			if(db.buffered)	db.buffer.append(ch);
 			db.position++;
+		}*/
+		if(sharedBuffer.refCount>0) {
+			sharedBuffer.currentBuffer.append(ch);
 		}
 	}
 	

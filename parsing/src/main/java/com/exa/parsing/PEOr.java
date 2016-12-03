@@ -3,7 +3,7 @@ package com.exa.parsing;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.exa.lexing.CharReader.DataBuffer;
+import com.exa.lexing.CharReader.Buffer;
 import com.exa.utils.ManagedException;
 
 public class PEOr extends ParsingEntity {
@@ -58,7 +58,7 @@ public class PEOr extends ParsingEntity {
 			return EOS;
 		}
 		
-		DataBuffer db = parsing.monitorCharReading(false);
+		Buffer db = parsing.bufferize();
 		
 		int nb = 0;
 		InstanceSpecificData isdOK = null;
@@ -68,7 +68,7 @@ public class PEOr extends ParsingEntity {
 			ParsingEntity currentPE = isd.check(parsing);
 			while(!currentPE.isFinal()) currentPE = isd.check(parsing);
 			if(!currentPE.failed() || currentPE == PE_NEXT_CHECK) {
-				isd.str = db.value();
+				isd.str = db.toString();
 				if(nb == 0 || isd.str.length()>isdOK.str.length()) {isdOK = isd; nb = 1;}
 				else if(isd.str.length() == isdOK.str.length()) ++nb;
 			}

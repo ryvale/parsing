@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import com.exa.lexing.CharReader.DataBuffer;
+import com.exa.lexing.CharReader.Buffer;
 import com.exa.utils.ManagedException;
 
 public class PEWord extends ParsingEntity {
@@ -49,19 +49,19 @@ public class PEWord extends ParsingEntity {
 	
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
-		DataBuffer db = parsing.firstBufferizeRead();
+		Buffer db = parsing.firstBufferizedRead();
 		if(db == null) return EOS_FAIL;
 		
 		HashSet<String> strs = new HashSet<>();
 		strs.addAll(requiredStrings);
 		
-		DataBuffer db2 = parsing.monitorCharReading(false);
+		Buffer db2 = parsing.bufferize();
 		String strOK = null;
 		Iterator<String> it = strs.iterator();
 		while(it.hasNext()) {
 			String str = it.next();
-			if(str.contains(db.value())) {
-				if(str.equals(db.value())) strOK = str;
+			if(str.contains(db.toString())) {
+				if(str.equals(db.toString())) strOK = str;
 				continue;
 			}
 			it.remove();
@@ -91,8 +91,8 @@ public class PEWord extends ParsingEntity {
 			it = strs.iterator();
 			while(it.hasNext()) {
 				String str = it.next();
-				if(str.contains(db.value())) {
-					if(str.equals(db.value())) {
+				if(str.contains(db.toString())) {
+					if(str.equals(db.toString())) {
 						db2.markPosition();
 						strOK = str;
 					}

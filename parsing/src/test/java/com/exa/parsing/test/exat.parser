@@ -1,5 +1,4 @@
 separators '%', '\\%';
-lexerConcat '';
 
 root : tpart0 = ('\\%'|!'%')* (parts []= instance)* tpart1 = ('\\%'|!'%')*;
 instance : '%'epart = ('\\%'|!'%')* '%' tpart = ('\\%'|!'%')*;

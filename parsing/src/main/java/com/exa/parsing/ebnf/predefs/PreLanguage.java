@@ -98,9 +98,6 @@ public class PreLanguage extends Language {
 				next(WS_RULE_SEP).
 			parsingEntity();
 		
-		ParsingEntity pe2 = new PEWord("lexerConcat");
-		pe2.setNextPE(peStringLiteral());
-		
 		ParsingEntity peRow = new 
 				ParsingRuleBuilder(PE_RULE_NAME).
 				next(WS_RULE_PART_SEP).
@@ -109,7 +106,7 @@ public class PreLanguage extends Language {
 			parsingEntity();
 		
 		
-		peRoot = new PEUnordered().add(pe0).add(pe1).add(pe2);
+		peRoot = new PEUnordered().add(pe0).add(pe1);
 		peRoot.setNextPE(new PERepeat(peRow));
 	}
 }
