@@ -14,7 +14,7 @@ public class PEAllWord extends ParsingEntity {
 		
 		if(parsing.lexerWord() == null) {
 			db.rewindAndRelease();
-			return notifyResult(parsing, new PEFail("Unexpected end of file."), (String)null, pevs); //new PEFail("Unexpected end of file.");
+			return notifyResult(parsing, new PEFail("Unexpected end of file."), (Buffer)null, pevs); //new PEFail("Unexpected end of file.");
 		}
 		
 		return notifyResult(parsing, nextPET.get(null, parsing, pevs), db.release(), pevs);

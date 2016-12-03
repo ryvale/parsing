@@ -28,7 +28,7 @@ public class PreExpMan extends ExpMan<RulesConfig> {
 		
 		for(ParsingEvent pev : pevs) {
 			if(pev.isParent()) continue;
-			String word = pev.getWord();
+			String word = pev.getTrimWord();
 			
 			if(word == null) continue;
 			

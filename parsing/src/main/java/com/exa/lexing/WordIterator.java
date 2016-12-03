@@ -82,8 +82,8 @@ public class WordIterator implements Cloneable {
 		return lexingRules.trimLeft(str);
 	}
 
-	public void trimLeft(Buffer db) {
-		lexingRules.trimLeft(db);
+	public String trimLeft(Buffer db) {
+		return lexingRules.trimLeft(db);
 	}
 	
 }

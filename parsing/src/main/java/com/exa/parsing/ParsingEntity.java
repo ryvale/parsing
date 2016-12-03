@@ -139,20 +139,20 @@ public class ParsingEntity {
 		return result;
 	}
 	
-	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, String word, List<ParsingEvent> pevs) throws ManagedException {
-		parsing.notifyEvent(pevs, this, word, result);
+	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, Buffer buffer, List<ParsingEvent> pevs) throws ManagedException {
+		parsing.notifyEvent(pevs, this, buffer, result);
 		
 		return result;
 	}
 	
-	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, String word, List<ParsingEvent> lpevs, List<ParsingEvent> pevs) throws ManagedException {
-		parsing.notifyEvent(pevs, this, word, result);
+	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, Buffer buffer, List<ParsingEvent> lpevs, List<ParsingEvent> pevs) throws ManagedException {
+		parsing.notifyEvent(pevs, this, buffer, result);
 		
 		return result;
 	}
 	
 	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, List<ParsingEvent> pevs) throws ManagedException {
-		parsing.notifyEvent(pevs, this, (String)null, result);
+		parsing.notifyEvent(pevs, this, (Buffer)null, result);
 		
 		return result;
 	}

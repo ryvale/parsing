@@ -46,7 +46,7 @@ public class PEUntilNextString extends ParsingEntity {
 		
 		if(mandatory) {
 			db.rewindAndRelease();
-			return notifyResult(parsing, new PEFail("Unable to find '"+ seekString+"' in the expression."), (String)null, pevs); //new PEFail("Unable to find '"+ seekString+"' in the expression.");
+			return notifyResult(parsing, new PEFail("Unable to find '"+ seekString+"' in the expression."), (Buffer)null, pevs); //new PEFail("Unable to find '"+ seekString+"' in the expression.");
 		}
 		
 		return notifyResult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);

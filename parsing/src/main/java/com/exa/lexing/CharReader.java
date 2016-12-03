@@ -23,7 +23,9 @@ public class CharReader implements Cloneable {
 
 		@Override
 		public String toString() {
-			return buffer.substring(start, end == null ? position - sharedBuffer.start : end);
+			int end = (this.end == null ? position - sharedBuffer.start : this.end);
+			if(end> buffer.length()) end = buffer.length();
+			return buffer.substring(start, end);
 		}
 		
 		public void markPosition() {
@@ -32,10 +34,10 @@ public class CharReader implements Cloneable {
 			//this.initialPosition = CharReader.this.position;
 		}
 		
-		public String release() {
+		public Buffer release() {
 			sharedBuffer.release();
 			end = position - sharedBuffer.start;
-			return toString();
+			return this;
 		}
 		
 		public String rewind() { 
@@ -45,7 +47,10 @@ public class CharReader implements Cloneable {
 			return res;
 		}
 		
-		public void rewindAndRelease() { rewind(); release(); };
+		public Buffer rewindAndRelease() { 
+			rewind(); 
+			return release(); 
+		}
 		
 	}
 	

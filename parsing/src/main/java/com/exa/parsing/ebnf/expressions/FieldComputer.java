@@ -23,7 +23,7 @@ public class FieldComputer<T> implements Cloneable {
 		
 	public void newValue(ParsingEvent pev) {
 		Field<T> field = function.getFrom(fields.get(fieldName));
-		field.setValue(function.compute(pev.getParsing(), field.getValue(), pev.getWord()));
+		field.setValue(function.compute(pev.getParsing(), field.getValue(), pev.getTrimWord()));
 	}
 	
 	public String getFieldName() { return fieldName; }

@@ -377,7 +377,7 @@ public class AppTest extends TestCase
     
     
     public void testEBNF4() throws ManagedException {
-    	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; row : nom $= !':'+ ':' valeur $=(!'\n'|!'\r')+ '\n'?; root : 'a';"), false);
+    	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; row : nom = !':'+ ':' valeur = !('\n'|'\r')+ '\n'?; root : 'a';"), false);
     	CompiledRule cr = ebnfParser.parse("nomA='a'|nomB='b'");
     	OutputParser1 p = new OutputParser1(cr);
     	
@@ -405,7 +405,7 @@ public class AppTest extends TestCase
     	pm = p.parse("a b");
     	assertTrue(pm.get("nom").toString().equals("a b"));
     	pm = p.parse("a\tb");
-    	assertTrue(pm.get("nom").toString().equals("a b"));
+    	assertTrue(pm.get("nom").toString().equals("a\tb"));
     	
     	cr = ebnfParser.parse("nom []='a'");
     	p = new OutputParser1(cr);
@@ -450,7 +450,7 @@ public class AppTest extends TestCase
     	assertTrue(pm.get("nom").toString().equals("Prénoms"));
     	assertTrue(pm.get("valeur").toString().equals("Joseph François"));
     	
-    	cr = ebnfParser.parse("propriete $= !':'+ ':' valeur $= (!'\n'|!'\r')+ ('\n'|'\r')?");
+    	cr = ebnfParser.parse("propriete = !':'+ ':' valeur = !('\n'|'\r')+ ('\n'|'\r')?");
     	p = new OutputParser1(cr);
     	pm = p.parse("nom : Kouakou Koffi");
     	

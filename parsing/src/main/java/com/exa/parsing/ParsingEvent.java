@@ -2,13 +2,19 @@ package com.exa.parsing;
 
 import java.util.List;
 
+import com.exa.lexing.CharReader.Buffer;
+
 public class ParsingEvent {
 	
-	public static abstract class WordMan {
-		public abstract String getWord();
+	public abstract class WordMan {
+		public String trimValue() {
+			String str = toString();
+			if(str == null) return null;
+			return parsing.trimLeft(str); 
+		}
 	}
 	
-	public static class WMSubPEVs extends WordMan {
+	public class WMSubPEVs extends WordMan {
 		protected List<ParsingEvent> pevs;
 		
 		public WMSubPEVs(List<ParsingEvent> pevs) {
@@ -16,31 +22,31 @@ public class ParsingEvent {
 		}
 		
 		@Override
-		public String getWord() {
+		public String toString() {
 			StringBuilder sb = new StringBuilder();
 			for(ParsingEvent pev : pevs) {
 				if(pev.isParent()) continue;
 				String word = pev.getWord();
 				if(word == null) continue;
-				sb.append(" ").append(pev.getWord());
+				sb.append(word);
 			}
-			if(sb.length()>0) return sb.substring(1);
+			//if(sb.length()>0) return sb.substring(1);
 			return sb.toString(); 
 		}
 	}
 	
-	public static class WMConstant extends WordMan {
-		protected String word;
+	public class WMConstant extends WordMan {
+		protected Buffer buffer;
 		
-		public WMConstant(String word) {
-			this.word = word;
+		public WMConstant(Buffer buffer) {
+			this.buffer = buffer;
 		}
 		
 		@Override
-		public String getWord() { return word; }
+		public String toString() { return buffer == null ? null : buffer.toString(); }
 	};
 	
-	protected String word;
+	protected Buffer buffer;
 	protected ParsingEntity parsingEntity;
 	protected ParsingEntity result;
 	protected Parsing<?> parsing;
@@ -54,7 +60,7 @@ public class ParsingEvent {
 		
 		nb = 0;
 		wordMan = new WMSubPEVs(pevs);
-		this.word = null;
+		this.buffer = null;
 		for(ParsingEvent pev : pevs) {
 			if(pev.isParent()) continue;
 			++nb;
@@ -63,12 +69,12 @@ public class ParsingEvent {
 		this.result = result;
 	}
 	
-	public ParsingEvent(ParsingEntity parsingEntity, ParsingEntity result, Parsing<?> parsing, String word) {
+	public ParsingEvent(ParsingEntity parsingEntity, ParsingEntity result, Parsing<?> parsing, Buffer buffer) {
 		this.parsing = parsing;
 		this.parent = false;
 		
-		wordMan = new WMConstant(word);
-		this.word = word;
+		wordMan = new WMConstant(buffer);
+		this.buffer = buffer;
 		this.nb = 1;
 		this.parsingEntity = parsingEntity;
 		this.result = result;
@@ -78,10 +84,12 @@ public class ParsingEvent {
 		this(parsingEntity, result, parsing, null, nb);
 	}*/
 
-	public String getWord() { 
-		if(word != null) return word; 
-		
-		return word = wordMan.getWord();
+	public String getWord() { 		
+		return wordMan.toString();
+	}
+	
+	public String getTrimWord() { 		
+		return wordMan.trimValue();
 	}
 
 	public ParsingEntity getParsingEntity() { return parsingEntity;	}

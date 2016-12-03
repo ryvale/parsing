@@ -58,10 +58,12 @@ public class PEWord extends ParsingEntity {
 		Buffer db2 = parsing.bufferize();
 		String strOK = null;
 		Iterator<String> it = strs.iterator();
+		
+		String bufTrimValue = parsing.trimLeft(db);
 		while(it.hasNext()) {
 			String str = it.next();
-			if(str.contains(db.toString())) {
-				if(str.equals(db.toString())) strOK = str;
+			if(str.contains(bufTrimValue)) {
+				if(str.equals(bufTrimValue)) strOK = str;
 				continue;
 			}
 			it.remove();
@@ -71,14 +73,14 @@ public class PEWord extends ParsingEntity {
 		
 		if(strs.size() == 0) { 
 			db.rewindAndRelease();
-			return notifyResult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);
+			return notifyResult(parsing, petFalse.get(this, parsing, pevs), (Buffer)null, pevs);
 		}
 		
 		while(strs.size() > 0) {
 			if(parsing.nextString() == null) {
 				if(strOK == null) {
 					db.rewindAndRelease();
-					return notifyResult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);
+					return notifyResult(parsing, petFalse.get(this, parsing, pevs), (Buffer)null, pevs);
 				}
 				
 				db2.rewindAndRelease();
@@ -88,11 +90,12 @@ public class PEWord extends ParsingEntity {
 				return notifyResult(parsing, nextPE, db.release(), pevs);
 			}
 			
+			bufTrimValue = parsing.trimLeft(db);
 			it = strs.iterator();
 			while(it.hasNext()) {
 				String str = it.next();
-				if(str.contains(db.toString())) {
-					if(str.equals(db.toString())) {
+				if(str.contains(bufTrimValue)) {
+					if(str.equals(bufTrimValue)) {
 						db2.markPosition();
 						strOK = str;
 					}
@@ -104,11 +107,10 @@ public class PEWord extends ParsingEntity {
 		
 		if(strOK == null) {
 			db.rewindAndRelease();
-			return notifyResult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);
+			return notifyResult(parsing, petFalse.get(this, parsing, pevs), (Buffer)null, pevs);
 		}
 		
 		db2.rewindAndRelease();
-		
 		
 		if(nextPE.isFinal())
 			return notifyResult(parsing, PE_NEXT, db.release(), pevs);
@@ -122,8 +124,5 @@ public class PEWord extends ParsingEntity {
 
 	@Override
 	public PEWord asPEWord() { return this;	}
-	
-	
-	
 	
 }

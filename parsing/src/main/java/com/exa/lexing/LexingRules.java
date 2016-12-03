@@ -234,7 +234,7 @@ public class LexingRules {
 			buffer = script.bufferize();
 			//db = script.monitorCharReading(true);
 			aw.nextToEndOfWord(script);
-			return lastWrd = currentChar + buffer.release(); //script.releaseCharReading(db);
+			return lastWrd = currentChar + buffer.release().toString(); //script.releaseCharReading(db);
 		}
 		
 		if(aw.isWordSeparator()) {
@@ -396,7 +396,7 @@ public class LexingRules {
 		return sb.toString();
 	}
 
-	public void trimLeft(Buffer db) {
+	public String trimLeft(Buffer db) {
 		StringBuilder sb = db.buffer;
 		int i = 0;
 		
@@ -406,9 +406,11 @@ public class LexingRules {
 			
 			break;
 		}
-		if(i == 0) return;
+		if(i == 0) return sb.toString();
 		
-		db.start += (i-db.start);
+		return sb.substring(i);
+		
+		//db.start += (i-db.start);
 		//sb.delete(0, i);
 		
 	}

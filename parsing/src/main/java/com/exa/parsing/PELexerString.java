@@ -32,7 +32,7 @@ public class PELexerString extends ParsingEntity {
 		}
 		
 		db.rewindAndRelease();
-		return notifyResult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);//notifyReult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);
+		return notifyResult(parsing, petFalse.get(this, parsing, pevs), (Buffer)null, pevs);//notifyReult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);
 	}
 	
 	

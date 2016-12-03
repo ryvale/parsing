@@ -27,7 +27,7 @@ public class FCStringArray extends FieldComputer<List<ParsedObject<?>>> {
 	@Override
 	public void newValue(ParsingEvent pev) {
 		
-		value.add(new ParsedString(itemFunction.compute(pev.getParsing(), null, pev.getWord()))); 
+		value.add(new ParsedString(itemFunction.compute(pev.getParsing(), null, pev.getTrimWord()))); 
 		
 	}
 

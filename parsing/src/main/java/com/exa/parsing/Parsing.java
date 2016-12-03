@@ -98,9 +98,9 @@ public class Parsing<T> {
 	
 	public T getResult() { return expMan.lastResult(); }
 	
-	public boolean notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, String word, ParsingEntity result) {
+	public boolean notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, Buffer buffer, ParsingEntity result) {
 		if(result.asPEFail() == null)
-			pevs.add(new ParsingEvent(pe, result, this, word));
+			pevs.add(new ParsingEvent(pe, result, this, buffer));
 		
 		return parser.notifyEvent(pe, result);
 	}
@@ -193,7 +193,7 @@ public class Parsing<T> {
 	public Buffer firstBufferizedRead() throws ManagedException {
 		Buffer db = bufferize();
 		if(nextString() == null) { db.release(); return null; }
-		trimLeft(db);
+		//trimLeft(db);
 		
 		return db;
 	}
@@ -203,7 +203,7 @@ public class Parsing<T> {
 	
 	//public void trimLeft(DataBuffer db) { wi.trimLeft(db); }
 	
-	public void trimLeft(Buffer db) { wi.trimLeft(db); }
+	public String trimLeft(Buffer db) { return wi.trimLeft(db); }
 	
 	public String trimLeft(String str) { return wi.trimLeft(str); }
 	
