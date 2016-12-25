@@ -2,7 +2,7 @@ package com.exa.parsing;
 
 import java.util.List;
 
-import com.exa.lexing.CharReader.Buffer;
+import com.exa.buffer.CharReader.ClientBuffer;
 import com.exa.utils.ManagedException;
 
 public class PELexerString extends ParsingEntity {
@@ -23,7 +23,7 @@ public class PELexerString extends ParsingEntity {
 
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs)	throws ManagedException {
-		Buffer db = parsing.firstBufferizedRead();
+		ClientBuffer db = parsing.firstBufferizedRead();
 		if(db == null) return EOS_FAIL;
 		
 		if(perValid.isOK(this, parsing)) {
@@ -31,8 +31,8 @@ public class PELexerString extends ParsingEntity {
 			return notifyResult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs); //notifyResult(parsing, result, lpevs, pevs); // notifyReult(parsing, nextPET.get(this, parsing, pevs), db.release(), pevs);
 		}
 		
-		db.rewindAndRelease();
-		return notifyResult(parsing, petFalse.get(this, parsing, pevs), (Buffer)null, pevs);//notifyReult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);
+		db.rewind().release();
+		return notifyResult(parsing, petFalse.get(this, parsing, pevs), (ClientBuffer)null, pevs);//notifyReult(parsing, petFalse.get(this, parsing, pevs), (String)null, pevs);
 	}
 	
 	

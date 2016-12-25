@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.exa.lexing.CharReader.Buffer;
+import com.exa.buffer.CharReader.ClientBuffer;
 import com.exa.lexing.WordIterator;
 import com.exa.utils.ManagedException;
 
@@ -98,7 +98,7 @@ public class Parsing<T> {
 	
 	public T getResult() { return expMan.lastResult(); }
 	
-	public boolean notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, Buffer buffer, ParsingEntity result) {
+	public boolean notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, ClientBuffer buffer, ParsingEntity result) {
 		if(result.asPEFail() == null)
 			pevs.add(new ParsingEvent(pe, result, this, buffer));
 		
@@ -174,7 +174,7 @@ public class Parsing<T> {
 	
 	//public String readingWord() { return dataBuffer.value(); }
 	
-	public void rewindWord(String word) {
+	public void rewindWord(String word) throws ManagedException {
 		wi.rewind(word);
 	}
 	
@@ -190,8 +190,8 @@ public class Parsing<T> {
 		return db;
 	}*/
 	
-	public Buffer firstBufferizedRead() throws ManagedException {
-		Buffer db = bufferize();
+	public ClientBuffer firstBufferizedRead() throws ManagedException {
+		ClientBuffer db = bufferize();
 		if(nextString() == null) { db.release(); return null; }
 		//trimLeft(db);
 		
@@ -199,11 +199,11 @@ public class Parsing<T> {
 	}
 	
 	//public DataBuffer monitorCharReading(boolean toBeBuffered) { return wi.monitorCharReading(toBeBuffered); }
-	public Buffer bufferize() { return wi.bufferize(); }
+	public ClientBuffer bufferize() { return wi.listen(); }
 	
 	//public void trimLeft(DataBuffer db) { wi.trimLeft(db); }
 	
-	public String trimLeft(Buffer db) { return wi.trimLeft(db); }
+	public String trimLeft(ClientBuffer db) { return wi.trimLeft(db); }
 	
 	public String trimLeft(String str) { return wi.trimLeft(str); }
 	

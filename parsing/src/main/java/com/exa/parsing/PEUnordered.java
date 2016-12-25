@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.exa.lexing.CharReader.Buffer;
+import com.exa.buffer.CharReader.ClientBuffer;
 import com.exa.utils.ManagedException;
 
 public class PEUnordered extends ParsingEntity {
@@ -110,9 +110,9 @@ public class PEUnordered extends ParsingEntity {
 			return EOS;
 		}
 		
-		Buffer dbOrigine = parsing.bufferize();
+		ClientBuffer dbOrigine = parsing.bufferize();
 		
-		Buffer db = parsing.bufferize();
+		ClientBuffer db = parsing.bufferize();
 		
 		List<InstanceSpecificData> npes = new ArrayList<>(), pesOK = new ArrayList<>();
 		for(PESpecic pesp : pes) npes.add(new InstanceSpecificData(pesp));
@@ -140,12 +140,12 @@ public class PEUnordered extends ParsingEntity {
 		for(InstanceSpecificData isd : npes) {
 			if(isd.currentPE == PE_BRANCH_FAIL) continue;
 			
-			dbOrigine.rewindAndRelease();
+			dbOrigine.rewind().release();
 			return notifyResult(parsing, DEFAULT_FAIL, pevs);
 		}
 		
 		if(pesOK.size() == 0) {
-			dbOrigine.rewindAndRelease();
+			dbOrigine.rewind().release();
 			return notifyResult(parsing, nextPET.get(OK, parsing, pevs), pevs);
 		}
 		

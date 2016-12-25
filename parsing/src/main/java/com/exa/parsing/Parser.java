@@ -1,5 +1,7 @@
 package com.exa.parsing;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +32,7 @@ public abstract class Parser<T> implements IParser<T> {
 	}
 	
 	public T parseFile(String fileName) throws ManagedException {
-		WordIterator wi = newFileWIterator(fileName, "utf8");
+		WordIterator wi = newFileWIterator(fileName, StandardCharsets.UTF_8);
 		return parse(wi, createExpMan(wi));
 	}
 	
@@ -58,7 +60,7 @@ public abstract class Parser<T> implements IParser<T> {
 	}
 	
 	public boolean validatesFile(String fileName) throws ManagedException {
-		WordIterator wi = newFileWIterator(fileName, "utf8");
+		WordIterator wi = newFileWIterator(fileName, StandardCharsets.UTF_8);
 		
 		Parsing<T> parsing = createParsing(wi, createExpMan(wi));
 		
@@ -76,7 +78,7 @@ public abstract class Parser<T> implements IParser<T> {
 		return language.newStringWordIterator(str);
 	}
 	
-	protected WordIterator newFileWIterator(String fileName, String charset) throws ManagedException {
+	protected WordIterator newFileWIterator(String fileName, Charset charset) throws ManagedException {
 		return language.newFileWordIterator(fileName, charset);
 	}
 	

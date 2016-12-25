@@ -3,7 +3,7 @@ package com.exa.parsing;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.exa.lexing.CharReader.Buffer;
+import com.exa.buffer.CharReader.ClientBuffer;
 import com.exa.utils.ManagedException;
 
 public class PEAtomic extends ParsingEntity {
@@ -26,13 +26,13 @@ public class PEAtomic extends ParsingEntity {
 		
 		List<ParsingEvent> lpevs = new ArrayList<>();
 		
-		Buffer db = parsing.bufferize();
+		ClientBuffer db = parsing.bufferize();
 		while(!currentPE.isFinal()) {
 			currentPE = currentPE.check(parsing, lpevs);
 			++exec;
 		}
 		
-		if(currentPE != PE_NEXT_CHECK && currentPE.failed()) db.rewindAndRelease(); else db.release();
+		if(currentPE != PE_NEXT_CHECK && currentPE.failed()) db.rewind().release(); else db.release();
 		
 		if(currentPE.failed()) {
 			if(currentPE == PE_NEXT_CHECK) {

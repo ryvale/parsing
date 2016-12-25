@@ -3,11 +3,12 @@ package com.exa.lexing;
 import com.exa.utils.ManagedException;
 
 public interface CharIterator {
+	
 	void open() throws ManagedException;
 	void close() throws ManagedException;
 	boolean next() throws ManagedException;
 	void skip(long n) throws ManagedException;
-	//void setPosition(long n) throws ManagedException;
+	
 	long getPosition();
 	char getCurrentChar();
 	

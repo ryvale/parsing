@@ -1,7 +1,13 @@
 package com.exa.lexing;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
+import com.exa.buffer.CharReader;
+import com.exa.chars.EscapeCharMan;
 import com.exa.parsing.ParsingEntity;
 import com.exa.utils.ManagedException;
 
@@ -24,15 +30,30 @@ public class Language {
 		return blankStrings.contains(w);
 	}
 	
-	public WordIterator newFileWordIterator(String fileName, String charset) throws ManagedException {
-		EscapeCharMan ecm = new EscapeCharMan.Standard(new BufferedFileCharIterator(fileName, charset));
-		return new WordIterator(new CharReader(ecm), lexingRules);
+	public WordIterator newFileWordIterator(String fileName, Charset charset, boolean autoDetectCharset, EscapeCharMan escapeCharMan) throws ManagedException {
+		CharReader cr;
+		try {
+			cr = new CharReader(new RandomAccessFile(fileName, "r"), charset, autoDetectCharset, escapeCharMan);
+		} catch (IOException e) {
+			throw new ManagedException(e);
+		}
+		return new WordIterator(cr, lexingRules);
 	}
 	
+	public WordIterator newFileWordIterator(String fileName, Charset charset, boolean autoDetectCharset) throws ManagedException {
+		return newFileWordIterator(fileName, charset, autoDetectCharset, EscapeCharMan.STANDARD);
+	}
+	
+	public WordIterator newFileWordIterator(String fileName, Charset charset) throws ManagedException {
+		return newFileWordIterator(fileName, charset, false, EscapeCharMan.STANDARD);
+	}
+	
+	public WordIterator newFileWordIterator(String fileName) throws ManagedException {
+		return newFileWordIterator(fileName, StandardCharsets.UTF_8, false, EscapeCharMan.STANDARD);
+	}
 	
 	public WordIterator newStringWordIterator(String str) throws ManagedException {
-		return new WordIterator(new CharReader(new StringCharIterator(str)), lexingRules);
+		return new WordIterator(new CharReader(str), lexingRules);
 	}
-	
 	
 }

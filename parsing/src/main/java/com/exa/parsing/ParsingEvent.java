@@ -2,7 +2,7 @@ package com.exa.parsing;
 
 import java.util.List;
 
-import com.exa.lexing.CharReader.Buffer;
+import com.exa.buffer.CharReader.ClientBuffer;
 
 public class ParsingEvent {
 	
@@ -36,9 +36,9 @@ public class ParsingEvent {
 	}
 	
 	public class WMConstant extends WordMan {
-		protected Buffer buffer;
+		protected ClientBuffer buffer;
 		
-		public WMConstant(Buffer buffer) {
+		public WMConstant(ClientBuffer buffer) {
 			this.buffer = buffer;
 		}
 		
@@ -46,7 +46,7 @@ public class ParsingEvent {
 		public String toString() { return buffer == null ? null : buffer.toString(); }
 	};
 	
-	protected Buffer buffer;
+	protected ClientBuffer buffer;
 	protected ParsingEntity parsingEntity;
 	protected ParsingEntity result;
 	protected Parsing<?> parsing;
@@ -69,7 +69,7 @@ public class ParsingEvent {
 		this.result = result;
 	}
 	
-	public ParsingEvent(ParsingEntity parsingEntity, ParsingEntity result, Parsing<?> parsing, Buffer buffer) {
+	public ParsingEvent(ParsingEntity parsingEntity, ParsingEntity result, Parsing<?> parsing, ClientBuffer buffer) {
 		this.parsing = parsing;
 		this.parent = false;
 		

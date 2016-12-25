@@ -2,19 +2,16 @@ package com.exa.lexing;
 
 import com.exa.utils.ManagedException;
 
-public class StringCharIterator implements CharIterator {
+public class StringCharIterator implements CharIterator {	
+	
 	protected String string;
 	protected int startPosition, endPosition;
 	
 	protected int lineNumber = 0, colPosInLine = 0;
 	protected int currentPosition = -1;
-	
-	protected int bufferizeInc = 0;
-	protected int registerPosition = -1;
-	
+		
 	public StringCharIterator(String string, int startPosition, int endPosition, boolean autoOpen) throws ManagedException {
 		if(startPosition<0) throw new ManagedException("The start position should not be lesser than 0.");
-		//if(endPosition<startPosition) throw new ManagedException("The start position should not be greater than the end position.");
 		
 		this.string = string;
 		this.startPosition = startPosition;

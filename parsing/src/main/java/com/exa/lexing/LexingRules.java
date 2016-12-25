@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.exa.lexing.CharReader.Buffer;
+import com.exa.buffer.CharReader;
+import com.exa.buffer.CharReader.ClientBuffer;
 import com.exa.parsing.ParsingException;
 import com.exa.utils.ManagedException;
 
@@ -103,12 +104,12 @@ public class LexingRules {
 			ActiveWord aw = getActiveWord(currentChar.toString());
 			
 			if(aw == null) {
-				charReader.addInAnalysisBuffer(currentChar);
+				charReader.back(currentChar.toString());
 				return currentChar;
 			}
 			if(aw.isBlank()) continue;
 			
-			charReader.addInAnalysisBuffer(currentChar);
+			charReader.back(currentChar.toString());
 			
 			return currentChar;
 		}
@@ -127,7 +128,7 @@ public class LexingRules {
 				wrd.append(currentChar);
 			else if(aw.isWordSeparator()) {
 				if(aw != AW_FAKE_WORD_SEPARATOR) {
-					script.addInAnalysisBuffer(currentChar);
+					script.back(currentChar.toString());
 					break;
 				}
 				
@@ -144,7 +145,7 @@ public class LexingRules {
 					if(aw.isWordSeparator()) {
 						if(aw == AW_FAKE_WORD_SEPARATOR) continue;
 						
-						script.addInAnalysisBuffer(wsSB.toString());
+						script.back(wsSB.toString());
 						return wrd.toString();
 					}
 					
@@ -169,7 +170,7 @@ public class LexingRules {
 			
 			ActiveWord aw = getActiveWord(wsSB.toString());
 			if(aw == null) {
-				script.addInAnalysisBuffer(wsSB.substring(wrd.length()));
+				script.back(wsSB.substring(wrd.length()));
 				processExit = true;
 				break;
 			}
@@ -182,13 +183,13 @@ public class LexingRules {
 				wrd.setLength(0);
 				wrd.append(wsSB);
 			}
-			script.addInAnalysisBuffer(wsSB.substring(wrd.length()));
+			script.back(wsSB.substring(wrd.length()));
 			processExit = true;
 			break;
 		}
 		if(processExit) return wrd.toString();
 		
-		script.addInAnalysisBuffer(wsSB.substring(wrd.length()));
+		script.back(wsSB.substring(wrd.length()));
 				
 		return wrd.toString();
 	}
@@ -228,10 +229,10 @@ public class LexingRules {
 		if(aw == null) return lastWrd = currentChar + nextWordStartingWithNonWS(script);
 		
 		//DataBuffer db;
-		Buffer buffer;
+		ClientBuffer buffer;
 		
 		if(aw.isFirstCharManager()) {
-			buffer = script.bufferize();
+			buffer = script.listen();
 			//db = script.monitorCharReading(true);
 			aw.nextToEndOfWord(script);
 			return lastWrd = currentChar + buffer.release().toString(); //script.releaseCharReading(db);
@@ -353,7 +354,7 @@ public class LexingRules {
 		Character currentChar = nextNonBlankChar(charReader);
 		if(currentChar == null) return null;
 		
-		charReader.addInAnalysisBuffer(currentChar);
+		charReader.back(currentChar.toString());
 		
 		return currentChar;
 	}
@@ -396,19 +397,19 @@ public class LexingRules {
 		return sb.toString();
 	}
 
-	public String trimLeft(Buffer db) {
-		StringBuilder sb = db.buffer;
+	public String trimLeft(ClientBuffer db) {
+		//StringBuilder sb = db.buffer;
 		int i = 0;
-		
-		for(i = db.start; i<sb.length(); i++) {
-			Character c = sb.charAt(i);
+		int nb = db.length();
+		for(i = 0; i<nb; i++) {
+			Character c = db.charAt(i);
 			if(blankCharacters.contains(c.toString())) continue;
 			
 			break;
 		}
-		if(i == 0) return sb.toString();
+		if(i == 0) return db.toString();
 		
-		return sb.substring(i);
+		return db.substring(i);
 		
 		//db.start += (i-db.start);
 		//sb.delete(0, i);

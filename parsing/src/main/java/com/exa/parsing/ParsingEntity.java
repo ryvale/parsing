@@ -2,7 +2,7 @@ package com.exa.parsing;
 
 import java.util.List;
 
-import com.exa.lexing.CharReader.Buffer;
+import com.exa.buffer.CharReader.ClientBuffer;
 import com.exa.utils.ManagedException;
 
 public class ParsingEntity {
@@ -91,11 +91,11 @@ public class ParsingEntity {
 	public ParsingEntity checkBranch(Parsing<?> parsing, List<ParsingEvent> pevs) throws ManagedException {
 		ParsingEntity currentPE = this;
 	
-		Buffer db = parsing.bufferize();
+		ClientBuffer db = parsing.bufferize();
 		
 		do { currentPE = currentPE.check(parsing, pevs); } while(!currentPE.isFinal());
 		
-		if(currentPE != PE_NEXT_CHECK && currentPE.failed()) db.rewindAndRelease();
+		if(currentPE != PE_NEXT_CHECK && currentPE.failed()) db.rewind().release();
 		else db.release();
 		
 		return currentPE;
@@ -139,20 +139,20 @@ public class ParsingEntity {
 		return result;
 	}
 	
-	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, Buffer buffer, List<ParsingEvent> pevs) throws ManagedException {
+	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, ClientBuffer buffer, List<ParsingEvent> pevs) throws ManagedException {
 		parsing.notifyEvent(pevs, this, buffer, result);
 		
 		return result;
 	}
 	
-	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, Buffer buffer, List<ParsingEvent> lpevs, List<ParsingEvent> pevs) throws ManagedException {
+	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, ClientBuffer buffer, List<ParsingEvent> lpevs, List<ParsingEvent> pevs) throws ManagedException {
 		parsing.notifyEvent(pevs, this, buffer, result);
 		
 		return result;
 	}
 	
 	protected ParsingEntity notifyResult(Parsing<?> parsing, ParsingEntity result, List<ParsingEvent> pevs) throws ManagedException {
-		parsing.notifyEvent(pevs, this, (Buffer)null, result);
+		parsing.notifyEvent(pevs, this, (ClientBuffer)null, result);
 		
 		return result;
 	}

@@ -1,7 +1,7 @@
 package com.exa.parsing.ebnf;
 
-import com.exa.lexing.CharReader;
-import com.exa.lexing.CharReader.Buffer;
+import com.exa.buffer.CharReader;
+import com.exa.buffer.CharReader.ClientBuffer;
 import com.exa.lexing.LexingRules;
 import com.exa.lexing.WordSeparator;
 import com.exa.utils.ManagedException;
@@ -17,7 +17,7 @@ public class StringDelimiter extends WordSeparator {
 	
 	@Override
 	public void nextToEndOfWord(CharReader script) throws ManagedException {
-		Buffer db = script.bufferize();
+		ClientBuffer db = script.listen();
 		
 		String bd;
 		do {

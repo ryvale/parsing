@@ -1,7 +1,7 @@
 package com.exa.stdxpression.parsing;
 
+import com.exa.buffer.CharReader;
 import com.exa.lexing.ActiveWord;
-import com.exa.lexing.CharReader;
 import com.exa.lexing.LexingRules;
 import com.exa.utils.ManagedException;
 

@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import com.exa.lexing.CharReader.Buffer;
+import com.exa.buffer.CharReader.ClientBuffer;
 import com.exa.utils.ManagedException;
 
 public class PEWord extends ParsingEntity {
@@ -49,13 +49,13 @@ public class PEWord extends ParsingEntity {
 	
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
-		Buffer db = parsing.firstBufferizedRead();
+		ClientBuffer db = parsing.firstBufferizedRead();
 		if(db == null) return EOS_FAIL;
 		
 		HashSet<String> strs = new HashSet<>();
 		strs.addAll(requiredStrings);
 		
-		Buffer db2 = parsing.bufferize();
+		ClientBuffer db2 = parsing.bufferize();
 		String strOK = null;
 		Iterator<String> it = strs.iterator();
 		
@@ -72,18 +72,18 @@ public class PEWord extends ParsingEntity {
 		ParsingEntity nextPE = getNextPE();
 		
 		if(strs.size() == 0) { 
-			db.rewindAndRelease();
-			return notifyResult(parsing, petFalse.get(this, parsing, pevs), (Buffer)null, pevs);
+			db.rewind().release();
+			return notifyResult(parsing, petFalse.get(this, parsing, pevs), (ClientBuffer)null, pevs);
 		}
 		
 		while(strs.size() > 0) {
 			if(parsing.nextString() == null) {
 				if(strOK == null) {
-					db.rewindAndRelease();
-					return notifyResult(parsing, petFalse.get(this, parsing, pevs), (Buffer)null, pevs);
+					db.rewind().release();
+					return notifyResult(parsing, petFalse.get(this, parsing, pevs), (ClientBuffer)null, pevs);
 				}
 				
-				db2.rewindAndRelease();
+				db2.rewind().release();
 				if(nextPE.isFinal())
 					return notifyResult(parsing, PE_NEXT, db.release(), pevs);
 				
@@ -106,11 +106,11 @@ public class PEWord extends ParsingEntity {
 		}
 		
 		if(strOK == null) {
-			db.rewindAndRelease();
-			return notifyResult(parsing, petFalse.get(this, parsing, pevs), (Buffer)null, pevs);
+			db.rewind().release();
+			return notifyResult(parsing, petFalse.get(this, parsing, pevs), (ClientBuffer)null, pevs);
 		}
 		
-		db2.rewindAndRelease();
+		db2.rewind().release();
 		
 		if(nextPE.isFinal())
 			return notifyResult(parsing, PE_NEXT, db.release(), pevs);

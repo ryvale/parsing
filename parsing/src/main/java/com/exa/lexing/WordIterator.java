@@ -3,7 +3,9 @@ package com.exa.lexing;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.exa.lexing.CharReader.Buffer;
+import com.exa.buffer.CharReader;
+import com.exa.buffer.CharReader.ClientBuffer;
+//import com.exa.lexing.CharReader.Buffer;
 import com.exa.utils.ManagedException;
 
 public class WordIterator implements Cloneable {
@@ -26,9 +28,9 @@ public class WordIterator implements Cloneable {
 		this(new CharReader(str), lexingRules);
 	}
 	
-	public void reset(String str) throws ManagedException {
+	/*public void reset(String str) throws ManagedException {
 		charReader.reset(str);
-	}
+	}*/
 	
 	public String nextString() throws ManagedException {
 		if(bufferStrings.size() > 0) {
@@ -47,7 +49,7 @@ public class WordIterator implements Cloneable {
 
 	public LexingRules getLexingRules() { return lexingRules; }
 	
-	public void close() throws ManagedException { 
+	public void close()  { 
 		charReader.close(); 
 	}
 	
@@ -55,7 +57,7 @@ public class WordIterator implements Cloneable {
 		bufferStrings.add(word);
 	}
 	
-	public void rewind(String word) { charReader.addInAnalysisBuffer(word);}
+	public void rewind(String word) throws ManagedException { charReader.back(word.toString());}
 	
 	@Override
 	public WordIterator clone() {
@@ -64,13 +66,13 @@ public class WordIterator implements Cloneable {
 
 	//public DataBuffer monitorCharReading(boolean toBeBuffered) { return charReader.monitorCharReading(toBeBuffered); }
 	
-	public Buffer bufferize() { return charReader.bufferize(); }
+	public ClientBuffer listen() { return charReader.listen(); }
 	
 	public boolean hasNextString() throws ManagedException {
 		Character c = lexingRules.nextNonBlankChar(charReader);
 		if(c == null) return false;
 		
-		charReader.addInAnalysisBuffer(c);
+		charReader.back(c.toString());
 		return true;
 	}
 	
@@ -82,7 +84,7 @@ public class WordIterator implements Cloneable {
 		return lexingRules.trimLeft(str);
 	}
 
-	public String trimLeft(Buffer db) {
+	public String trimLeft(ClientBuffer db) {
 		return lexingRules.trimLeft(db);
 	}
 	

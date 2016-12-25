@@ -1,5 +1,6 @@
 package com.exa.lexing;
 
+import com.exa.buffer.CharReader;
 import com.exa.utils.ManagedException;
 
 public class WordWithOpenCloseDelimiter extends WordSeparator {

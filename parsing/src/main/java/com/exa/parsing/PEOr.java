@@ -3,7 +3,7 @@ package com.exa.parsing;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.exa.lexing.CharReader.Buffer;
+import com.exa.buffer.CharReader.ClientBuffer;
 import com.exa.utils.ManagedException;
 
 public class PEOr extends ParsingEntity {
@@ -58,7 +58,7 @@ public class PEOr extends ParsingEntity {
 			return EOS;
 		}
 		
-		Buffer db = parsing.bufferize();
+		ClientBuffer db = parsing.bufferize();
 		
 		int nb = 0;
 		InstanceSpecificData isdOK = null;
