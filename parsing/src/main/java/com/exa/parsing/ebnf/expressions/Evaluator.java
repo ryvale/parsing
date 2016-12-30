@@ -20,6 +20,8 @@ import com.exa.utils.ManagedException;
 public class Evaluator extends StackEvaluator<Item<?>> {
 	static final Operator<ParsingEntity> OPRT_PE_ATOMIC = new OprtPEAtomic();
 	
+	static final Operator<ParsingEntity> OPRT_PE_CHAR_BY_CHAR = new OprtCharByChar();
+	
 	public class FieldMan {
 		Map<ParsingEntity, FieldComputer<?>> fieldsParsingMap = new HashMap<>();
 		Map<String, Field<?>> fields = new HashMap<String, Field<?>>();
@@ -169,6 +171,15 @@ public class Evaluator extends StackEvaluator<Item<?>> {
 		
 			pushOperand(new ConstantInteger(nb));
 			pushOperand(OPRT_PE_ATOMIC);
+			return;
+		}
+		
+		if("]".equals(checkSymbol)) {
+			int nb = subExpProperties.peek().getSolvedStackSize();
+			super.closeSubExpression(checkSymbol);
+		
+			pushOperand(new ConstantInteger(nb));
+			pushOperand(OPRT_PE_CHAR_BY_CHAR);
 			return;
 		}
 		super.closeSubExpression(checkSymbol);

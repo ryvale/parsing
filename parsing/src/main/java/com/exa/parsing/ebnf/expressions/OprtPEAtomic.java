@@ -57,7 +57,11 @@ public class OprtPEAtomic extends OperatorBase<ParsingEntity> {
 			++nbPE;
 		}
 		
-		eval.pushOperand(new ConstantParsingEntity(nbPE == 1 ? peRoot : new PEAtomic(peRoot)));
+		eval.pushOperand(new ConstantParsingEntity(finalParsingEntity(peRoot, nbPE)));
+	}
+	
+	protected ParsingEntity finalParsingEntity(ParsingEntity peResult, int nbPE) {
+		return nbPE == 1 ? peResult : new PEAtomic(peResult);
 	}
 
 	@Override

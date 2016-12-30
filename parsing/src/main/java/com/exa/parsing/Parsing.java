@@ -147,6 +147,10 @@ public class Parsing<T> {
 		return lexerWord;
 	}
 	
+	public Character nextChar() throws ManagedException { 
+		return wi.nextChar();
+	}
+	
 	public ParsingEntity nextCheck() throws ManagedException {
 		peEvents.clear();
 		realResults.clear();
@@ -169,11 +173,7 @@ public class Parsing<T> {
 	public boolean listen(ParsingEntity pe) { return parser.listen(pe); }
 
 	public String lexerBlankBefore() { return lexerBlankBefore; }
-	
-	//public String currentWord() { return currentWord; }
-	
-	//public String readingWord() { return dataBuffer.value(); }
-	
+		
 	public void rewindWord(String word) throws ManagedException {
 		wi.rewind(word);
 	}
@@ -181,6 +181,10 @@ public class Parsing<T> {
 	public boolean hasNextString() throws ManagedException {
 		return wi.hasNextString();
 	}
+	
+	public void setCharIteratorMode(boolean on) { wi.setCharIteratorMode(on); }
+	
+	public boolean getCharIteratorMode() { return wi.getCharIteraorMode(); }
 	
 	/*public DataBuffer firstBufferizeRead() throws ManagedException {
 		DataBuffer db = monitorCharReading(true);

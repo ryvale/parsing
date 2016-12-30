@@ -228,7 +228,6 @@ public class LexingRules {
 		
 		if(aw == null) return lastWrd = currentChar + nextWordStartingWithNonWS(script);
 		
-		//DataBuffer db;
 		ClientBuffer buffer;
 		
 		if(aw.isFirstCharManager()) {

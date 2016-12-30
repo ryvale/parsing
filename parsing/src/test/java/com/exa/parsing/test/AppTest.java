@@ -82,6 +82,8 @@ public class AppTest extends TestCase
 		
 		assertFalse(parser.validates(":nom1"));
 		assertFalse(parser.validates("nom2"));
+		
+		System.out.print(parser.parse("nom : ['a'];"));
     }
     
     public void testEBNF1() throws ManagedException {
@@ -106,6 +108,10 @@ public class AppTest extends TestCase
     	assertTrue(parser.validates("!'a'"));
     	
     	assertTrue(parser.validates("b"));
+    	
+    	assertTrue(parser.validates("['b']"));
+    	
+    	assertTrue(parser.validates("['a'|'b']"));
     	
     	assertFalse(parser.validates("'a"));
     }
@@ -198,10 +204,24 @@ public class AppTest extends TestCase
     	assertTrue(p.validates("a"));
     	
     	assertFalse(p.validates("b"));
+    	
+    	cr = ebnfParser.parse("['a']");
+    	p = new OutputParser1(cr);
+    	
+    	assertTrue(p.validates("a"));
+    	
+    	assertFalse(p.validates("ab"));
+    	
+    	cr = ebnfParser.parse("['ab']");
+    	p = new OutputParser1(cr);
+    	
+    	assertTrue(p.validates("ab"));
+    	
+    	assertFalse(p.validates("a"));
     }
     
     public void testEBNF3() throws ManagedException {
-    	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; separators ':'; row : nom = !':'+ ':' valeur=(!'\n'|!'\r')+ '\n'?; test : 'a';"), false);
+    	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; separators ':'; row : nom = !':'+ ':' valeur=(!'\n'|!'\r')+ '\n'?; test : 'a'; digit : '0'|'1'|'2';"), false);
     	
     	CompiledRule cr = ebnfParser.parse("'a''b'");
     	IParser<?> p = new OutputParser1(cr);
@@ -371,7 +391,27 @@ public class AppTest extends TestCase
     	assertTrue(p.validates("nom : Kouakou Koffi\n"));
     	assertTrue(p.validates("Prénoms : Joseph François"));
     	
+    	cr = ebnfParser.parse("[('0'|'1'|'2')*]");
+    	p = new OutputParser1(cr);
     	
+    	assertTrue(p.validates("102"));
+    	
+    	cr = ebnfParser.parse("['0'|'1'|'2']*");
+    	p = new OutputParser1(cr);
+    	
+    	assertTrue(p.validates("102"));
+    	
+    	assertFalse(p.validates("1024"));
+    	
+    	cr = ebnfParser.parse("[digit]+");
+    	p = new OutputParser1(cr);
+    	
+    	assertTrue(p.validates("102"));
+    	
+    	cr = ebnfParser.parse("digit+");
+    	p = new OutputParser1(cr);
+    	
+    	assertFalse(p.validates("102"));
     }
     
     
@@ -691,6 +731,11 @@ public class AppTest extends TestCase
     	assertTrue("test\\%".equals(pm.get("tpart0").toString()));
     }
     
-    
+    /*public void testCharByCharParsing() throws ManagedException {
+    	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; row : nom = !':'+ ':' valeur = !('\n'|'\r')+ '\n'?; root : 'a';"), false);
+    	CompiledRule cr = ebnfParser.parse("['a']");
+    	OutputParser1 p = new OutputParser1(cr);
+    	
+    }*/
     
 }

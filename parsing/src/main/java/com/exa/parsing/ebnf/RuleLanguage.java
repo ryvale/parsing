@@ -60,7 +60,7 @@ public class RuleLanguage extends com.exa.lexing.Language {
 		
 		lexingRules.addActiveWord(new StringDelimiter(lexingRules, '\''));
 		
-		lexingRules.addWordSeparator("|", "*", "+", "?", "$", "!", "(", ")", "=", "$=", "[]=");
+		lexingRules.addWordSeparator("..", "|", "*", "+", "?", "$", "!", "(", ")", "=", "$=", "[]=", "[", "]");
 		
 		PEOr pePrimitiveOperand = pePrimitiveOperand();
 		pePrimitiveOperand.setNextPE(new PEOptional("*", "+", "?"));
@@ -70,7 +70,7 @@ public class RuleLanguage extends com.exa.lexing.Language {
 		
 		PEAtomic peBinaryPartNext = new PEAtomic(peOperandEx, ParsingEntity.PE_NEXT);
 		
-		ParsingRuleBuilder prbBinaryPart = new ParsingRuleBuilder("|", "=", "$=", "[]=").
+		ParsingRuleBuilder prbBinaryPart = new ParsingRuleBuilder("..", "|", "=", "$=", "[]=").
 			next(peBinaryPartNext);
 	
 		peBinaryPartNext.setNextPE(new PERepeat(prbBinaryPart.parsingEntity()));
@@ -85,6 +85,11 @@ public class RuleLanguage extends com.exa.lexing.Language {
 			new ParsingRuleBuilder("(").
 				next(new PEAtomic(peExp)).
 				next(")").
+			parsingEntity()
+		).add(
+			new ParsingRuleBuilder("[").
+				next(new PEAtomic(peExp)).
+				next("]").
 			parsingEntity()
 		);
 		

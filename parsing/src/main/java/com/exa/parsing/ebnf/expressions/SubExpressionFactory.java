@@ -15,6 +15,8 @@ public class SubExpressionFactory extends com.exa.expression.SubExpressionFactor
 		
 		subExpManagers.put("(", new OpdManSubExp(evaluator, "(", ")"));
 		
+		subExpManagers.put("[", new OpdManSubExp(evaluator, "[", "]"));
+		
 		return subExpManagers;
 	}
 	
