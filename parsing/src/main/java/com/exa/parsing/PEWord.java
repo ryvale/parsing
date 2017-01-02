@@ -47,6 +47,8 @@ public class PEWord extends ParsingEntity {
 	
 	public void add(String str) { requiredStrings.add(str.replace("\\n", "\n")); }
 	
+	public int checkStringCount() { return requiredStrings.size(); }
+	
 	@Override
 	public ParsingEntity checkResult(Parsing<?> parsing, int sequence, List<ParsingEvent> pevs) throws ManagedException {
 		ClientBuffer db = parsing.firstBufferizedRead();

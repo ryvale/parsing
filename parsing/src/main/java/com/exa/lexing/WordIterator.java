@@ -30,11 +30,28 @@ public class WordIterator implements Cloneable {
 				return currentWrd.substring(0, 1);
 			}
 			
-			Character c = charReader.nextChar();
+			Character c = lexingRules.nextNonBlankChar(charReader);
 			
 			return c == null ? null : c.toString();
 		}
 		
+		Character nextChar() throws ManagedException {
+			if(bufferStrings.size() > 0) {
+				
+				String currentWrd = bufferStrings.get(0);
+				bufferStrings.remove(0);
+				
+				if(currentWrd.length() == 1) return currentWrd.charAt(0);
+				
+				bufferStrings.add(0, currentWrd.substring(1));
+				
+				return currentWrd.substring(0, 1).charAt(0);
+			}
+			
+			Character c = lexingRules.nextNonBlankChar(charReader);
+			
+			return c;
+		}
 	}
 	
 	class StringIterator extends TokenIterator {
@@ -88,7 +105,9 @@ public class WordIterator implements Cloneable {
 		return tokenIterator.nextString();
 	}
 	
-	public Character nextChar() throws ManagedException { return charReader.nextChar(); }
+	public Character nextReaderChar() throws ManagedException { return charReader.nextChar(); }
+	
+	public Character nextChar() throws ManagedException { return charIterator.nextChar(); }
 
 	public CharReader getCharReader() { return charReader; }
 
@@ -104,7 +123,10 @@ public class WordIterator implements Cloneable {
 	
 	public boolean getCharIteraorMode() { return tokenIterator == charIterator; }
 	
-	public void rewind(String word) throws ManagedException { charReader.back(word.toString());}
+	public void rewind(String word) throws ManagedException {
+		// TODO update bufferString
+		charReader.back(word.toString());
+	}
 	
 	@Override
 	public WordIterator clone() {

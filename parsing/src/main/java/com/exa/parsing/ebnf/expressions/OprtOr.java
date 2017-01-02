@@ -34,7 +34,7 @@ public class OprtOr extends OperatorBase<ParsingEntity> {
 			}
 			if(peOr == null) {
 				peOr = new PEOr();
-				peOr.add(peWord);
+				if(peWord.checkStringCount()>0)	peOr.add(peWord);
 				peWord = null;
 			}
 			peOr.add(oppe.value());

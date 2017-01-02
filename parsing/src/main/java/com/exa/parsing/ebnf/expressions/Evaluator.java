@@ -8,6 +8,7 @@ import java.util.Stack;
 import com.exa.expression.ComputedItem;
 import com.exa.expression.StackEvaluator;
 import com.exa.expression.XPressionException;
+import com.exa.parsing.PEAtomic;
 import com.exa.parsing.PEWord;
 import com.exa.parsing.ParsingEntity;
 import com.exa.parsing.ebnf.CompiledRule;
@@ -109,7 +110,8 @@ public class Evaluator extends StackEvaluator<Item<?>> {
 						CompiledRule cr = null;
 						RuleScript rs = ruleParser.getRuleConfig().getRule(opId.value());
 						try { cr = ruleParser.parse(rs.src()); } catch (ManagedException e) { throw new XPressionException(e); }
-						oppe = new ConstantParsingEntity(cr.language().getPERoot());
+						ParsingEntity pe =  cr.language().getPERoot();
+						oppe = new ConstantParsingEntity(pe.asPEAtomic() == null ? new PEAtomic(pe): pe);
 					}
 					else oppe = new ConstantParsingEntity(new PEWord(opstr.value()));
 				}

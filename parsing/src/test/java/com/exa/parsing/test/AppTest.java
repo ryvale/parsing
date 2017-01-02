@@ -113,6 +113,8 @@ public class AppTest extends TestCase
     	
     	assertTrue(parser.validates("['a'|'b']"));
     	
+    	assertTrue(parser.validates("'a'..'c'"));
+    	
     	assertFalse(parser.validates("'a"));
     }
     
@@ -218,6 +220,28 @@ public class AppTest extends TestCase
     	assertTrue(p.validates("ab"));
     	
     	assertFalse(p.validates("a"));
+    	
+    	cr = ebnfParser.parse("'a'..'c'");
+    	p = new OutputParser1(cr);
+    	
+    	assertTrue(p.validates("a"));
+    	assertTrue(p.validates("b"));
+    	assertTrue(p.validates("c"));
+    	
+    	assertFalse(p.validates("d"));
+    	
+    	/*cr = ebnfParser.parse("((['_']('0'..'9'|'a'..'z'|'A'..'Z'))|'a'..'z'|'A'..'Z')('0'..'9'|'a'..'z'|'A'..'Z'|['_'])*");
+    	p = new OutputParser1(cr);
+    	
+    	assertTrue(p.validates("identifiant"));
+    	assertTrue(p.validates("vaRiable"));
+    	assertTrue(p.validates("_vaRiable"));
+    	assertTrue(p.validates("_1variable"));
+    	assertTrue(p.validates("var1able"));
+    	assertTrue(p.validates("vari_able"));
+    	
+    	assertFalse(p.validates("9variable"));*/
+    	
     }
     
     public void testEBNF3() throws ManagedException {
@@ -530,15 +554,14 @@ public class AppTest extends TestCase
 			@Override
 			public ExpMan<Boolean> createExpMan(WordIterator wi) throws ManagedException {
 				wi.getLexingRules().addWordSeparator(":");
-				return new ExpMan<>(null);
+				return new ExpMan<Boolean>(null);
 			}
 
 			@Override
 			public boolean listen(ParsingEntity pe) {
 				return true;
 			}
-			
-			
+					
 		};
     }
     
@@ -636,7 +659,6 @@ public class AppTest extends TestCase
 		assertTrue(parser.validates("cd"));
 		assertTrue(parser.validates("ab cd"));
 		
-		
 		assertFalse(parser.validates("db"));
 		assertFalse(parser.validates("cd ab"));
 		
@@ -729,6 +751,16 @@ public class AppTest extends TestCase
     	
     	pm = p.parse("test\\%");
     	assertTrue("test\\%".equals(pm.get("tpart0").toString()));
+    }
+    
+    public void testFileParsing1() throws ManagedException {
+    	RuleParser ebnfParser = new RuleParser(new PreParser().parseFile("C:/recherches/exat/exat/src/main/java/com/exa/exat/default.parser"), false);
+    	CompiledRule cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("test").src());
+    	
+    	OutputParser1 p = new OutputParser1(cr);
+    	//assertTrue(p.validates("a"));
+    	
+    	assertTrue(p.validates("@{a}"));
     }
     
     /*public void testCharByCharParsing() throws ManagedException {

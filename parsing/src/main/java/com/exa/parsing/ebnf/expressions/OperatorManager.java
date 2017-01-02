@@ -18,6 +18,8 @@ public class OperatorManager extends OperatorMan<Item<?>> {
 		add(new OSUnique<>(new OprtOptional(	"?",		1			 )));
 		add(new OSUnique<>(new OprtNegate(		"!",		1			 )));
 		
+		add(new OSUnique<>(new OprtCharBetween(	"..",		2			 )));
+		
 		add(new OSUnique<>(new OprtOr(			"|",		3			 )));
 	}
 		

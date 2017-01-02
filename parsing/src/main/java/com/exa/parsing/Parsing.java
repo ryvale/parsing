@@ -113,31 +113,6 @@ public class Parsing<T> {
 		
 	}
 	
-	/*public ParsingEntity notifyEvent(List<ParsingEvent> pevs, ParsingEntity pe, int sequence2, ParsingEntity result) throws ManagedException {
-		if(realResults.containsKey(sequence2)) result = realResults.get(sequence2);
-		
-		if(parser.notifyEvent(pe, result)) 
-			pevs.add(new ParsingEvent(pe, result, this));
-		
-		return result;
-	}*/
-	
-	//public void notifyEvent(List<ParsingEvent> pevs, 
-	
-	/*public String getNextStringAndReturn() throws ManagedException {
-		String curWrd = lexerWord;
-		String curBlank = lexerBlankBefore;
-		
-		String res = nextString();
-		
-		wi.addInWordBuffer(lexerWord);
-		
-		lexerWord = curWrd;
-		lexerBlankBefore = curBlank;
-		
-		return res;
-	}*/
-		
 	protected void endParsing()  { }
 	
 	public String nextString() throws ManagedException { 
@@ -148,8 +123,17 @@ public class Parsing<T> {
 	}
 	
 	public Character nextChar() throws ManagedException { 
-		return wi.nextChar();
+		Character c = wi.nextChar();
+		if(debugOn) System.out.println(c);
+		if(c == null) return null;
+		
+		lexerWord = c.toString();
+		//if(debugOn) System.out.println(lexerWord);
+		
+		return c;
 	}
+	
+	
 	
 	public ParsingEntity nextCheck() throws ManagedException {
 		peEvents.clear();
@@ -185,27 +169,15 @@ public class Parsing<T> {
 	public void setCharIteratorMode(boolean on) { wi.setCharIteratorMode(on); }
 	
 	public boolean getCharIteratorMode() { return wi.getCharIteraorMode(); }
-	
-	/*public DataBuffer firstBufferizeRead() throws ManagedException {
-		DataBuffer db = monitorCharReading(true);
-		if(nextString() == null) { db.release(); return null; }
-		trimLeft(db);
 		
-		return db;
-	}*/
-	
 	public ClientBuffer firstBufferizedRead() throws ManagedException {
 		ClientBuffer db = bufferize();
 		if(nextString() == null) { db.release(); return null; }
-		//trimLeft(db);
 		
 		return db;
 	}
 	
-	//public DataBuffer monitorCharReading(boolean toBeBuffered) { return wi.monitorCharReading(toBeBuffered); }
 	public ClientBuffer bufferize() { return wi.listen(); }
-	
-	//public void trimLeft(DataBuffer db) { wi.trimLeft(db); }
 	
 	public String trimLeft(ClientBuffer db) { return wi.trimLeft(db); }
 	

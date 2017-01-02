@@ -40,7 +40,7 @@ public class PEOptional extends ParsingEntity {
 			}
 			
 			currentPE2 = currentPE2.check(parsing, lpevs);
-			if(currentPE2.failed()) return notifyResult(parsing, currentPE, lpevs, pevs);
+			if(currentPE2.failed()) return notifyResult(parsing, currentPE2, lpevs, pevs);
 			
 			return notifyResult(parsing, currentPE2, lpevs, pevs);
 		}
