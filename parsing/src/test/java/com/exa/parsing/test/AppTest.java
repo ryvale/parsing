@@ -755,12 +755,12 @@ public class AppTest extends TestCase
     
     public void testFileParsing1() throws ManagedException {
     	RuleParser ebnfParser = new RuleParser(new PreParser().parseFile("C:/recherches/exat/exat/src/main/java/com/exa/exat/default.parser"), false);
-    	CompiledRule cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("test").src());
+    	CompiledRule cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("tplexp").src());
     	
     	OutputParser1 p = new OutputParser1(cr);
     	//assertTrue(p.validates("a"));
     	
-    	assertTrue(p.validates("@{a}"));
+    	assertTrue(p.validates("@{% for i in 0..9} pata @{%end}"));
     }
     
     /*public void testCharByCharParsing() throws ManagedException {

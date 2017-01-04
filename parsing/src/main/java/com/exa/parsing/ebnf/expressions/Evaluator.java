@@ -160,7 +160,7 @@ public class Evaluator extends StackEvaluator<Item<?>> {
 		CompiledRule cr = null;
 		RuleScript rs = ruleParser.getRuleConfig().getRule(opId.value());
 		
-		try { cr = ruleParser.parse(rs.src()); } catch (ManagedException e) { throw new XPressionException(e); }
+		try { cr = rs.compileWith(ruleParser); } catch (ManagedException e) { throw new XPressionException(e); }
 		return new ConstantParsingEntity(cr.language().getPERoot());
 	}
 

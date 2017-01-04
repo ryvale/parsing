@@ -52,7 +52,7 @@ public class OpPropertySetter<T> extends OperatorBase<T> {
 			else {
 				RuleScript rs = ruleParser.getRuleConfig().getRule(opId.value());
 			
-				try { cr = ruleParser.parse(rs.src()); } catch (ManagedException e) { throw new XPressionException(e); }
+				try { cr = rs.compileWith(ruleParser); } catch (ManagedException e) { throw new XPressionException(e); }
 				ParsingEntity peRoot = cr.language().getPERoot();
 				oppe = new ConstantParsingEntity(peRoot.getNextPE().isFinal() ? peRoot : ( peRoot.asPEAtomic() == null ? new PEAtomic(peRoot) : peRoot));
 			}

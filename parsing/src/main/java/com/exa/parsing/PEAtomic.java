@@ -12,6 +12,7 @@ public class PEAtomic extends ParsingEntity {
 	public PEAtomic(ParsingEntity peRoot, PETWithPE nextPET) {
 		super(nextPET);
 		this.peRoot = peRoot;
+		if(peRoot == null) return;
 		peRoot.setRoot(false);
 	}
 	
@@ -68,6 +69,11 @@ public class PEAtomic extends ParsingEntity {
 
 	@Override
 	public PEAtomic asPEAtomic() { return this;	}
+
+	public void setPERoot(ParsingEntity peRoot) {
+		this.peRoot = peRoot;
+		peRoot.setRoot(false);
+	}
 	
 	
 	

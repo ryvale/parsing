@@ -81,7 +81,5 @@ public class CompiledRule implements Cloneable {
 			fc.reset();
 		}
 	}
-	
-	
 
 }

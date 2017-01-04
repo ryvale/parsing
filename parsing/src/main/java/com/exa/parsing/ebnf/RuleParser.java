@@ -19,13 +19,15 @@ public class RuleParser extends Parser<CompiledRule> {
 	
 	public RuleParser(RulesConfig rulesConfig, boolean debugOn) { this(rulesConfig, new RuleLanguage(), debugOn); }
 	
-	public  void parseRule(String ruleName) throws ManagedException { 
+	/*public  CompiledRule parseRule(String ruleName) throws ManagedException { 
 		RuleScript rs = rulesConfig.getRule(ruleName);
 		
 		if(rs == null) throw new ManagedException("Unknown rule '"+ruleName+"'");
 		
 		if(rs.compiled() == null) rs.compiled(parse(rs.src()));	
-	}
+		
+		return rs.compiled();
+	}*/
 	
 	@Override
 	public ExpMan<CompiledRule> createExpMan(WordIterator wi) throws ManagedException {

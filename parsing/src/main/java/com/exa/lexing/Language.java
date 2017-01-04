@@ -55,5 +55,17 @@ public class Language {
 	public WordIterator newStringWordIterator(String str) throws ManagedException {
 		return new WordIterator(new CharReader(str), lexingRules);
 	}
+
+	public Set<String> getBlankStrings() {
+		return blankStrings;
+	}
+
+	public void setBlankStrings(Set<String> blankStrings) {
+		this.blankStrings = blankStrings;
+	}
+
+	public void setLexingRules(LexingRules lexingRules) {
+		this.lexingRules = lexingRules;
+	}
 	
 }
