@@ -74,6 +74,11 @@ public class PEAtomic extends ParsingEntity {
 		this.peRoot = peRoot;
 		peRoot.setRoot(false);
 	}
+
+	@Override
+	public boolean checkFinal() {
+		return peRoot.checkFinal();
+	}
 	
 	
 	

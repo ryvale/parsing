@@ -110,8 +110,10 @@ public class Evaluator extends StackEvaluator<Item<?>> {
 						CompiledRule cr = null;
 						RuleScript rs = ruleParser.getRuleConfig().getRule(opId.value());
 						try { cr = ruleParser.parse(rs.src()); } catch (ManagedException e) { throw new XPressionException(e); }
-						ParsingEntity pe =  cr.language().getPERoot();
-						oppe = new ConstantParsingEntity(pe.asPEAtomic() == null ? new PEAtomic(pe): pe);
+						ParsingEntity peRoot =  cr.language().getPERoot();
+						//oppe = new ConstantParsingEntity(pe.asPEAtomic() == null ? new PEAtomic(pe): pe);
+						
+						oppe = new ConstantParsingEntity(peRoot.getNextPE().isFinal() ? peRoot : ( peRoot.asPEAtomic() == null ? new PEAtomic(peRoot) : peRoot));
 					}
 					else oppe = new ConstantParsingEntity(new PEWord(opstr.value()));
 				}

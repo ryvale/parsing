@@ -755,12 +755,31 @@ public class AppTest extends TestCase
     
     public void testFileParsing1() throws ManagedException {
     	RuleParser ebnfParser = new RuleParser(new PreParser().parseFile("C:/recherches/exat/exat/src/main/java/com/exa/exat/default.parser"), false);
-    	CompiledRule cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("tplexp").src());
+    	CompiledRule cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("STRING").src());
     	
     	OutputParser1 p = new OutputParser1(cr);
+    	
+    	assertTrue(p.validates("''"));
+    	assertTrue(p.validates("'a'"));
+    	assertTrue(p.validates("'a\\''"));
+    	
+    	cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("exp").src());
+    	p = new OutputParser1(cr);
     	//assertTrue(p.validates("a"));
     	
-    	assertTrue(p.validates("@{% for i in 0..9} pata @{%end}"));
+    	//assertTrue(p.validates("@{% for i in 0..9} pata @{%end}"));
+    	
+    	assertTrue(p.validates("i = 0"));
+    	
+    	assertTrue(p.validates("a"));
+    	assertTrue(p.validates("a+b"));
+    	
+    	assertFalse(p.validates("a+"));
+    	
+    	cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("stm_if").src());
+    	p = new OutputParser1(cr);
+    	
+    	assertTrue(p.validates("if i = 0} pata @{%end"));
     }
     
     /*public void testCharByCharParsing() throws ManagedException {
