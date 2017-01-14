@@ -53,8 +53,8 @@ public class PEAtomic extends ParsingEntity {
 			return notifyResult(parsing, currentPE, lpevs, pevs);
 		}
 		
+		/*ParsingEntity nextPE = getNextPE();
 		if(currentPE == PE_NEXT) {
-			ParsingEntity nextPE = getNextPE();
 			if(nextPE.isFinal()) {
 				if(isRoot()) return notifyResult(parsing, EOS, lpevs, pevs);
 				
@@ -62,9 +62,20 @@ public class PEAtomic extends ParsingEntity {
 			}
 			
 			return notifyResult(parsing, nextPE, lpevs, pevs);
-		}
+		}*/
 		
-		return notifyResult(parsing, currentPE, lpevs, pevs);
+		ParsingEntity nextPE = getNextPE();
+		//if(currentPE == PE_NEXT) {
+		if(nextPE.isFinal()) {
+			if(isRoot()) return notifyResult(parsing, EOS, lpevs, pevs);
+			
+			return notifyResult(parsing, PE_NEXT, lpevs, pevs);
+		}
+			
+			//return notifyResult(parsing, nextPE, lpevs, pevs);
+		//}
+		
+		return notifyResult(parsing, nextPE, lpevs, pevs);
 	}
 
 	@Override

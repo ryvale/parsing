@@ -16,7 +16,9 @@ public class ExpMan<T> {
 		return currentPE;
 	}
 	
-	public void reset() {}
+	public T reset() { return null; }
+	
+	//public T initialize() { return null; }
 	
 	public T compute() throws ManagedException { return null; }
 	

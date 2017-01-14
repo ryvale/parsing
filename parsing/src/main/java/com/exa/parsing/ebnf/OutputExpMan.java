@@ -73,10 +73,12 @@ public class OutputExpMan extends ExpMan<ParsedMap> {
 
 
 	@Override
-	public void reset() {
+	public ParsedMap reset() {
 		result.getValue().clear();
 		
 		compiledRule.reset();
+		
+		return result;
 	}
 	
 }

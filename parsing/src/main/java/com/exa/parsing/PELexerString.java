@@ -15,7 +15,7 @@ public class PELexerString extends ParsingEntity {
 		this.petFalse = petFalse;
 	}
 	
-	public PELexerString(PERule perValid) { this(perValid, PETransformer.petOK(), PETransformer.petFAIL());}
+	public PELexerString(PERule perValid) { this(perValid, PETransformer.petOK(), PETransformer.petFAIL()); }
 
 	public PELexerString(PERule perOK, PETransformer petFail) {
 		this(perOK, PETransformer.petOK(), petFail);

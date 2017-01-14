@@ -16,14 +16,19 @@ public class RuleScript {
 	protected String src;
 	protected List<CreationNotifier> creationNotifiers = new ArrayList<>();
 	
-	protected CompiledRule compiled = null;
+	protected CompiledRule compiled;
 	
 	private boolean compilationInProgress = false;
 	
-	public RuleScript(String name, String src) {
+	protected RuleScript(String name, String src, CompiledRule compiled) {
 		super();
 		this.name = name;
 		this.src = src;
+		this.compiled = compiled;
+	}
+	
+	public RuleScript(String name, String src) {
+		this(name, src, null);
 	}
 	
 	public String name() { return name; }
@@ -60,9 +65,9 @@ public class RuleScript {
 			});
 			
 			
-			
 			return comiledRule;
 		}
+		
 		compilationInProgress=true;
 		compiled = rp.parse(src);
 		compilationInProgress=false;

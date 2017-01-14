@@ -7,11 +7,14 @@ import com.exa.buffer.CharReader.ClientBuffer;
 public class ParsingEvent {
 	
 	public abstract class WordMan {
+		
 		public String trimValue() {
 			String str = toString();
 			if(str == null) return null;
 			return parsing.trimLeft(str); 
 		}
+		
+		public abstract boolean valueIsNull();
 	}
 	
 	public class WMSubPEVs extends WordMan {
@@ -33,6 +36,23 @@ public class ParsingEvent {
 			//if(sb.length()>0) return sb.substring(1);
 			return sb.toString(); 
 		}
+
+		@Override
+		public boolean valueIsNull() {
+			for(ParsingEvent pev : pevs) {
+				if(pev.isParent()) continue;
+				if(pev.valueIsNull()) continue;
+				
+				return false;
+				/*String word = pev.getWord();
+				if(word == null) continue;*/
+				//sb.append(word);
+			}
+			
+			return true;
+		}
+		
+		
 	}
 	
 	public class WMConstant extends WordMan {
@@ -44,6 +64,9 @@ public class ParsingEvent {
 		
 		@Override
 		public String toString() { return buffer == null ? null : buffer.toString(); }
+
+		@Override
+		public boolean valueIsNull() {	return buffer == null;	}
 	};
 	
 	protected ClientBuffer buffer;
@@ -101,5 +124,7 @@ public class ParsingEvent {
 	public int getNb() { return nb;	}
 
 	public boolean isParent() { return parent; }
+	
+	public boolean valueIsNull() { return wordMan.valueIsNull(); }
 	
 }

@@ -46,7 +46,7 @@ public abstract class Parser<T> implements IParser<T> {
 	}
 	
 	public Language getLanguage() {	return language; }
-		
+	
 	/* (non-Javadoc)
 	 * @see com.exa.parsing.IParser#validates(java.lang.String)
 	 */

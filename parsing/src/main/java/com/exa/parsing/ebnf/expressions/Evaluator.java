@@ -108,8 +108,9 @@ public class Evaluator extends StackEvaluator<Item<?>> {
 						if(opId == null) throw new XPressionException("Error evaluating expression");
 						
 						CompiledRule cr = null;
-						RuleScript rs = ruleParser.getRuleConfig().getRule(opId.value());
-						try { cr = ruleParser.parse(rs.src()); } catch (ManagedException e) { throw new XPressionException(e); }
+						RuleScript rs = ruleParser.getRulesConfig().getRule(opId.value());
+						//try { cr = ruleParser.parse(rs.src()); } catch (ManagedException e) { throw new XPressionException(e); }
+						try { cr = rs.compileWith(ruleParser); } catch (ManagedException e) { throw new XPressionException(e); }
 						ParsingEntity peRoot =  cr.language().getPERoot();
 						//oppe = new ConstantParsingEntity(pe.asPEAtomic() == null ? new PEAtomic(pe): pe);
 						
@@ -160,7 +161,9 @@ public class Evaluator extends StackEvaluator<Item<?>> {
 		}
 		
 		CompiledRule cr = null;
-		RuleScript rs = ruleParser.getRuleConfig().getRule(opId.value());
+		RuleScript rs = ruleParser.getRulesConfig().getRule(opId.value());
+		
+		if(rs == null) throw new XPressionException("The rule '"+opId.value()+"' doesn't exist.");
 		
 		try { cr = rs.compileWith(ruleParser); } catch (ManagedException e) { throw new XPressionException(e); }
 		return new ConstantParsingEntity(cr.language().getPERoot());

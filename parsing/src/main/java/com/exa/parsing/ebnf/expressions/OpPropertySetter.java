@@ -50,7 +50,7 @@ public class OpPropertySetter<T> extends OperatorBase<T> {
 				oppe = new ConstantParsingEntity(new PEWord(opstr.value()));
 			}
 			else {
-				RuleScript rs = ruleParser.getRuleConfig().getRule(opId.value());
+				RuleScript rs = ruleParser.getRulesConfig().getRule(opId.value());
 			
 				try { cr = rs.compileWith(ruleParser); } catch (ManagedException e) { throw new XPressionException(e); }
 				ParsingEntity peRoot = cr.language().getPERoot();

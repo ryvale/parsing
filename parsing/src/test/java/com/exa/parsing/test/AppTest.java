@@ -715,7 +715,7 @@ public class AppTest extends TestCase
     
     public void testFileParsing0() throws ManagedException {
     	RuleParser ebnfParser = new RuleParser(new PreParser().parseFile("C:/recherches/parsing5/parsing/src/test/java/com/exa/parsing/test/script.parser"), false);
-    	CompiledRule cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("root").src());
+    	CompiledRule cr = ebnfParser.parse(ebnfParser.getRulesConfig().getRule("root").src());
     	OutputParser1 p = new OutputParser1(cr);
     	
     	ParsedMap pm = p.parse("nom : Kouakou Koffi");
@@ -731,7 +731,7 @@ public class AppTest extends TestCase
     	assertTrue("Kouakou".equals(pm.get("rows").asParsedArray().get(1).get("valeur").toString()));
     	
     	ebnfParser = new RuleParser(new PreParser().parseFile("C:/recherches/parsing5/parsing/src/test/java/com/exa/parsing/test/exat.parser"), false);
-    	cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("root").src());
+    	cr = ebnfParser.parse(ebnfParser.getRulesConfig().getRule("root").src());
     	p = new OutputParser1(cr);
     	
     	pm = p.parse("test");
@@ -754,8 +754,8 @@ public class AppTest extends TestCase
     }
     
     public void testFileParsing1() throws ManagedException {
-    	RuleParser ebnfParser = new RuleParser(new PreParser().parseFile("C:/recherches/exat/exat/src/main/java/com/exa/exat/default.parser"), false);
-    	CompiledRule cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("STRING").src());
+    	RuleParser ebnfParser = new RuleParser(new PreParser().parseFile("C:/recherches/exat/exat/src/main/java/com/exa/exat/default0.1.parser"), false);
+    	CompiledRule cr = ebnfParser.parse(ebnfParser.getRulesConfig().getRule("STRING").src());
     	
     	OutputParser1 p = new OutputParser1(cr);
     	
@@ -763,11 +763,8 @@ public class AppTest extends TestCase
     	assertTrue(p.validates("'a'"));
     	assertTrue(p.validates("'a\\''"));
     	
-    	cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("exp").src());
+    	cr = ebnfParser.parse(ebnfParser.getRulesConfig().getRule("exp").src());
     	p = new OutputParser1(cr);
-    	//assertTrue(p.validates("a"));
-    	
-    	//assertTrue(p.validates("@{% for i in 0..9} pata @{%end}"));
     	
     	assertTrue(p.validates("i = 0"));
     	
@@ -776,17 +773,47 @@ public class AppTest extends TestCase
     	
     	assertFalse(p.validates("a+"));
     	
-    	cr = ebnfParser.parse(ebnfParser.getRuleConfig().getRule("stm_if").src());
+    	cr = ebnfParser.parse(ebnfParser.getRulesConfig().getRule("root").src());
     	p = new OutputParser1(cr);
     	
-    	assertTrue(p.validates("if i = 0} pata @{%end"));
+    	assertTrue(p.validates("@{%if i = 0} pata @{%end}"));
+    	
+    	assertTrue(p.validates("aa bb xx @{%if i = 0} pata @{%end} cc dd"));
+    	
+    	assertTrue(p.validates("aa bb xx @{%if i = 0} pata @{%end} cc dd @{% for i in 0..9} taratata @{%end}"));
     }
     
-    /*public void testCharByCharParsing() throws ManagedException {
-    	RuleParser ebnfParser = new RuleParser(new PreParser().parse("ignore ' \t'; row : nom = !':'+ ':' valeur = !('\n'|'\r')+ '\n'?; root : 'a';"), false);
-    	CompiledRule cr = ebnfParser.parse("['a']");
+    public void testFileParsing2() throws ManagedException {
+    	
+    	RuleParser  ebnfParser = new RuleParser(new PreParser().addCommonParsingEntity("LX_ID", PreParser.PE_LX_IDENTIFIER).addCommonParsingEntity("LX_INT", PreParser.PE_LX_INTEGER).parseFile("C:/recherches/exat/exat/src/main/java/com/exa/exat/default0.2.parser"), false);
+    	CompiledRule cr = ebnfParser.parse(ebnfParser.getRulesConfig().getRule("STRING").src());
+    	
     	OutputParser1 p = new OutputParser1(cr);
     	
-    }*/
+    	assertTrue(p.validates("''"));
+    	assertTrue(p.validates("'a'"));
+    	assertTrue(p.validates("'a\\''"));
+    	
+    	cr = ebnfParser.parse(ebnfParser.getRulesConfig().getRule("exp").src());
+    	p = new OutputParser1(cr);
+    	
+    	assertTrue(p.validates("i = 0"));
+    	
+    	assertTrue(p.validates("a"));
+    	assertTrue(p.validates("a+b"));
+    	
+    	assertFalse(p.validates("a+"));
+    	
+    	cr = ebnfParser.parse(ebnfParser.getRulesConfig().getRule("root").src());
+    	p = new OutputParser1(cr);
+    	
+    	assertTrue(p.validates("@{%if i = 0} pata @{%end}"));
+    	
+    	assertTrue(p.validates("aa bb xx @{%if i = 0} pata @{%end} cc dd"));
+    	
+    	assertTrue(p.validates("aa bb xx @{%if i = 0} pata @{%end} cc dd @{% for j in 0..9} taratata @{%end}"));
+    }
+    
+    
     
 }

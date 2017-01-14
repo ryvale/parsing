@@ -8,6 +8,7 @@ import com.exa.parsing.ParsingEntity;
 import com.exa.parsing.ParsingEvent;
 import com.exa.parsing.ebnf.RuleScript;
 import com.exa.parsing.ebnf.RulesConfig;
+import com.exa.utils.ManagedException;
 
 public class PreExpMan extends ExpMan<RulesConfig> {
 	protected RulesConfig res;
@@ -24,7 +25,7 @@ public class PreExpMan extends ExpMan<RulesConfig> {
 	public PreExpMan() { this(new RulesConfig()); }
 
 	@Override
-	public ParsingEntity push(ParsingEntity currentPE, List<ParsingEvent> pevs) {
+	public ParsingEntity push(ParsingEntity currentPE, List<ParsingEvent> pevs) throws ManagedException {
 		
 		for(ParsingEvent pev : pevs) {
 			if(pev.isParent()) continue;

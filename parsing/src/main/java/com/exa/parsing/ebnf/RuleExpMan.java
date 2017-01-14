@@ -21,11 +21,9 @@ public class RuleExpMan extends ExpMan<CompiledRule> {
 	public ParsingEntity push(ParsingEntity currentPE, List<ParsingEvent> pevs) throws ManagedException {
 		
 		for(ParsingEvent pev : pevs) {
-			if(pev.isParent()) continue;
-			String word = pev.getWord();
-			if(word == null) continue;
+			if(pev.isParent() || pev.valueIsNull()) continue;
 			
-			eval.push(word);
+			eval.push(pev.getWord());
 		}
 		
 		return currentPE;
@@ -34,11 +32,15 @@ public class RuleExpMan extends ExpMan<CompiledRule> {
 	@Override
 	public CompiledRule compute() throws ManagedException {
 		//eval.compute();
-		RulesConfig rc = eval.getRuleParser().getRuleConfig();
+		RulesConfig rc = eval.getRuleParser().getRulesConfig();
 		return new CompiledRule(eval.compute().asOPParsingEntity().value(), rc.charsToIgnore(), rc.separators(), eval.getFields(), eval.getFieldsParsingMap());
 	}
 	
 	@Override
-	public void reset() { eval.reset();	}
+	public CompiledRule reset() { 
+		eval.reset();
+		
+		return null;
+	}
 	
 }

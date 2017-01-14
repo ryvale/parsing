@@ -43,39 +43,12 @@ public class Parsing<T> {
 		throw new ManagedException((lexerWord == null ? "" : "Error near " + lexerWord + "\n") + currentPE.asPEFail().getErrorMessage());
 	}
 	
-	/*public boolean expressionIsValid() throws ManagedException {
-		expMan.setParsing(this);
-		expMan.reset();
-		
-		currentPE = parser.getLanguage().getPERoot();
-		while(nextString() != null) {
-			peEvents.clear();
-			realResults.clear();
-			currentPE = currentPE.check(this, peEvents);
-			
-			if(currentPE == PE_BREAK) break;
-			
-			if(currentPE instanceof PEFail) return false;
-			
-			currentPE = expMan.push(currentWrd, currentPE, peEvents);
-			
-			if(currentPE instanceof PEFail) return false;
-		}
-		
-		if(currentPE.checkFinal()) return true;
-	
-		currentPE = new PEFail("Unexpected end of file.");
-		
-		return false;
-	}*/
-	
 	public boolean expressionIsValid() throws ManagedException {
 		expMan.setParsing(this);
 		expMan.reset();
 		
 		currentPE = parser.getLanguage().getPERoot();
-		while(hasNextString()) {
-			nextCheck();
+		while(nextCheck()) {
 			if(currentPE.failed()) return false;
 			
 			currentPE = expMan.push(currentPE, peEvents);
@@ -86,7 +59,7 @@ public class Parsing<T> {
 		}
 		
 		if(hasNextString()) {
-			currentPE = new PEFail("Remain string '" + nextString() + "' after parsing." );
+			currentPE = new PEFail("Remain string after parsing." );
 			return false;
 		}
 		
@@ -133,15 +106,16 @@ public class Parsing<T> {
 		return c;
 	}
 	
-	
-	
-	public ParsingEntity nextCheck() throws ManagedException {
-		peEvents.clear();
-		realResults.clear();
+	public boolean nextCheck() throws ManagedException {
+		if(hasNextString()) {
+			peEvents.clear();
+			realResults.clear();
+			
+			currentPE = currentPE.check(this, peEvents);
+			return true;
+		}
 		
-		currentPE = currentPE.check(this, peEvents);
-		
-		return currentPE;
+		return false;
 	}
 	
 	public String lexerWord() { return lexerWord; }

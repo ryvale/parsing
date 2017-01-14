@@ -18,23 +18,13 @@ public class RuleParser extends Parser<CompiledRule> {
 	public RuleParser(RulesConfig rulesConfig) { this(rulesConfig, new RuleLanguage(), false); }
 	
 	public RuleParser(RulesConfig rulesConfig, boolean debugOn) { this(rulesConfig, new RuleLanguage(), debugOn); }
-	
-	/*public  CompiledRule parseRule(String ruleName) throws ManagedException { 
-		RuleScript rs = rulesConfig.getRule(ruleName);
 		
-		if(rs == null) throw new ManagedException("Unknown rule '"+ruleName+"'");
-		
-		if(rs.compiled() == null) rs.compiled(parse(rs.src()));	
-		
-		return rs.compiled();
-	}*/
-	
 	@Override
 	public ExpMan<CompiledRule> createExpMan(WordIterator wi) throws ManagedException {
 		return new RuleExpMan(null, this);
 	}
 	
-	public RulesConfig getRuleConfig() { return rulesConfig; }
+	public RulesConfig getRulesConfig() { return rulesConfig; }
 
 	@Override
 	public boolean listen(ParsingEntity pe) { return true; }
