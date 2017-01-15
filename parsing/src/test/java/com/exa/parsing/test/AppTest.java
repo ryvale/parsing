@@ -784,7 +784,6 @@ public class AppTest extends TestCase
     }
     
     public void testFileParsing2() throws ManagedException {
-    	
     	RuleParser  ebnfParser = new RuleParser(new PreParser().addCommonParsingEntity("LX_ID", PreParser.PE_LX_IDENTIFIER).addCommonParsingEntity("LX_INT", PreParser.PE_LX_INTEGER).parseFile("C:/recherches/exat/exat/src/main/java/com/exa/exat/default0.2.parser"), false);
     	CompiledRule cr = ebnfParser.parse(ebnfParser.getRulesConfig().getRule("STRING").src());
     	

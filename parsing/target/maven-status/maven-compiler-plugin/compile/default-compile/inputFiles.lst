@@ -28,6 +28,7 @@ C:\recherches\parsing5\parsing\src\main\java\com\exa\parsing\ebnf\expressions\Un
 C:\recherches\parsing5\parsing\src\main\java\com\exa\parsing\ebnf\expressions\ObjectFieldFunction.java
 C:\recherches\parsing5\parsing\src\main\java\com\exa\parsing\ebnf\expressions\FCObjectArray.java
 C:\recherches\parsing5\parsing\src\main\java\com\exa\parsing\ebnf\ParsedMap.java
+C:\recherches\parsing5\parsing\src\main\java\com\exa\parsing\ebnf\RSPredefined.java
 C:\recherches\parsing5\parsing\src\main\java\com\exa\lexing\Language.java
 C:\recherches\parsing5\parsing\src\main\java\com\exa\parsing\ebnf\ParsedString.java
 C:\recherches\parsing5\parsing\src\main\java\com\exa\parsing\ParsingEntity.java
@@ -75,7 +76,6 @@ C:\recherches\parsing5\parsing\src\main\java\com\exa\parsing\PERule.java
 C:\recherches\parsing5\parsing\src\main\java\com\exa\parsing\PECharByChar.java
 C:\recherches\parsing5\parsing\src\main\java\com\exa\parsing\ebnf\expressions\OSUnique.java
 C:\recherches\parsing5\parsing\src\main\java\com\exa\parsing\PETransformer.java
-C:\recherches\parsing5\parsing\src\main\java\com\exa\utils\buffers\SharedString.java
 C:\recherches\parsing5\parsing\src\main\java\com\exa\lexing\WordIterator.java
 C:\recherches\parsing5\parsing\src\main\java\com\exa\parsing\ParsingRouter.java
 C:\recherches\parsing5\parsing\src\main\java\com\exa\lexing\BlankWord.java
